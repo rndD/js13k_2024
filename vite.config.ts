@@ -34,7 +34,7 @@ export default defineConfig(({ command, mode }) => {
     // @ts-ignore
     config.build = {
       minify: false,
-      target: 'es2020',
+      target: 'es2021',
       modulePreload: { polyfill: false },
       assetsInlineLimit: 800,
       assetsDir: '',
@@ -73,8 +73,9 @@ async function applyClosure(js: string, chunk: any) {
     js: tmpobj.name,
     externs: 'externs.js',
     compilation_level: 'ADVANCED',
-    language_in: 'ECMASCRIPT_2020',
-    language_out: 'ECMASCRIPT_2020',
+    language_in: 'ECMASCRIPT_2021',
+    language_out: 'ECMASCRIPT_2021',
+    // warning_level: 'VERBOSE',
   });
   return new Promise((resolve, reject) => {
     closureCompiler.run((_exitCode: string, stdOut: string, stdErr: string) => {
