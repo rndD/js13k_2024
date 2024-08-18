@@ -1,8 +1,11 @@
-import { EngineObject, tile, vec2, Vector2, rand, randInt } from "littlejsengine";
+import { rand } from "littlejsengine";
+import { EngineObject, tile, vec2, Vector2, randInt } from "littlejsengine";
 
 export class Ground extends EngineObject {
   constructor(pos: Vector2) {
-    super(pos, vec2(1), tile(59, 8));
+    const tileType = rand() < 0.5 ? 59 : 60;
+    super(pos, vec2(1), tile(tileType, 8));
+    
   }
 }
 

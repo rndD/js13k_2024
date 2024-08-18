@@ -1,18 +1,11 @@
 import {
-  drawTextScreen,
-  mainCanvasSize,
   engineInit,
-  EngineObject,
-  tile,
   vec2,
-  rgb,
   setCameraPos,
   setCameraScale,
   mouseWheel,
   cameraScale,
-  mouseIsDown,
   cameraPos,
-  mousePosScreen,
   mousePos,
   mouseWasReleased,
 } from "littlejsengine";

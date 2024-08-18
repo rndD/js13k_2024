@@ -1,12 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2021",
-    "module": "commonjs",
-    "declaration": true,
+    "allowJs": true,
+    "module": "es2020",
+    "target": "es2020",
     "outDir": "dist",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "noEmit": true,
     "strict": true,
-    "esModuleInterop": true,
-    "allowJs": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
   },
   "include": ["./src"],
   "exclude": [
