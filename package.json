@@ -4,6 +4,7 @@
   "main": "index.js",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.5.0",
+    "@types/node": "^22.4.0",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "clean-css": "^5.3.1",
@@ -36,6 +37,6 @@
   },
   "author": "Rob Louie",
   "dependencies": {
-    "littlejsengine": "^1.9.4"
+    "littlejsengine": "^1.9.5"
   }
 }
