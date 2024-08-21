@@ -9,7 +9,7 @@ import {
   mousePos,
   mouseWasReleased,
 } from "littlejsengine";
-import { generateDungeon, Ground } from "./ground";
+import { generateDungeon, Ground } from "./map";
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
@@ -39,13 +39,13 @@ function gameUpdate() {
 
   if (mouseWasReleased(0)) {
     lastMousePos = mousePos;
-   
+
     // console.log(mousePos.add(cameraPos.divide(vec2(1.2))));
   }
-   // slowly move camera to last mouse pos
-   if (lastMousePos && cameraPos.distance(lastMousePos) > 0.2) {
+  // slowly move camera to last mouse pos
+  if (lastMousePos && cameraPos.distance(lastMousePos) > 0.2) {
     setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
-   }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,5 +70,5 @@ function gameRenderPost() {
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [
-  "public/tileset.png",
+  "/tileset.png",
 ]);
