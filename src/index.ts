@@ -10,20 +10,37 @@ import {
   mouseWasReleased,
 } from "littlejsengine";
 import { generateDungeon, Ground } from "./map";
+import { Character } from "./character";
+import { Space } from "./obsticles";
 
+let character: Character;
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
   // called once after the engine starts up
   // setup the game
-  const map = generateDungeon();
+  const [map, rooms] = generateDungeon();
 
   for (let x = 0; x < map.length; x++) {
     for (let y = 0; y < map[x].length; y++) {
-      if (map[x][y] === 0) continue;
-      new Ground(vec2(x, y));
+      if (map[x][y] === 0) {
+        if (
+          map[x][y - 1] > 0 ||
+          map[x][y + 1] > 0 ||
+          (map[x - 1] && map[x - 1][y] > 0) ||
+          (map[x + 1] && map[x + 1][y] > 0)
+        ) {
+          new Space(vec2(x, y));
+          continue;
+        }
+      }
+      if (map[x][y] > 0) new Ground(vec2(x, y));
     }
   }
-  setCameraScale(8);
+
+  const room = rooms[1];
+
+  setCameraScale(20);
+  character = new Character(vec2(room.y, room.x));
 
   // new EngineObject(mainCanvasSize.scale(.5), vec2(100,100),  tile(52, 8), 0, rgb(1,242,0));
 }
@@ -46,6 +63,9 @@ function gameUpdate() {
   if (lastMousePos && cameraPos.distance(lastMousePos) > 0.2) {
     setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
   }
+
+  // follow character
+  setCameraPos(character.pos);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,5 +90,6 @@ function gameRenderPost() {
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [
-  "/tileset.png",
+  "/tileset.png", // first
+  "/_walk.png", // second
 ]);

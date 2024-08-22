@@ -106,7 +106,9 @@ function createVerticalCorridor(
   }
 }
 
-export function generateDungeon(roomCount = DEFAULT_ROOMS) {
+export function generateDungeon(
+  roomCount = DEFAULT_ROOMS
+): [number[][], Room[]] {
   const rooms: Room[] = [];
   // Dungeon grid (0 = empty, 1 = room, 2 = corridor)
   let grid: number[][] = Array.from({ length: GRID_HEIGHT }, () =>
@@ -128,7 +130,7 @@ export function generateDungeon(roomCount = DEFAULT_ROOMS) {
 
     rooms.push(newRoom);
   }
-  console.log(grid.map((row) => row.join("")).join("\n"));
+  // console.log(grid.map((row) => row.join("")).join("\n"));
 
-  return grid;
+  return [grid, rooms];
 }
