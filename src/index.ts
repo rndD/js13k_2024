@@ -8,6 +8,7 @@ import {
   cameraPos,
   mousePos,
   mouseWasReleased,
+  setTouchGamepadEnable,
 } from "littlejsengine";
 import { generateDungeon, Ground } from "./map";
 import { Character } from "./character";
@@ -16,6 +17,8 @@ import { Space } from "./obsticles";
 let character: Character;
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
+  setTouchGamepadEnable(true);
+
   // called once after the engine starts up
   // setup the game
   const [map, rooms] = generateDungeon();
@@ -39,7 +42,7 @@ function gameInit() {
 
   const room = rooms[1];
 
-  setCameraScale(20);
+  setCameraScale(22);
   character = new Character(vec2(room.y, room.x));
 
   // new EngineObject(mainCanvasSize.scale(.5), vec2(100,100),  tile(52, 8), 0, rgb(1,242,0));

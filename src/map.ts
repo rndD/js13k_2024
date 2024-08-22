@@ -3,7 +3,7 @@ import { EngineObject, tile, vec2, Vector2, randInt } from "littlejsengine";
 
 export class Ground extends EngineObject {
   constructor(pos: Vector2) {
-    const tileType = rand() > 0.8 ? randInt(59, 62) : 59;
+    const tileType = rand() > 0.99 ? 61 : 59;
     super(pos, vec2(1), tile(tileType, 8));
   }
 }

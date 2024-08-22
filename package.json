@@ -1,5 +1,5 @@
 {
-  "name": "typescript-template",
+  "name": "js13kgames-2024",
   "version": "1.0.0",
   "main": "index.js",
   "devDependencies": {
@@ -36,7 +36,6 @@
     "vite": "vite serve",
     "tsc": "tsc --watch --noEmit"
   },
-  "author": "Rob Louie",
   "dependencies": {
     "littlejsengine": "^1.9.5"
   }
