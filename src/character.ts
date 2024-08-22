@@ -21,6 +21,7 @@ export class Character extends EngineObject {
     this.spriteAtlas = [tile(0, 8, 1), tile(1, 8, 1), tile(2, 8, 1)];
     this.setCollision(true, false);
   }
+
   update() {
     // movement control
     const moveInput = isUsingGamepad

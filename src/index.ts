@@ -13,6 +13,7 @@ import {
 import { generateDungeon, Ground } from "./map";
 import { Character } from "./character";
 import { Space } from "./obsticles";
+import { Enemy } from "./enemy";
 
 let character: Character;
 ///////////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,8 @@ function gameInit() {
 
   setCameraScale(22);
   character = new Character(vec2(room.y, room.x));
+
+  const enemy = new Enemy(vec2(room.y + 3, room.x + 3), character);
 
   // new EngineObject(mainCanvasSize.scale(.5), vec2(100,100),  tile(52, 8), 0, rgb(1,242,0));
 }
