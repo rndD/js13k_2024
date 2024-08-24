@@ -9,13 +9,14 @@ import {
   mousePos,
   mouseWasReleased,
   setTouchGamepadEnable,
+  drawTextScreen,
 } from "littlejsengine";
 import { generateDungeon, Ground } from "./map";
 import { Character } from "./character";
-import { Space } from "./obsticles";
-import { Enemy } from "./enemy";
+import { EnemySystem } from "./systems/enemySystem";
 
 let character: Character;
+let enemySystem: EnemySystem;
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
   setTouchGamepadEnable(true);
@@ -33,7 +34,7 @@ function gameInit() {
           (map[x - 1] && map[x - 1][y] > 0) ||
           (map[x + 1] && map[x + 1][y] > 0)
         ) {
-          new Space(vec2(x, y));
+          // new Space(vec2(x, y));
           continue;
         }
       }
@@ -41,14 +42,10 @@ function gameInit() {
     }
   }
 
-  const room = rooms[1];
-
   setCameraScale(22);
+  const room = rooms[0];
   character = new Character(vec2(room.y, room.x));
-
-  const enemy = new Enemy(vec2(room.y + 3, room.x + 3), character);
-
-  // new EngineObject(mainCanvasSize.scale(.5), vec2(100,100),  tile(52, 8), 0, rgb(1,242,0));
+  enemySystem = new EnemySystem(character, map);
 }
 
 let lastMousePos = vec2();
@@ -70,14 +67,14 @@ function gameUpdate() {
     setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
   }
 
-  // follow character
-  setCameraPos(character.pos);
+  // enemySystemв.update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost() {
   // called after physics and objects are updated
   // setup camera and prepare for render
+  setCameraPos(character.pos);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -90,7 +87,18 @@ function gameRender() {
 function gameRenderPost() {
   // called after objects are rendered
   // draw effects or hud that appear above all objects
-  // drawTextScreen('Hello World!', mainCanvasSize.scale(.5), 80);
+  drawTextScreen(
+    `Live enemies: ${enemySystem.enemies.length}`,
+    vec2(95, 20),
+    16
+  );
+  drawTextScreen(
+    `Dead enemies: ${enemySystem.deadEnemiesCount}`,
+
+    vec2(100, 40),
+    16
+  );
+  drawTextScreen(`Level: ${enemySystem.level}`, vec2(70, 60), 16);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
