@@ -20,11 +20,11 @@ import {
 } from "littlejsengine";
 import { generateDungeon, hasNeighbor } from "./map";
 import { Character } from "./character";
-import { EnemySystem } from "./systems/enemySystem";
+import { MainSystem } from "./systems/mainSystem";
 import { NextLevel, Sky } from "./background";
 
 let character: Character;
-let enemySystem: EnemySystem;
+let enemySystem: MainSystem;
 
 function generateLevel(doCollisions = true) {
   const [map, rooms] = generateDungeon();
@@ -68,7 +68,7 @@ function gameInit() {
   const room = rooms[0];
   // character = new Character(vec2(0));
   character = new Character(vec2(room.y + 1, room.x + 1));
-  enemySystem = new EnemySystem(character, map);
+  enemySystem = new MainSystem(character, map);
 
   floorTile.redraw();
 

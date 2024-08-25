@@ -37,6 +37,12 @@ export class Character extends GameObject {
     const gun2 = new Gun();
     this.upgrades.push(gun2);
     this.addChild(gun2, vec2(0.5, 0));
+    const gun3 = new Gun();
+    this.upgrades.push(gun3);
+    this.addChild(gun3, vec2(0.5, 0.3));
+    const gun4 = new Gun();
+    this.upgrades.push(gun4);
+    this.addChild(gun4, vec2(-0.5, 0.3));
   }
 
   update() {

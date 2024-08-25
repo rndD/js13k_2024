@@ -3,7 +3,8 @@ import { Enemy } from "../enemy";
 import { Character } from "../character";
 
 const MAX_ENEMIES = 500;
-export class EnemySystem {
+
+export class MainSystem {
   spawnTimer = new Timer();
   level = 1;
   enemies: Enemy[] = [];
@@ -40,13 +41,15 @@ export class EnemySystem {
 
       if (this.enemies.length > MAX_ENEMIES) return;
       for (let i = 0; i < this.level; i++) {
-        this.enemies.push(new Enemy(this.calcEnemyPosition(), this.character));
+        this.enemies.push(
+          new Enemy(this.calcEnemyPosition(), this.character, this)
+        );
       }
     }
   }
 
   setDeadEnemiesCount(plus: number) {
-    if (plus + this.deadEnemiesCount > this.level * 5) {
+    if (plus + this.deadEnemiesCount > this.level * 25) {
       this.levelUp();
     }
     this.deadEnemiesCount += plus;
@@ -64,7 +67,7 @@ export class EnemySystem {
       const tile = this.map[Math.floor(pos.x)]
         ? this.map[Math.floor(pos.x)][Math.floor(pos.y)]
         : 0;
-      if (tile && tile > 0) return pos.add(vec2(0.5));
+      if (tile && tile > 0) return pos;
     }
   }
 }
