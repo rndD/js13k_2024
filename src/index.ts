@@ -95,7 +95,7 @@ function gameUpdate() {
     setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
   }
 
-  // enemySystem.update();
+  enemySystem.update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

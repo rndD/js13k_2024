@@ -2,6 +2,7 @@ import { Timer, vec2, Vector2 } from "littlejsengine";
 import { Enemy } from "../enemy";
 import { Character } from "../character";
 
+const MAX_ENEMIES = 500;
 export class EnemySystem {
   spawnTimer = new Timer();
   level = 1;
@@ -36,11 +37,14 @@ export class EnemySystem {
       this.enemies = this.enemies.filter((e) => !e.isDead());
       const isLive = this.enemies.length;
       this.setDeadEnemiesCount(wasLive - isLive);
+
+      if (this.enemies.length > MAX_ENEMIES) return;
       for (let i = 0; i < this.level; i++) {
         this.enemies.push(new Enemy(this.calcEnemyPosition(), this.character));
       }
     }
   }
+
   setDeadEnemiesCount(plus: number) {
     if (plus + this.deadEnemiesCount > this.level * 5) {
       this.levelUp();
