@@ -13,7 +13,7 @@ const GRID_WIDTH = 150;
 const GRID_HEIGHT = 150;
 
 const MIN_ROOM_SIZE = 5;
-const MAX_ROOM_SIZE = 20;
+const MAX_ROOM_SIZE = 22;
 
 const MIN_CORRIDOR_LENGTH = 4;
 const MAX_CORRIDOR_LENGTH = 8;
@@ -134,3 +134,18 @@ export function generateDungeon(
 
   return [grid, rooms];
 }
+
+const directions = [
+  [0, -1], // left
+  [0, 1], // right
+  [-1, 0], // up
+  [1, 0], // down
+  [-1, -1], // up-left
+  [1, 1], // down-right
+  [-1, 1], // up-right
+  [1, -1], // down-left
+];
+export const hasNeighbor = (map: number[][], x: number, y: number) =>
+  directions.some(([dx, dy]) => {
+    return map[x + dx] && map[x + dx][y + dy] > 0;
+  });

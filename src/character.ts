@@ -1,5 +1,6 @@
 import {
   clamp,
+  drawTile,
   gamepadStick,
   isUsingGamepad,
   keyIsDown,
@@ -25,15 +26,17 @@ export class Character extends GameObject {
     super(GameObjectType.Character, pos, vec2(1), tile(0, 8, 1));
     this.spriteAtlas = [tile(0, 8, 1), tile(1, 8, 1), tile(2, 8, 1)];
     this.setCollision(true, false);
+    this.size = vec2(1, 0.5);
+
     this.drawSize = vec2(1.2, 1.2);
 
     // add gun
-    const gun = new Gun();
-    this.upgrades.push(gun);
-    this.addChild(gun, vec2(-0.5, 0.5));
-    const gun2 = new Gun();
-    this.upgrades.push(gun2);
-    this.addChild(gun2, vec2(0.5, 0.5));
+    // const gun = new Gun();
+    // this.upgrades.push(gun);
+    // this.addChild(gun, vec2(-0.5, 0));
+    // const gun2 = new Gun();
+    // this.upgrades.push(gun2);
+    // this.addChild(gun2, vec2(0.5, 0));
   }
 
   update() {
@@ -77,7 +80,16 @@ export class Character extends GameObject {
     } else {
       this.tileInfo = this.spriteAtlas[0];
     }
-    super.render();
+    drawTile(
+      this.pos.subtract(vec2(0, -0.4)),
+      this.drawSize || this.size,
+      this.tileInfo,
+      this.color,
+      this.angle,
+      this.mirror,
+      this.additiveColor
+    );
+    // super.render();
   }
 }
 
@@ -85,7 +97,7 @@ export class Gun extends GameObject {
   fireRate = 0.1;
   fireTimer: Timer;
   constructor() {
-    super(GameObjectType.Gun, vec2(0, 0), vec2(0.1, 1));
+    super(GameObjectType.Gun, vec2(0, 0), vec2(0.1, 0.3));
     this.fireTimer = new Timer();
     this.fireTimer.set(this.fireRate);
   }
@@ -113,7 +125,7 @@ export class Bullet extends GameObject {
     // organge
     this.color = rgb(1, 0.5, 0);
     this.initialPos = pos;
-    this.setCollision(true, false);
+    this.setCollision(true, false, false);
     this.velocity = vec2(0, this.speed).rotate(-angle);
     this.lifeTimer = new Timer();
     this.lifeTimer.set(this.lifeTime);

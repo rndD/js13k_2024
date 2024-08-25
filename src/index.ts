@@ -10,42 +10,70 @@ import {
   mouseWasReleased,
   setTouchGamepadEnable,
   drawTextScreen,
+  TileLayer,
+  TileLayerData,
+  tile,
+  setTileSizeDefault,
+  setTileCollisionData,
+  initTileCollision,
+  setTileFixBleedScale,
 } from "littlejsengine";
-import { generateDungeon, Ground } from "./map";
+import { generateDungeon, hasNeighbor } from "./map";
 import { Character } from "./character";
 import { EnemySystem } from "./systems/enemySystem";
+import { NextLevel, Sky } from "./background";
 
 let character: Character;
 let enemySystem: EnemySystem;
+
+function generateLevel(doCollisions = true) {
+  const [map, rooms] = generateDungeon();
+
+  const floorTile = new TileLayer(
+    vec2(0),
+    vec2(map.length, map[0].length),
+    tile(59, 8, 0)
+  );
+
+  for (let x = 0; x < map.length; x++) {
+    for (let y = 0; y < map[x].length; y++) {
+      if (map[x][y] === 0 && doCollisions) {
+        if (hasNeighbor(map, x, y)) {
+          setTileCollisionData(vec2(x, y), 1);
+
+          continue;
+        }
+      }
+      if (map[x][y] > 0) {
+        floorTile.setData(vec2(x, y), new TileLayerData(59));
+      }
+    }
+  }
+  return [map, rooms, floorTile] as const;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
+  setTileSizeDefault(vec2(8));
+  setTileFixBleedScale(0.1);
   setTouchGamepadEnable(true);
 
   // called once after the engine starts up
   // setup the game
-  const [map, rooms] = generateDungeon();
-
-  for (let x = 0; x < map.length; x++) {
-    for (let y = 0; y < map[x].length; y++) {
-      if (map[x][y] === 0) {
-        if (
-          map[x][y - 1] > 0 ||
-          map[x][y + 1] > 0 ||
-          (map[x - 1] && map[x - 1][y] > 0) ||
-          (map[x + 1] && map[x + 1][y] > 0)
-        ) {
-          // new Space(vec2(x, y));
-          continue;
-        }
-      }
-      if (map[x][y] > 0) new Ground(vec2(x, y));
-    }
-  }
 
   setCameraScale(22);
+  initTileCollision(vec2(200, 200));
+  const [map, rooms, floorTile] = generateLevel();
+  const [, , _nextLevel] = generateLevel(false);
   const room = rooms[0];
-  character = new Character(vec2(room.y, room.x));
+  // character = new Character(vec2(0));
+  character = new Character(vec2(room.y + 1, room.x + 1));
   enemySystem = new EnemySystem(character, map);
+
+  floorTile.redraw();
+
+  new NextLevel(_nextLevel);
+  new Sky();
 }
 
 let lastMousePos = vec2();
@@ -67,7 +95,7 @@ function gameUpdate() {
     setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
   }
 
-  // enemySystemв.update();
+  // enemySystem.update();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -94,7 +122,6 @@ function gameRenderPost() {
   );
   drawTextScreen(
     `Dead enemies: ${enemySystem.deadEnemiesCount}`,
-
     vec2(100, 40),
     16
   );
