@@ -7,7 +7,10 @@ import {
   mainCanvasSize,
   mainContext,
   randColor,
+  randInt,
+  RandomGenerator,
   TileLayer,
+  time,
   vec2,
 } from "littlejsengine";
 
@@ -31,8 +34,8 @@ export class NextLevel extends EngineObject {
     mainContext.fillStyle = "black";
     mainContext.fillRect(0, 0, mainCanvasSize.x, mainCanvasSize.y);
     const scale = this.tileLayer.size;
-    const parallax = vec2(1e3, -100).scale(1 ** 2);
-    const cameraDeltaFromCenter = cameraPos
+    let parallax = vec2(1e3, -100).scale(1 ** 2);
+    let cameraDeltaFromCenter = cameraPos
       .subtract(scale)
       .divide(scale.divide(parallax));
     const pos = mainCanvasSize
@@ -41,6 +44,8 @@ export class NextLevel extends EngineObject {
     //   .add(vec2(-scale.x / 2, -scale.y / 2));
     // mainContext.fillStyle = "red";d
     // mainContext.fillRect(pos.x, pos.y, 300, 300);
+    // mainContext.globalCompositeOperation = "lighter";
+
     mainContext.drawImage(this.tileLayer.canvas, pos.x, pos.y);
   }
 }
@@ -48,12 +53,14 @@ export class NextLevel extends EngineObject {
 export class Sky extends EngineObject {
   skyColor: Color;
   horizonColor: Color;
+  seed: number;
   constructor() {
     super();
 
     this.renderOrder = -1e4 + 1;
     this.skyColor = randColor(hsl(0, 0, 0.5, 0.1), hsl(0, 0, 0.1));
     this.horizonColor = this.skyColor.subtract(hsl(0, 0, 0.05, 0)).mutate(0.3);
+    this.seed = randInt(10);
   }
 
   render() {
@@ -69,8 +76,32 @@ export class Sky extends EngineObject {
     mainContext.save();
     mainContext.fillStyle = gradient;
     mainContext.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
-    mainContext.globalCompositeOperation = "lighter";
 
+    const random = new RandomGenerator(this.seed);
+    for (let i = 21; i--; ) {
+      const size = random.float(3, 5) ** 2;
+      const speed = random.float() < 0.9 ? random.float(5) : random.float(2, 7);
+      const color = hsl(192, 0, 100, 0.4);
+      const extraSpace = 50;
+      const w = mainCanvas.width + 2 * extraSpace,
+        h = mainCanvas.height + 2 * extraSpace;
+
+      const scale = vec2(200);
+      let parallax = vec2(1e3, -100).scale(1 ** 2);
+      let cameraDeltaFromCenter = cameraPos
+        .subtract(scale)
+        .divide(scale.divide(parallax));
+      const pos = mainCanvasSize
+        .scale(0.1) // centerscreen
+        .add(cameraDeltaFromCenter.scale(-0.4));
+
+      const screenPos = vec2(
+        ((random.float(w) + time * speed) % w) - extraSpace,
+        ((random.float(h) + time * speed * random.float()) % h) - extraSpace
+      ).add(pos);
+      mainContext.fillStyle = color;
+      mainContext.fillRect(screenPos.x, screenPos.y, size, size);
+    }
     mainContext.restore();
   }
 }
