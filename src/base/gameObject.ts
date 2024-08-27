@@ -36,15 +36,13 @@ export class GameObject extends EngineObject {
       const a = 0.5 * percent(this.damageTimer.get(), 0.15, 0);
       this.additiveColor = hsl(0, 0, a, 0);
     } else this.additiveColor = hsl(0, 0, 0, 0);
-
-    // TODO kill if below level
   }
 
   damage(damage: number) {
     ASSERT(damage >= 0);
     if (this.isDead()) return 0;
 
-    // set damage timer;
+    // set damage timer
     this.damageTimer.set();
     for (const child of this.children)
       child.damageTimer && child.damageTimer.set();

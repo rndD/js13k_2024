@@ -15,11 +15,8 @@ import {
   paused,
   setPaused,
   keyWasReleased,
-  EngineObject,
   mouseWheel,
   cameraScale,
-  mouseWasReleased,
-  mousePos,
   cameraPos,
 } from "littlejsengine";
 import { generateDungeon, hasNeighbor } from "./map";
@@ -30,7 +27,7 @@ import { CharacterMenu } from "./base/ui";
 
 let character: Character;
 let enemySystem: MainSystem;
-let characterMenu: EngineObject;
+let characterMenu: CharacterMenu;
 
 function generateLevel(doCollisions = true) {
   const [map, rooms] = generateDungeon();
@@ -87,7 +84,6 @@ function gameInit() {
   new Sky();
 }
 
-let lastMousePos = vec2();
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate() {
   // called every frame at 60 frames per second
@@ -108,14 +104,14 @@ function gameUpdatePost() {
       characterMenu.destroy();
     }
   }
+
   if (mouseWheel) {
     setCameraScale(cameraScale + mouseWheel * 0.2);
   }
 
-  if (mouseWasReleased(0)) {
-    lastMousePos = mousePos;
-
-    // console.log(mousePos.add(cameraPos.divide(vec2(1.2))));
+  if (paused) {
+    keyWasReleased("ArrowRight") && characterMenu.select(1);
+    keyWasReleased("ArrowLeft") && characterMenu.select(-1);
   }
 }
 
