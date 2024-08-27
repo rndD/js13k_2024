@@ -78,10 +78,10 @@ export class Sky extends EngineObject {
     mainContext.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
     const random = new RandomGenerator(this.seed);
-    for (let i = 21; i--; ) {
+    for (let i = 15; i--; ) {
       const size = random.float(3, 5) ** 2;
       const speed = random.float() < 0.9 ? random.float(5) : random.float(2, 7);
-      const color = hsl(192, 0, 100, 0.4);
+      const color = hsl(192, 0, 100, 0.8);
       const extraSpace = 50;
       const w = mainCanvas.width + 2 * extraSpace,
         h = mainCanvas.height + 2 * extraSpace;
@@ -99,6 +99,8 @@ export class Sky extends EngineObject {
         ((random.float(w) + time * speed) % w) - extraSpace,
         ((random.float(h) + time * speed * random.float()) % h) - extraSpace
       ).add(pos);
+      mainContext.shadowColor = "color";
+      mainContext.shadowBlur = 3;
       mainContext.fillStyle = color;
       mainContext.fillRect(screenPos.x, screenPos.y, size, size);
     }

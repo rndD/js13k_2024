@@ -3,11 +3,6 @@ import {
   vec2,
   setCameraPos,
   setCameraScale,
-  mouseWheel,
-  cameraScale,
-  cameraPos,
-  mousePos,
-  mouseWasReleased,
   setTouchGamepadEnable,
   drawTextScreen,
   TileLayer,
@@ -17,14 +12,25 @@ import {
   setTileCollisionData,
   initTileCollision,
   setTileFixBleedScale,
+  paused,
+  setPaused,
+  keyWasReleased,
+  EngineObject,
+  mouseWheel,
+  cameraScale,
+  mouseWasReleased,
+  mousePos,
+  cameraPos,
 } from "littlejsengine";
 import { generateDungeon, hasNeighbor } from "./map";
 import { Character } from "./character";
 import { MainSystem } from "./systems/mainSystem";
 import { NextLevel, Sky } from "./background";
+import { CharacterMenu } from "./base/ui";
 
 let character: Character;
 let enemySystem: MainSystem;
+let characterMenu: EngineObject;
 
 function generateLevel(doCollisions = true) {
   const [map, rooms] = generateDungeon();
@@ -45,7 +51,11 @@ function generateLevel(doCollisions = true) {
         }
       }
       if (map[x][y] > 0) {
-        floorTile.setData(vec2(x, y), new TileLayerData(59));
+        if (rooms.find((r) => r.x === x && r.y === y)) {
+          floorTile.setData(vec2(x, y), new TileLayerData(59));
+        } else {
+          floorTile.setData(vec2(x, y), new TileLayerData(60));
+        }
       }
     }
   }
@@ -55,7 +65,7 @@ function generateLevel(doCollisions = true) {
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
   setTileSizeDefault(vec2(8));
-  setTileFixBleedScale(0.1);
+  setTileFixBleedScale(0.3);
   setTouchGamepadEnable(true);
 
   // called once after the engine starts up
@@ -68,6 +78,7 @@ function gameInit() {
   const room = rooms[0];
   // character = new Character(vec2(0));
   character = new Character(vec2(room.y + 1, room.x + 1));
+  setCameraPos(character.pos);
   enemySystem = new MainSystem(character, map);
 
   floorTile.redraw();
@@ -81,6 +92,22 @@ let lastMousePos = vec2();
 function gameUpdate() {
   // called every frame at 60 frames per second
   // handle input and update the game state
+  // enemySystem.update();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+function gameUpdatePost() {
+  // called after physics and objects are updated
+  // setup camera and prepare for render
+  setCameraPos(cameraPos.lerp(character.pos, 0.3));
+  if (keyWasReleased("Space")) {
+    setPaused(!paused);
+    if (paused) {
+      characterMenu = new CharacterMenu();
+    } else {
+      characterMenu.destroy();
+    }
+  }
   if (mouseWheel) {
     setCameraScale(cameraScale + mouseWheel * 0.2);
   }
@@ -90,19 +117,6 @@ function gameUpdate() {
 
     // console.log(mousePos.add(cameraPos.divide(vec2(1.2))));
   }
-  // slowly move camera to last mouse pos
-  if (lastMousePos && cameraPos.distance(lastMousePos) > 0.2) {
-    setCameraPos(cameraPos.lerp(lastMousePos, 0.1));
-  }
-
-  enemySystem.update();
-}
-
-///////////////////////////////////////////////////////////////////////////////
-function gameUpdatePost() {
-  // called after physics and objects are updated
-  // setup camera and prepare for render
-  setCameraPos(character.pos);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
