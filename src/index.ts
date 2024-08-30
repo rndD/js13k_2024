@@ -66,9 +66,6 @@ function gameInit() {
   setTileFixBleedScale(0.3);
   setTouchGamepadEnable(true);
 
-  // 2 texture
-  // textureInfos.push(strToTextureInfo("🗡️", 45));
-
   // called once after the engine starts up
   // setup the game
 
