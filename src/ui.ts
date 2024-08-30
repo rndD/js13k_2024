@@ -3,6 +3,7 @@ import {
   drawText,
   EngineObject,
   hsl,
+  isOverlapping,
   mainCanvas,
   rgb,
   screenToWorld,
@@ -39,6 +40,7 @@ class Button extends EngineObject {
 export class CharacterMenu extends EngineObject {
   selected = 0;
   buttons: Button[] = [];
+
   constructor() {
     const pos = screenToWorld(
       vec2(mainCanvas.width / 2, mainCanvas.height / 2)
@@ -47,7 +49,7 @@ export class CharacterMenu extends EngineObject {
     this.color = hsl(0, 0, 0, 0.8);
 
     const buttonPos = pos.add(vec2(-10, 10));
-    const b = new Button(buttonPos, "⚔", "Sword.js 35 dmg");
+    const b = new Button(buttonPos, "🔪", "Sword.js 35 dmg");
     b.selected = true;
     this.buttons.push(b);
     this.addChild(b);
@@ -71,5 +73,15 @@ export class CharacterMenu extends EngineObject {
       this.selected = 0;
     }
     this.buttons.forEach((b, i) => (b.selected = i === this.selected));
+  }
+
+  mouseSelect(mouse: Vector2) {
+    this.buttons.forEach((b, i) => {
+      if (isOverlapping(b.pos, b.size, mouse)) {
+        this.selected = i;
+        this.buttons.forEach((_b) => (_b.selected = false));
+        b.selected = true;
+      }
+    });
   }
 }

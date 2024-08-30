@@ -1,5 +1,6 @@
 import {
   clamp,
+  drawRect,
   drawTile,
   gamepadStick,
   isUsingGamepad,
@@ -23,26 +24,31 @@ export class Character extends GameObject {
   upgrades: GameObject[] = [];
 
   constructor(pos: Vector2) {
-    super(GameObjectType.Character, pos, vec2(1), tile(0, 8, 1));
-    this.spriteAtlas = [tile(0, 8, 1), tile(1, 8, 1), tile(2, 8, 1)];
+    super(GameObjectType.Character, pos, vec2(1), tile(1, 8, 1));
+    this.spriteAtlas = [tile(1, 8, 1), tile(2, 8, 1), tile(3, 8, 1)];
     this.setCollision(true, false);
     this.size = vec2(1, 0.5);
 
     this.drawSize = vec2(1.2, 1.2);
 
     // add gun
-    // const gun = new Gun();
-    // this.upgrades.push(gun);
-    // this.addChild(gun, vec2(-0.5, 0));
-    // const gun2 = new Gun();
-    // this.upgrades.push(gun2);
-    // this.addChild(gun2, vec2(0.5, 0));
-    // const gun3 = new Gun();
-    // this.upgrades.push(gun3);
-    // this.addChild(gun3, vec2(0.5, 0.3));
-    // const gun4 = new Gun();
-    // this.upgrades.push(gun4);
-    // this.addChild(gun4, vec2(-0.5, 0.3));
+    const gun = new Gun();
+    this.upgrades.push(gun);
+    this.addChild(gun, vec2(-0.5, 0));
+    const gun2 = new Gun();
+    this.upgrades.push(gun2);
+    this.addChild(gun2, vec2(0.5, 0));
+    const gun3 = new Gun();
+    this.upgrades.push(gun3);
+    this.addChild(gun3, vec2(0.5, 0.3));
+    const gun4 = new Gun();
+    this.upgrades.push(gun4);
+    this.addChild(gun4, vec2(-0.5, 0.3));
+
+    // add knife
+    const knife = new Knife();
+    this.upgrades.push(knife);
+    this.addChild(knife, vec2(-0.5, 0.5));
   }
 
   update() {
@@ -103,7 +109,7 @@ export class Gun extends GameObject {
   fireRate = 0.1;
   fireTimer: Timer;
   constructor() {
-    super(GameObjectType.Gun, vec2(0, 0), vec2(0.1, 0.3));
+    super(GameObjectType.Gun, vec2(0, 0), vec2(0.5, 0.5), tile(5, 8, 1));
     this.fireTimer = new Timer();
     this.fireTimer.set(this.fireRate);
   }
@@ -152,5 +158,27 @@ export class Bullet extends GameObject {
       return false;
     }
     return false;
+  }
+
+  render(): void {
+    drawRect(
+      this.pos,
+      this.size.scale(1.3),
+      rgb(255, 0, 0, this.color.a - 0.5),
+      this.angle
+    );
+    super.render();
+  }
+}
+
+class Knife extends GameObject {
+  constructor() {
+    super(GameObjectType.Knife, vec2(0, 0), vec2(0.5, 1), tile(4, 8, 1));
+  }
+
+  update(): void {
+    super.update();
+
+    this.localAngle = mousePos.subtract(this.pos).angle();
   }
 }

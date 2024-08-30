@@ -5,4 +5,5 @@ export const enum GameObjectType {
   Wall = 3,
   Bullet = 4,
   Gun = 5,
+  Knife = 6,
 }

@@ -18,12 +18,13 @@ import {
   mouseWheel,
   cameraScale,
   cameraPos,
+  mousePos,
 } from "littlejsengine";
 import { generateDungeon, hasNeighbor } from "./map";
 import { Character } from "./character";
 import { MainSystem } from "./systems/mainSystem";
 import { NextLevel, Sky } from "./background";
-import { CharacterMenu } from "./base/ui";
+import { CharacterMenu } from "./ui";
 
 let character: Character;
 let enemySystem: MainSystem;
@@ -64,6 +65,9 @@ function gameInit() {
   setTileSizeDefault(vec2(8));
   setTileFixBleedScale(0.3);
   setTouchGamepadEnable(true);
+
+  // 2 texture
+  // textureInfos.push(strToTextureInfo("🗡️", 45));
 
   // called once after the engine starts up
   // setup the game
@@ -112,6 +116,7 @@ function gameUpdatePost() {
   if (paused) {
     keyWasReleased("ArrowRight") && characterMenu.select(1);
     keyWasReleased("ArrowLeft") && characterMenu.select(-1);
+    mousePos && characterMenu.mouseSelect(mousePos);
   }
 }
 
