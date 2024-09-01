@@ -74,12 +74,12 @@ export class CharacterMenu extends EngineObject {
     this.addChild(b3);
 
     const c = new CharacterStats(
-      pos.subtract(this.size.scale(0.5).add(vec2(-1, -18)))
+      pos.subtract(this.size.scale(0.5).add(vec2(-1, -21)))
     );
     this.addChild(c);
 
     const m = new CharacterMemory(
-      pos.subtract(this.size.scale(0.5).add(vec2(-20, -18)))
+      pos.subtract(this.size.scale(0.5).add(vec2(-13, -21)))
     );
     this.addChild(m);
   }
@@ -116,10 +116,15 @@ const stats = {
 };
 
 const memory = [
-  ["sword.js", 2],
-  ["machineGun.js", 1],
-  ["Radiation.js", 3],
-];
+  // gray
+  ["🗡️", 2, hsl(0, 0, 0.5)],
+  ["🔫", 1, hsl(0, 1, 0.5)],
+  ["☢️", 3, hsl(60, 1, 20)],
+  // orange
+  ["🔥", 4, rgb(255, 165, 0)],
+  // red
+  ["💣", 6, rgb(255, 0, 0)],
+] as const;
 
 class CharacterStats extends EngineObject {
   constructor(pos: Vector2) {
@@ -132,7 +137,7 @@ class CharacterStats extends EngineObject {
     Object.entries(stats).forEach(([key, value], i) => {
       drawText(
         `${key.toUpperCase()}: ${value}%`,
-        this.pos.add(vec2(0, i)),
+        this.pos.add(vec2(0, -i)),
         1,
         hsl(0, 0, 1),
         0.2,
@@ -150,14 +155,33 @@ class CharacterMemory extends EngineObject {
   }
 
   render() {
+    const mem = memory.reduce((acc, m) => acc + m[1], 0);
+    drawText(
+      `MEMORY ${mem}kb / 13kb`,
+      this.pos.add(vec2(0.5, 0)),
+      1,
+      hsl(0, 0, 1),
+      0.2,
+      hsl(0, 0, 100),
+      "left"
+    );
+    const kbInLine = 10;
     // drawRect(this.pos, this.size, this.color);
     let p = 0;
+    let y = 0;
     memory.forEach((m, i) => {
-      const [name, kb] = m;
+      const [name, kb, color] = m;
+
       for (let j = 1; j <= kb; j++) {
-        p += j;
-        drawRect(this.pos.add(vec2(p, 0)), vec2(0.9), hsl(0, 0, 1));
+        if (p % kbInLine === 0) {
+          y--;
+          p = 0;
+        }
+        p++;
+        drawRect(this.pos.add(vec2(p, 0 + y)), vec2(1), color);
       }
+      const iconPos = this.pos.add(vec2(p, y));
+      drawText(`${name}`, iconPos, 0.7);
     });
   }
 }

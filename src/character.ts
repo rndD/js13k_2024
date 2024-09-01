@@ -32,23 +32,23 @@ export class Character extends GameObject {
     this.drawSize = vec2(1.2, 1.2);
 
     // add gun
-    const gun = new Gun();
-    this.upgrades.push(gun);
-    this.addChild(gun, vec2(-0.5, 0));
-    const gun2 = new Gun();
-    this.upgrades.push(gun2);
-    this.addChild(gun2, vec2(0.5, 0));
-    const gun3 = new Gun();
-    this.upgrades.push(gun3);
-    this.addChild(gun3, vec2(0.5, 0.3));
-    const gun4 = new Gun();
-    this.upgrades.push(gun4);
-    this.addChild(gun4, vec2(-0.5, 0.3));
+    // const gun = new Gun();
+    // this.upgrades.push(gun);
+    // this.addChild(gun, vec2(-0.5, 0));
+    // const gun2 = new Gun();
+    // this.upgrades.push(gun2);
+    // this.addChild(gun2, vec2(0.5, 0));
+    // const gun3 = new Gun();
+    // this.upgrades.push(gun3);
+    // this.addChild(gun3, vec2(0.5, 0.3));
+    // const gun4 = new Gun();
+    // this.upgrades.push(gun4);
+    // this.addChild(gun4, vec2(-0.5, 0.3));
 
-    // add knife
-    const knife = new Knife();
-    this.upgrades.push(knife);
-    this.addChild(knife, vec2(-0.5, 0.5));
+    // // add knife
+    // const knife = new Knife();
+    // this.upgrades.push(knife);
+    // this.addChild(knife, vec2(-0.5, 0.5));
   }
 
   update() {

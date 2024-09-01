@@ -58,7 +58,7 @@ export class Sky extends EngineObject {
     super();
 
     this.renderOrder = -1e4 + 1;
-    this.skyColor = randColor(hsl(0, 0, 0.5, 0.1), hsl(0, 0, 0.1));
+    this.skyColor = randColor(hsl(0, 0, 0.5, 0.1), hsl(0, 0, 0.1, 0.9));
     this.horizonColor = this.skyColor.subtract(hsl(0, 0, 0.05, 0)).mutate(0.3);
     this.seed = randInt(10);
   }
