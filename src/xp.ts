@@ -6,9 +6,10 @@ export class XP extends EngineObject {
   following = false;
 
   constructor(pos: Vector2) {
-    super(pos, new Vector2(0.5, 0.5));
+    super(pos, new Vector2(0.4, 0.4));
     // Set the color to green
-    this.color = rgb(0, 255, 0);
+    this.color = rgb(0, 255, 0, 0.5);
+    this.renderOrder = 0;
   }
   update(): void {
     super.update();

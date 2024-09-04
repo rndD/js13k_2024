@@ -68,6 +68,7 @@ export class Enemy extends GameObject {
     this.character = character;
     this.color = this.isFlying ? rgb(0, 1, 0) : rgb(1, 0, 0);
     this.mainSystem = mainSystem;
+    this.renderOrder = 1;
   }
 
   update() {
