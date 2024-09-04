@@ -22,6 +22,7 @@ class Button extends EngineObject {
     // white
     this.color = hsl(0, 0, 1);
     this.text = text;
+    this.renderOrder = 101;
   }
   render(): void {
     if (this.selected) {
@@ -53,6 +54,7 @@ export class CharacterMenu extends EngineObject {
       vec2(mainCanvas.width / 2, mainCanvas.height / 2)
     );
     super(pos, vec2(40));
+    this.renderOrder = 100;
     this.color = hsl(0, 0, 0, 0.8);
 
     const buttonPos = pos.add(vec2(-10, 10));
@@ -130,6 +132,7 @@ class CharacterStats extends EngineObject {
   constructor(pos: Vector2) {
     super(pos, vec2(40));
     this.color = hsl(0, 0, 0, 0.8);
+    this.renderOrder = 101;
   }
 
   render() {
@@ -152,6 +155,7 @@ class CharacterMemory extends EngineObject {
   constructor(pos: Vector2) {
     super(pos, vec2(40));
     this.color = hsl(0, 0, 0, 0.8);
+    this.renderOrder = 101;
   }
 
   render() {

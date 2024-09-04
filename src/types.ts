@@ -4,6 +4,16 @@ export const enum GameObjectType {
   Space = 2,
   Wall = 3,
   Bullet = 4,
-  Gun = 5,
-  Knife = 6,
+  AreaDmg = 5,
+  EnemyBullet = 6,
+  Weapon = 7,
+}
+
+export const enum WeaponType {
+  Gun,
+  Spikes,
+  Mortar,
+  Laser,
+  Sword,
+  Field,
 }

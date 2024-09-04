@@ -5,7 +5,7 @@ import { generateLevel, Room } from "./level";
 
 const MAX_ENEMIES = 500;
 
-class MainSystem {
+export class MainSystem {
   spawnTimer = new Timer();
   level = 1;
   enemies: Enemy[] = [];
