@@ -37,6 +37,6 @@
     "tsc": "tsc --watch --noEmit"
   },
   "dependencies": {
-    "littlejsengine": "^1.9.5"
+    "littlejsengine": "1.9.5"
   }
 }
