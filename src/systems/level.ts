@@ -1,12 +1,5 @@
-import { rand } from "littlejsengine";
-import { EngineObject, tile, vec2, Vector2, randInt } from "littlejsengine";
-
-export class Ground extends EngineObject {
-  constructor(pos: Vector2) {
-    const tileType = rand() > 0.99 ? 61 : 59;
-    super(pos, vec2(1), tile(tileType, 8));
-  }
-}
+import { setTileCollisionData, TileLayer, TileLayerData } from "littlejsengine";
+import { tile, vec2, randInt } from "littlejsengine";
 
 // dungeon generation
 const GRID_WIDTH = 150;
@@ -21,7 +14,7 @@ const MAX_CORRIDOR_LENGTH = 8;
 const DEFAULT_ROOMS = 20;
 
 // Room structure
-interface Room {
+export interface Room {
   x: number;
   y: number;
   width: number;
@@ -149,3 +142,33 @@ export const hasNeighbor = (map: number[][], x: number, y: number) =>
   directions.some(([dx, dy]) => {
     return map[x + dx] && map[x + dx][y + dy] > 0;
   });
+
+export function generateLevel(doCollisions = true) {
+  const [map, rooms] = generateDungeon();
+
+  const floorTile = new TileLayer(
+    vec2(0),
+    vec2(map.length, map[0].length),
+    tile(59, 8, 0)
+  );
+
+  for (let x = 0; x < map.length; x++) {
+    for (let y = 0; y < map[x].length; y++) {
+      if (map[x][y] === 0 && doCollisions) {
+        if (hasNeighbor(map, x, y)) {
+          setTileCollisionData(vec2(x, y), 1);
+
+          continue;
+        }
+      }
+      if (map[x][y] > 0) {
+        if (rooms.find((r) => r.x === x && r.y === y)) {
+          floorTile.setData(vec2(x, y), new TileLayerData(59));
+        } else {
+          floorTile.setData(vec2(x, y), new TileLayerData(60));
+        }
+      }
+    }
+  }
+  return [map, rooms, floorTile] as const;
+}

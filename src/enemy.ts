@@ -4,6 +4,7 @@ import { GameObject } from "./base/gameObject";
 import { GameObjectType } from "./types";
 import { makeDebris } from "./base/gameEffects";
 import { MainSystem } from "./systems/mainSystem";
+import { XP } from "./xp";
 
 export class Enemy extends GameObject {
   character: Character;
@@ -60,7 +61,7 @@ export class Enemy extends GameObject {
   ]);
 
   constructor(pos: Vector2, character: Character, mainSystem: MainSystem) {
-    super(GameObjectType.Enemy, pos, vec2(1), tile(0, 8, 1));
+    super(GameObjectType.Enemy, pos, vec2(1), tile(1, 8, 1));
     this.isFlying = rand() > 0.5;
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
@@ -106,6 +107,7 @@ export class Enemy extends GameObject {
   kill() {
     if (this.destroyed) return;
 
+    new XP(this.pos);
     makeDebris(this.pos, this.color, 50, 0.1);
     this.dieSound.play();
     this.destroy();

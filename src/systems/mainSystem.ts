@@ -1,27 +1,38 @@
-import { Timer, vec2, Vector2 } from "littlejsengine";
+import { cameraPos, setCameraPos, Timer, vec2, Vector2 } from "littlejsengine";
 import { Enemy } from "../enemy";
 import { Character } from "../character";
+import { generateLevel, Room } from "./level";
 
 const MAX_ENEMIES = 500;
 
-export class MainSystem {
+class MainSystem {
   spawnTimer = new Timer();
   level = 1;
   enemies: Enemy[] = [];
   character!: Character;
   map!: number[][];
+  rooms!: Room[];
+  xp!: number;
 
   deadEnemiesCount: number = 0;
 
-  constructor(character: Character, map: number[][]) {
-    this.spawnTimer.set(this.getTimeForTimer());
-    this.character = character;
+  init() {
+    const [map, rooms, floorTile] = generateLevel();
+    floorTile.redraw();
     this.map = map;
+    this.rooms = rooms;
+    const room = rooms[0];
+    this.character = new Character(vec2(room.y + 1, room.x + 1));
+    this.spawnTimer.set(this.getTimeForTimer());
+    this.xp = 0;
   }
 
   levelUp() {
     if (this.level >= 5) return;
     this.level++;
+  }
+  addXP(xp: number) {
+    this.xp += xp;
   }
 
   getTimeForTimer() {
@@ -48,6 +59,10 @@ export class MainSystem {
     }
   }
 
+  gameUpdatePost() {
+    setCameraPos(cameraPos.lerp(this.character.pos, 0.3));
+  }
+
   setDeadEnemiesCount(plus: number) {
     if (plus + this.deadEnemiesCount > this.level * 25) {
       this.levelUp();
@@ -71,3 +86,5 @@ export class MainSystem {
     }
   }
 }
+
+export const mainSystem = new MainSystem();
