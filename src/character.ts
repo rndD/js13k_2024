@@ -12,7 +12,7 @@ import {
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { GameObjectType } from "./types";
-import { Gun, IWeapon } from "./base/gameWeapon";
+import { Gun, IWeapon, Mortar } from "./base/gameWeapon";
 import { mainSystem } from "./systems/mainSystem";
 
 const WEAPONS_POSITIONS = [
@@ -28,6 +28,7 @@ export class Character extends GameObject {
   spriteAtlas: TileInfo[];
   walkCyclePercent = 0;
   speed = 0.1;
+  direction: -1 | 1 = 1;
   weapons: { [key: string]: IWeapon[] } = {};
   // upgardes: IWeapon[] = [];
 
@@ -41,11 +42,13 @@ export class Character extends GameObject {
 
     // add gun
     this.buildWeaponsSlots();
+    this.addWeapon(new Mortar());
+    this.addWeapon(new Mortar());
+    this.addWeapon(new Mortar());
     this.addWeapon(new Gun());
     this.addWeapon(new Gun());
-    // this.addWeapon(new Gun());
     // this.addWeapon(new Sword());
-    // this.addWeapon(new Gun());
+    this.addWeapon(new Gun());
   }
 
   buildWeaponsSlots() {
@@ -103,7 +106,9 @@ export class Character extends GameObject {
         this.speed > 0.01 ? mod(this.walkCyclePercent) : 0;
     }
     // mirror sprite if moving left
-    if (moveInput.x) this.mirror = moveInput.x < 0;
+    if (moveInput.x) {
+      this.direction = moveInput.x > 0 ? 1 : -1;
+    }
 
     // weapons
     this.updateWeapons();
@@ -157,7 +162,7 @@ export class Character extends GameObject {
       this.tileInfo,
       this.color,
       this.angle,
-      this.mirror,
+      this.direction < 0,
       this.additiveColor
     );
     // super.render();

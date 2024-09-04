@@ -73,7 +73,7 @@ export class MainSystem {
   calcEnemyPosition(): Vector2 {
     // draw a circle around the character and find a random spot
 
-    const radius = 15;
+    const radius = 20;
     while (true) {
       const angle = Math.random() * Math.PI * 2;
       const x = Math.cos(angle) * radius;

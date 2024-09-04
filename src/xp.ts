@@ -22,7 +22,7 @@ export class XP extends EngineObject {
       this.velocity = mainSystem.character.pos
         .subtract(this.pos)
         .normalize()
-        .scale(0.22);
+        .scale(0.2);
       this.timer.set(0.1);
     }
 
