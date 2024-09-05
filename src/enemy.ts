@@ -1,17 +1,15 @@
 import { rand, rgb, Sound, tile, Timer, vec2, Vector2 } from "littlejsengine";
-import { Character } from "./character";
 import { GameObject } from "./base/gameObject";
 import { GameObjectType } from "./types";
 import { makeDebris } from "./base/gameEffects";
-import { MainSystem } from "./systems/mainSystem";
+import { mainSystem } from "./systems/mainSystem";
 import { XP } from "./xp";
 
 export class Enemy extends GameObject {
-  character: Character;
   speed = 0.05;
+  health = 10;
   isFlying = false;
   fallingTimer = new Timer();
-  mainSystem!: MainSystem;
   dieSound = new Sound([
     ,
     ,
@@ -60,28 +58,25 @@ export class Enemy extends GameObject {
     130,
   ]);
 
-  constructor(pos: Vector2, character: Character, mainSystem: MainSystem) {
+  constructor(pos: Vector2) {
     super(GameObjectType.Enemy, pos, vec2(1), tile(1, 8, 1));
     this.isFlying = rand() > 0.5;
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
-    this.character = character;
     this.color = this.isFlying ? rgb(0, 1, 0) : rgb(1, 0, 0);
-    this.mainSystem = mainSystem;
     this.renderOrder = 1;
   }
 
   update() {
     super.update();
-    const moveDir = this.character.pos.subtract(this.pos).normalize();
+    const moveDir = mainSystem.character.pos.subtract(this.pos).normalize();
     this.velocity = moveDir.scale(this.speed);
 
     if (!this.isFlying) {
       if (
-        (!this.mainSystem.map[Math.floor(this.pos.x)] ||
-          this.mainSystem.map[Math.floor(this.pos.x)][
-            Math.floor(this.pos.y)
-          ] === 0) &&
+        (!mainSystem.map[Math.floor(this.pos.x)] ||
+          mainSystem.map[Math.floor(this.pos.x)][Math.floor(this.pos.y)] ===
+            0) &&
         !this.fallingTimer.isSet()
       ) {
         this.fallingTimer.set(1);
@@ -99,7 +94,6 @@ export class Enemy extends GameObject {
 
   collideWithObject(object: GameObject): boolean {
     if (object.gameObjectType === GameObjectType.Character) {
-      this.damage(10);
       return false;
     }
     return true;

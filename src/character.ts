@@ -12,14 +12,14 @@ import {
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { GameObjectType } from "./types";
-import { Gun, IWeapon, Mortar } from "./base/gameWeapon";
+import { Gun, IWeapon, Sword } from "./base/gameWeapon";
 import { mainSystem } from "./systems/mainSystem";
 
 const WEAPONS_POSITIONS = [
-  vec2(-0.5, 0), // left
-  vec2(0.5, 0), // right
-  vec2(-0.5, 0.5), // left-top2
-  vec2(0.5, 0.5), // right-top2
+  vec2(-0.7, 0), // left
+  vec2(0.7, 0), // right
+  vec2(-0.7, 0.5), // left-top2
+  vec2(0.7, 0.5), // right-top2
   vec2(0, 1), // top
   vec2(0, -0), // bottom
 ];
@@ -38,16 +38,13 @@ export class Character extends GameObject {
     this.setCollision(true, false);
     this.size = vec2(1, 0.5);
 
-    this.drawSize = vec2(1.2, 1.2);
+    this.drawSize = vec2(2, 2);
 
-    // add gun
+    // add weapons
     this.buildWeaponsSlots();
-    this.addWeapon(new Mortar());
-    this.addWeapon(new Mortar());
-    this.addWeapon(new Mortar());
-    this.addWeapon(new Gun());
-    this.addWeapon(new Gun());
-    // this.addWeapon(new Sword());
+    this.addWeapon(new Sword());
+    this.addWeapon(new Sword());
+    // this.addWeapon(new Mortar());
     this.addWeapon(new Gun());
   }
 

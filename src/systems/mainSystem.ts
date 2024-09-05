@@ -52,9 +52,7 @@ export class MainSystem {
 
       if (this.enemies.length > MAX_ENEMIES) return;
       for (let i = 0; i < this.level; i++) {
-        this.enemies.push(
-          new Enemy(this.calcEnemyPosition(), this.character, this)
-        );
+        this.enemies.push(new Enemy(this.calcEnemyPosition()));
       }
     }
   }

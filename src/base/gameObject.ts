@@ -11,7 +11,7 @@ import {
 import { GameObjectType } from "../types";
 
 export class GameObject extends EngineObject {
-  health: number = 100;
+  health: number = 1;
   gameObjectType: GameObjectType;
   damageTimer: Timer;
 
