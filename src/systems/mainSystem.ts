@@ -3,7 +3,7 @@ import { Enemy } from "../enemy";
 import { Character } from "../character";
 import { generateLevel, Room } from "./level";
 
-const MAX_ENEMIES = 500;
+const MAX_ENEMIES = 2;
 
 export class MainSystem {
   spawnTimer = new Timer();
@@ -40,15 +40,15 @@ export class MainSystem {
   }
 
   update() {
+    const wasLive = this.enemies.length;
+    this.enemies = this.enemies.filter((e) => !e.isDead());
+    const isLive = this.enemies.length;
+    this.setDeadEnemiesCount(wasLive - isLive);
     if (this.spawnTimer.elapsed()) {
       this.spawnTimer.set(this.getTimeForTimer());
 
       // count deda
-      const wasLive = this.enemies.length;
       // remove dead enemies
-      this.enemies = this.enemies.filter((e) => !e.isDead());
-      const isLive = this.enemies.length;
-      this.setDeadEnemiesCount(wasLive - isLive);
 
       if (this.enemies.length > MAX_ENEMIES) return;
       for (let i = 0; i < this.level; i++) {

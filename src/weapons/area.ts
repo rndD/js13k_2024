@@ -2,6 +2,7 @@ import {
   drawTile,
   isOverlapping,
   lerpAngle,
+  mainContext,
   ParticleEmitter,
   PI,
   rand,
@@ -11,11 +12,13 @@ import {
   Timer,
   vec2,
   Vector2,
+  worldToScreen,
 } from "littlejsengine";
 import { GameObjectType, WeaponType } from "../types";
 import { IWeapon, Weapon } from "../base/gameWeapon";
 import { GameObject } from "../base/gameObject";
 import { mainSystem } from "../systems/mainSystem";
+import { isAABBInRadius } from "../utils";
 
 export class Sword extends Weapon implements IWeapon {
   type = WeaponType.Sword;
@@ -229,6 +232,73 @@ class AreaDmg extends GameObject {
 
     if (this.liveTimer.elapsed()) {
       this.destroy();
+    }
+  }
+}
+
+export class ForceField extends Weapon implements IWeapon {
+  fireRate = 5;
+  type = WeaponType.Field;
+  distance = 4;
+
+  dmg = 2;
+
+  dmgTimer = new Timer(0.01);
+  dmgEvery = 0.2;
+
+  liveTimer = new Timer(0.01);
+  liveTime = 2;
+
+  constructor() {
+    super(vec2(0, 0), vec2(1));
+    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    // this.color = rgb(0, 1, 1, 0.05);
+    this.size = vec2(this.distance);
+  }
+
+  fire(): void {
+    super.fire();
+    this.liveTimer.set(this.liveTime);
+  }
+
+  update(): void {
+    super.update();
+    if (this.liveTimer.active() && this.dmgTimer.elapsed()) {
+      // find all enemies in area
+      mainSystem.enemies.forEach((enemy) => {
+        if (
+          isAABBInRadius(this.pos, this.size.x / 2 + 0.5, enemy.pos, enemy.size)
+        ) {
+          enemy.damage(this.dmg);
+        }
+      });
+      this.dmgTimer.set(this.dmgEvery);
+    }
+  }
+
+  render(): void {
+    // super.render();
+    if (this.liveTimer.active()) {
+      // draw a circle
+      const pos = worldToScreen(this.pos);
+      const size = this.size.x * 16;
+      mainContext.beginPath();
+      mainContext.arc(pos.x, pos.y, size, 0, 2 * Math.PI, false);
+      // gradient from center to edge
+      const gradient = mainContext.createRadialGradient(
+        pos.x,
+        pos.y,
+        0,
+        pos.x,
+        pos.y,
+        size
+      );
+      gradient.addColorStop(0, "rgba(0, 255, 255, 0.4)");
+      gradient.addColorStop(1, "rgba(0, 255, 255, 0.1)");
+      mainContext.fillStyle = gradient;
+      mainContext.fill();
+      //   mainContext.lineWidth = 0;
+      //   mainContext.stroke();
     }
   }
 }

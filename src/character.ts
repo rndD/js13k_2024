@@ -11,11 +11,10 @@ import {
   Vector2,
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
-import { GameObjectType } from "./types";
+import { GameObjectType, WeaponType } from "./types";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { Sword } from "./weapons/area";
-import { Gun } from "./weapons/projectile";
+import { ForceField } from "./weapons/area";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -23,7 +22,8 @@ const WEAPONS_POSITIONS = [
   vec2(-0.7, 0.5), // left-top2
   vec2(0.7, 0.5), // right-top2
   vec2(0, 1), // top
-  vec2(0, -0), // bottom
+  vec2(0, -0.5), // bottom
+  vec2(0, 0), // center
 ];
 
 export class Character extends GameObject {
@@ -32,7 +32,7 @@ export class Character extends GameObject {
   speed = 0.1;
   direction: -1 | 1 = 1;
   weapons: { [key: string]: IWeapon[] } = {};
-  // upgardes: IWeapon[] = [];
+  // upgrades: IWeapon[] = [];
 
   constructor(pos: Vector2) {
     super(GameObjectType.Character, pos, vec2(1), tile(1, 8, 1));
@@ -44,10 +44,10 @@ export class Character extends GameObject {
 
     // add weapons
     this.buildWeaponsSlots();
-    this.addWeapon(new Sword());
-    this.addWeapon(new Sword());
+    // this.addWeapon(new Sword());
+    this.addWeapon(new ForceField());
     // this.addWeapon(new Mortar());
-    this.addWeapon(new Gun());
+    // this.addWeapon(new Gun());
   }
 
   buildWeaponsSlots() {
@@ -57,6 +57,12 @@ export class Character extends GameObject {
   }
 
   addWeapon(w: IWeapon) {
+    if (w.type === WeaponType.Field) {
+      const center = WEAPONS_POSITIONS[WEAPONS_POSITIONS.length - 1];
+      this.weapons[center.toString()].push(w);
+      this.addChild(w, center);
+      return;
+    }
     let added = false;
     let turns = 0;
     while (!added) {
