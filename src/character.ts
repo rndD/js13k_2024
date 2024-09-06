@@ -46,6 +46,9 @@ export class Character extends GameObject {
     this.buildWeaponsSlots();
     // this.addWeapon(new Sword());
     this.addWeapon(new ForceField());
+    this.addWeapon(new ForceField());
+    this.addWeapon(new ForceField());
+    this.addWeapon(new ForceField());
     // this.addWeapon(new Mortar());
     // this.addWeapon(new Gun());
   }

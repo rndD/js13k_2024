@@ -267,6 +267,7 @@ export class ForceField extends Weapon implements IWeapon {
       // find all enemies in area
       mainSystem.enemies.forEach((enemy) => {
         if (
+          // dont't know why but radius is smaller than visual radius
           isAABBInRadius(this.pos, this.size.x / 2 + 0.5, enemy.pos, enemy.size)
         ) {
           enemy.damage(this.dmg);
@@ -279,6 +280,7 @@ export class ForceField extends Weapon implements IWeapon {
   render(): void {
     // super.render();
     if (this.liveTimer.active()) {
+      const percent = this.liveTimer.getPercent();
       // draw a circle
       const pos = worldToScreen(this.pos);
       const size = this.size.x * 16;
@@ -294,7 +296,8 @@ export class ForceField extends Weapon implements IWeapon {
         size
       );
       gradient.addColorStop(0, "rgba(0, 255, 255, 0.4)");
-      gradient.addColorStop(1, "rgba(0, 255, 255, 0.1)");
+      gradient.addColorStop(1 - percent, "rgba(0, 255, 255, 0.1)");
+      gradient.addColorStop(1, "rgba(0, 255, 255, 0.05)");
       mainContext.fillStyle = gradient;
       mainContext.fill();
       //   mainContext.lineWidth = 0;

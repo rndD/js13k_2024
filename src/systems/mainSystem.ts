@@ -3,7 +3,7 @@ import { Enemy } from "../enemy";
 import { Character } from "../character";
 import { generateLevel, Room } from "./level";
 
-const MAX_ENEMIES = 2;
+const MAX_ENEMIES = 500;
 
 export class MainSystem {
   spawnTimer = new Timer();
