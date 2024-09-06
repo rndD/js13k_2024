@@ -13,8 +13,8 @@ import {
 import { GameObject } from "./base/gameObject";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { Gun } from "./weapons/projectile";
 import { GameObjectType, WeaponType } from "./types";
+import { Spikes } from "./weapons/area";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -53,7 +53,7 @@ export class Character extends GameObject {
     // this.addWeapon(new CrossLaser());
     // this.addWeapon(new Mortar());
     // this.addWeapon(new Gun());
-    this.addWeapon(new Gun());
+    this.addWeapon(new Spikes());
     // this.addWeapon(new ForceField());
   }
 
@@ -64,7 +64,11 @@ export class Character extends GameObject {
   }
 
   addWeapon(w: IWeapon) {
-    if (w.type === WeaponType.Field || w.type === WeaponType.CrossLaser) {
+    if (
+      w.type === WeaponType.Field ||
+      w.type === WeaponType.CrossLaser ||
+      w.type === WeaponType.Spikes
+    ) {
       const center = WEAPONS_POSITIONS[WEAPONS_POSITIONS.length - 1];
       this.weapons[center.toString()].push(w);
       this.addChild(w, center);

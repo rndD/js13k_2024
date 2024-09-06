@@ -58,6 +58,12 @@ export class MainSystem {
     return 1 / this.level;
   }
 
+  isItFloor(pos: Vector2) {
+    return this.map[Math.floor(pos.x)]
+      ? this.map[Math.floor(pos.x)][Math.floor(pos.y)] > 0
+      : false;
+  }
+
   update() {
     const wasLive = this.enemies.length;
     this.enemies = this.enemies.filter((e) => !e.isDead());

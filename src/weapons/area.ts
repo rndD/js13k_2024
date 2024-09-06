@@ -1,5 +1,6 @@
 import {
   drawTile,
+  EngineObject,
   isOverlapping,
   lerpAngle,
   mainContext,
@@ -313,6 +314,103 @@ export class ForceField extends Weapon implements IWeapon {
       gradient.addColorStop(1, "rgba(0, 255, 255, 0.05)");
       mainContext.fillStyle = gradient;
       mainContext.fill();
+    }
+  }
+}
+
+export class Spikes extends Weapon implements IWeapon {
+  fireRate = 4;
+  type = WeaponType.Spikes;
+  distance = 15;
+  donNotAttackFlying = true;
+
+  dmg = 10;
+
+  liveTimer = new Timer(0.01);
+  liveTime = 0.2;
+  step = 1;
+  maxStep = 5;
+  stepSize = 2.5;
+  firePos!: Vector2;
+
+  constructor() {
+    super(vec2(0, 0), vec2(1));
+    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+  }
+
+  fire(): void {
+    super.fire();
+    this.liveTimer.set(this.liveTime);
+    this.firePos = this.pos.copy();
+    this.step = 1;
+    this.createSpikes();
+  }
+
+  update(): void {
+    super.update();
+    if (this.liveTimer.elapsed() && this.firePos) {
+      if (this.step < this.maxStep) {
+        this.liveTimer.set(this.liveTime);
+        this.createSpikes();
+      }
+    }
+  }
+  createSpikes() {
+    const pos1 = this.firePos.add(vec2(this.stepSize * this.step, 0));
+    const pos2 = this.firePos.add(vec2(-this.stepSize * this.step, 0));
+    const pos1isFloor = mainSystem.isItFloor(pos1);
+    const pos2isFloor = mainSystem.isItFloor(pos2);
+    if (pos1isFloor) {
+      new SpikesArea(pos1, vec2(this.stepSize), this.dmg);
+    }
+    if (pos2isFloor) {
+      new SpikesArea(pos2, vec2(this.stepSize), this.dmg);
+    }
+    if (!pos1isFloor && !pos2isFloor) {
+      //skip to next pne
+      this.liveTimer.set(0.01);
+    }
+    this.step++;
+  }
+
+  render(): void {}
+}
+
+class SpikesArea extends EngineObject {
+  dmg: number;
+  liveTimer = new Timer(0.8);
+  dmgedFirst = false;
+  constructor(pos: Vector2, size: Vector2, dmg: number) {
+    super(pos, size, tile(7, 8, 1));
+    this.color = rgb(1, 0, 0, 0.5);
+    this.renderOrder = 0;
+    this.dmg = dmg;
+  }
+
+  update(): void {
+    const percent = this.liveTimer.getPercent();
+    super.update();
+    if (this.liveTimer.elapsed()) {
+      this.destroy();
+    }
+    if (!this.dmgedFirst && percent > 0.5) {
+      this.dmgedFirst = true;
+      // find all enemies in area
+
+      mainSystem.enemies.forEach((enemy) => {
+        if (
+          !enemy.isFlying &&
+          isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
+        ) {
+          enemy.damage(this.dmg);
+        }
+      });
+    }
+
+    if (percent < 0.5) {
+      this.color = rgb(1, 1, 1, percent);
+    } else {
+      this.color = rgb(1, 1, 1, 1 - percent);
     }
   }
 }
