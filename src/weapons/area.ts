@@ -267,7 +267,7 @@ export class ForceField extends Weapon implements IWeapon {
       // find all enemies in area
       mainSystem.enemies.forEach((enemy) => {
         if (
-          // dont't know why but radius is smaller than visual radius
+          // don't know why but radius is smaller than visual radius
           isAABBInRadius(this.pos, this.size.x / 2 + 0.5, enemy.pos, enemy.size)
         ) {
           enemy.damage(this.dmg);
@@ -300,8 +300,6 @@ export class ForceField extends Weapon implements IWeapon {
       gradient.addColorStop(1, "rgba(0, 255, 255, 0.05)");
       mainContext.fillStyle = gradient;
       mainContext.fill();
-      //   mainContext.lineWidth = 0;
-      //   mainContext.stroke();
     }
   }
 }

@@ -14,7 +14,7 @@ import { GameObject } from "./base/gameObject";
 import { GameObjectType, WeaponType } from "./types";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { ForceField } from "./weapons/area";
+import { CrossLaser } from "./weapons/laser";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -45,10 +45,7 @@ export class Character extends GameObject {
     // add weapons
     this.buildWeaponsSlots();
     // this.addWeapon(new Sword());
-    this.addWeapon(new ForceField());
-    this.addWeapon(new ForceField());
-    this.addWeapon(new ForceField());
-    this.addWeapon(new ForceField());
+    this.addWeapon(new CrossLaser());
     // this.addWeapon(new Mortar());
     // this.addWeapon(new Gun());
   }
@@ -60,7 +57,7 @@ export class Character extends GameObject {
   }
 
   addWeapon(w: IWeapon) {
-    if (w.type === WeaponType.Field) {
+    if (w.type === WeaponType.Field || w.type === WeaponType.CrossLaser) {
       const center = WEAPONS_POSITIONS[WEAPONS_POSITIONS.length - 1];
       this.weapons[center.toString()].push(w);
       this.addChild(w, center);

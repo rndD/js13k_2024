@@ -17,4 +17,5 @@ export const enum WeaponType {
   Laser,
   Sword,
   Field,
+  CrossLaser,
 }
