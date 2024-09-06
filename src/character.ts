@@ -12,8 +12,10 @@ import {
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { GameObjectType } from "./types";
-import { Gun, IWeapon, Sword } from "./base/gameWeapon";
 import { mainSystem } from "./systems/mainSystem";
+import { IWeapon } from "./base/gameWeapon";
+import { Sword } from "./weapons/area";
+import { Gun } from "./weapons/projectile";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
