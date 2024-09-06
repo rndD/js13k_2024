@@ -11,11 +11,11 @@ export const enum GameObjectType {
 }
 
 export const enum WeaponType {
-  Gun,
-  Spikes,
-  Mortar,
-  Laser,
-  Sword,
-  Field,
-  CrossLaser,
+  Gun = 0,
+  Spikes = 1,
+  Mortar = 2,
+  Laser = 3,
+  Sword = 4,
+  Field = 5,
+  CrossLaser = 6,
 }

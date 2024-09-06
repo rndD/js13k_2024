@@ -80,7 +80,7 @@ function gameRender() {
 function gameRenderPost() {
   // called after objects are rendered
   // draw effects or hud that appear above all objects
-  // todo Nomral hud
+  // todo hud
   drawTextScreen(
     `Live enemies: ${mainSystem.enemies.length}`,
     vec2(95, 20),
