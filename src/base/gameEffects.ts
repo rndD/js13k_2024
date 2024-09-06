@@ -6,6 +6,7 @@ const persistentParticleDestroyCallback = (particle: any) => {
     "quick draw to tile layer uses canvas 2d so must be untextured"
   );
   if (particle.groundObject)
+    // @ts-ignore
     tileLayers[foregroundLayerIndex].drawTile(
       particle.pos,
       particle.size,

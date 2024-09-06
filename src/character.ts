@@ -11,11 +11,10 @@ import {
   Vector2,
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
-import { GameObjectType, WeaponType } from "./types";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
 import { Gun } from "./weapons/projectile";
-import { Sword } from "./weapons/area";
+import { GameObjectType, WeaponType } from "./types";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -49,7 +48,7 @@ export class Character extends GameObject {
 
     // add weapons
     this.buildWeaponsSlots();
-    this.addWeapon(new Sword());
+    // this.addWeapon(new Sword());
     // this.addWeapon(new Sword());
     // this.addWeapon(new CrossLaser());
     // this.addWeapon(new Mortar());

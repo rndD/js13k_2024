@@ -5,7 +5,7 @@
     "target": "es2020",
     "outDir": "dist",
     "moduleResolution": "node",
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noEmit": true,
     "strict": true,
     "noUnusedLocals": true,

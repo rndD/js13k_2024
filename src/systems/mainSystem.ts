@@ -4,6 +4,21 @@ import { Character } from "../character";
 import { generateLevel, Room } from "./level";
 
 const MAX_ENEMIES = 500;
+export const LEVELS_XP = [
+  0,
+  10,
+  25,
+  56,
+  120,
+  200,
+  350,
+  512,
+  1200,
+  2000,
+  3500,
+  5000,
+  Infinity,
+];
 
 export class MainSystem {
   spawnTimer = new Timer();
@@ -13,6 +28,7 @@ export class MainSystem {
   map!: number[][];
   rooms!: Room[];
   xp!: number;
+  characterLevel = 0;
 
   deadEnemiesCount: number = 0;
 
@@ -27,12 +43,15 @@ export class MainSystem {
     this.xp = 0;
   }
 
-  levelUp() {
+  enemyLevelUp() {
     if (this.level >= 5) return;
     this.level++;
   }
   addXP(xp: number) {
     this.xp += xp;
+    if (this.xp >= LEVELS_XP[this.characterLevel + 1]) {
+      this.characterLevel++;
+    }
   }
 
   getTimeForTimer() {
@@ -63,7 +82,7 @@ export class MainSystem {
 
   setDeadEnemiesCount(plus: number) {
     if (plus + this.deadEnemiesCount > this.level * 25) {
-      this.levelUp();
+      this.enemyLevelUp();
     }
     this.deadEnemiesCount += plus;
   }

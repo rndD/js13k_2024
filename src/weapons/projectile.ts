@@ -8,8 +8,8 @@ import {
   Vector2,
 } from "littlejsengine";
 import { IWeapon, Weapon } from "../base/gameWeapon";
-import { GameObjectType, WeaponType } from "../types";
 import { GameObject } from "../base/gameObject";
+import { GameObjectType, WeaponType } from "../types";
 
 class Bullet extends GameObject {
   initialPos: Vector2;

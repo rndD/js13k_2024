@@ -1,6 +1,6 @@
 import { TileInfo, Timer, Vector2 } from "littlejsengine";
-import { GameObjectType, WeaponType } from "../types";
 import { GameObject } from "./gameObject";
+import { GameObjectType, WeaponType } from "../types";
 
 export interface IWeapon extends GameObject {
   fireRate: number;

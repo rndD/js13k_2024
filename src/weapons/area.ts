@@ -14,11 +14,11 @@ import {
   Vector2,
   worldToScreen,
 } from "littlejsengine";
-import { GameObjectType, WeaponType } from "../types";
 import { IWeapon, Weapon } from "../base/gameWeapon";
 import { GameObject } from "../base/gameObject";
 import { mainSystem } from "../systems/mainSystem";
 import { isAABBInRadius } from "../utils";
+import { GameObjectType, WeaponType } from "../types";
 
 export class Sword extends Weapon implements IWeapon {
   type = WeaponType.Sword;
@@ -142,6 +142,7 @@ class MortarShell extends GameObject {
       0.1,
       10,
       PI, // emitSize, emitTime, emitRate, emiteCone
+      // @ts-ignore
       0, // tileInfo
       //black
       rgb(0, 0, 0),

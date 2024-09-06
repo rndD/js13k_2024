@@ -16,7 +16,7 @@ import {
 } from "littlejsengine";
 import { NextLevel, Sky } from "./background";
 import { CharacterMenu } from "./ui";
-import { mainSystem } from "./systems/mainSystem";
+import { LEVELS_XP, mainSystem } from "./systems/mainSystem";
 
 let characterMenu: CharacterMenu;
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,6 +42,12 @@ function gameUpdate() {
   // called every frame at 60 frames per second
   // handle input and update the game state
   mainSystem.update();
+  if (mainSystem.character.isDead()) {
+    setCameraScale(cameraScale + 0.1);
+    if (cameraScale > 24 && !paused) {
+      setPaused(true);
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,11 +57,11 @@ function gameUpdatePost() {
   mainSystem.gameUpdatePost();
   if (keyWasReleased("Space")) {
     setPaused(!paused);
-    if (paused) {
-      characterMenu = new CharacterMenu();
-    } else {
-      characterMenu.destroy();
-    }
+  }
+  if (paused) {
+    characterMenu = new CharacterMenu();
+  } else {
+    characterMenu && characterMenu.destroy();
   }
 
   // todo remove
@@ -95,6 +101,11 @@ function gameRenderPost() {
   drawTextScreen(
     `HP: ${mainSystem.character.health}/${mainSystem.character.maxHealth}`,
     vec2(70, 80),
+    16
+  );
+  drawTextScreen(
+    `XP: ${mainSystem.xp}/${LEVELS_XP[mainSystem.characterLevel + 1]}`,
+    vec2(70, 100),
     16
   );
 }

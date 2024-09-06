@@ -1,9 +1,9 @@
 import { rand, rgb, Sound, tile, Timer, vec2, Vector2 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
-import { GameObjectType } from "./types";
 import { makeDebris } from "./base/gameEffects";
 import { mainSystem } from "./systems/mainSystem";
 import { XP } from "./xp";
+import { GameObjectType } from "./types";
 
 export class Enemy extends GameObject {
   speed = 0.04;
@@ -71,6 +71,9 @@ export class Enemy extends GameObject {
 
   update() {
     super.update();
+    if (mainSystem.character.isDead()) {
+      return;
+    }
     const moveDir = mainSystem.character.pos.subtract(this.pos).normalize();
     this.velocity = moveDir.scale(this.speed);
 

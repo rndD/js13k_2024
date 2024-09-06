@@ -7,8 +7,8 @@ import {
   vec2,
 } from "littlejsengine";
 import { IWeapon, Weapon } from "../base/gameWeapon";
-import { WeaponType } from "../types";
 import { mainSystem } from "../systems/mainSystem";
+import { WeaponType } from "../types";
 
 export class CrossLaser extends Weapon implements IWeapon {
   fireRate = 3;
