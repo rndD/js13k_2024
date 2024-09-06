@@ -6,9 +6,11 @@ import { mainSystem } from "./systems/mainSystem";
 import { XP } from "./xp";
 
 export class Enemy extends GameObject {
-  speed = 0.05;
+  speed = 0.04;
   health = 10;
   isFlying = false;
+  attackTimer = new Timer(1);
+  dmg = 5;
   fallingTimer = new Timer();
   dieSound = new Sound([
     ,
@@ -60,7 +62,7 @@ export class Enemy extends GameObject {
 
   constructor(pos: Vector2) {
     super(GameObjectType.Enemy, pos, vec2(1), tile(1, 8, 1));
-    this.isFlying = rand() > 0.5;
+    this.isFlying = rand() > 0.8;
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
     this.color = this.isFlying ? rgb(0, 1, 0) : rgb(1, 0, 0);
@@ -94,6 +96,10 @@ export class Enemy extends GameObject {
 
   collideWithObject(object: GameObject): boolean {
     if (object.gameObjectType === GameObjectType.Character) {
+      if (this.attackTimer.elapsed()) {
+        object.damage(this.dmg);
+        this.attackTimer.set(1);
+      }
       return false;
     }
     return true;

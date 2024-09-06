@@ -57,9 +57,9 @@ class Bullet extends GameObject {
 }
 
 export class Gun extends Weapon implements IWeapon {
-  fireRate = 0.2;
+  fireRate = 0.15;
   type = WeaponType.Gun;
-  distance = 10;
+  distance = 15;
   constructor() {
     super(vec2(0, 0), vec2(1), tile(5, 8, 1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
@@ -67,6 +67,6 @@ export class Gun extends Weapon implements IWeapon {
 
   fire(): void {
     super.fire();
-    new Bullet(this.pos, this.angle, 1);
+    new Bullet(this.pos, this.angle, 1.3);
   }
 }

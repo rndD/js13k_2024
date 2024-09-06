@@ -14,7 +14,8 @@ import { GameObject } from "./base/gameObject";
 import { GameObjectType, WeaponType } from "./types";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { CrossLaser } from "./weapons/laser";
+import { Gun } from "./weapons/projectile";
+import { Sword } from "./weapons/area";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -30,6 +31,8 @@ export class Character extends GameObject {
   spriteAtlas: TileInfo[];
   walkCyclePercent = 0;
   speed = 0.1;
+  maxHealth = 100;
+
   direction: -1 | 1 = 1;
   weapons: { [key: string]: IWeapon[] } = {};
   // upgrades: IWeapon[] = [];
@@ -42,12 +45,17 @@ export class Character extends GameObject {
 
     this.drawSize = vec2(2, 2);
 
+    this.health = this.maxHealth;
+
     // add weapons
     this.buildWeaponsSlots();
+    this.addWeapon(new Sword());
     // this.addWeapon(new Sword());
-    this.addWeapon(new CrossLaser());
+    // this.addWeapon(new CrossLaser());
     // this.addWeapon(new Mortar());
     // this.addWeapon(new Gun());
+    this.addWeapon(new Gun());
+    // this.addWeapon(new ForceField());
   }
 
   buildWeaponsSlots() {
@@ -134,7 +142,11 @@ export class Character extends GameObject {
             const oldDistance = w.target
               ? w.pos.distance(w.target.pos)
               : Infinity;
-            if (!w.target || newDistance < oldDistance) {
+            const canBeAttackedAsFlying = !w.donNotAttackFlying || !e.isFlying;
+            if (
+              (!w.target || newDistance < oldDistance) &&
+              canBeAttackedAsFlying
+            ) {
               w.target = e;
             }
           }

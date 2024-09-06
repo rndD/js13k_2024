@@ -6,10 +6,10 @@ const GRID_WIDTH = 150;
 const GRID_HEIGHT = 150;
 
 const MIN_ROOM_SIZE = 5;
-const MAX_ROOM_SIZE = 22;
+const MAX_ROOM_SIZE = 25;
 
 const MIN_CORRIDOR_LENGTH = 4;
-const MAX_CORRIDOR_LENGTH = 8;
+const MAX_CORRIDOR_LENGTH = 10;
 
 const DEFAULT_ROOMS = 20;
 

@@ -11,6 +11,7 @@ export interface IWeapon extends GameObject {
   aimAt: (pos: Vector2) => void;
   fire: () => void;
   target?: GameObject;
+  donNotAttackFlying?: boolean;
 }
 
 export class Weapon extends GameObject {
@@ -38,5 +39,6 @@ export class Weapon extends GameObject {
 
   aimAt(pos: Vector2) {
     this.localAngle = pos.subtract(this.pos).angle();
+    this.mirror = this.localAngle < 0;
   }
 }

@@ -15,14 +15,14 @@ export class CrossLaser extends Weapon implements IWeapon {
   type = WeaponType.CrossLaser;
   distance = 35;
 
-  dmg = 1;
+  dmg = 0.4;
   dmgTimer = new Timer(0.01);
-  dmgEvery = 0.3;
+  dmgEvery = 0.05;
 
   liveTimer = new Timer(0.01);
   liveTime = 2;
 
-  lineSize = 0.3;
+  lineSize = 0.5;
 
   constructor() {
     super(vec2(0), vec2(1));

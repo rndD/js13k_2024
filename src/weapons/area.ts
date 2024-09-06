@@ -24,6 +24,7 @@ export class Sword extends Weapon implements IWeapon {
   type = WeaponType.Sword;
   distance = 3.5;
   fireRate = 0.3;
+  area?: SwordDmgArea;
 
   constructor() {
     super(vec2(0, 0), vec2(1, 1), tile(4, 8, 1));
@@ -32,7 +33,16 @@ export class Sword extends Weapon implements IWeapon {
 
   fire(): void {
     super.fire();
-    new SwordDmgArea(this.pos, vec2(3.5), this.target!.pos, 12);
+    this.area = new SwordDmgArea(this.pos, vec2(3.5), this.target!.pos, 12);
+  }
+
+  render() {
+    if (this.area && this.area.liveTimer.active()) {
+      this.color = rgb(1, 1, 1, 0);
+    } else {
+      this.color = rgb(1, 1, 1);
+    }
+    super.render();
   }
 }
 
@@ -94,6 +104,7 @@ export class Mortar extends Weapon implements IWeapon {
   fireRate = 2.5;
   distance = 15;
   minDistance = 2;
+  donNotAttackFlying = true;
 
   constructor() {
     super(vec2(0, 0), vec2(1), tile(6, 8, 1));
@@ -252,6 +263,7 @@ export class ForceField extends Weapon implements IWeapon {
   constructor() {
     super(vec2(0, 0), vec2(1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    //debug
     // this.color = rgb(0, 1, 1, 0.05);
     this.size = vec2(this.distance);
   }

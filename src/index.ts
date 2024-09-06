@@ -91,7 +91,12 @@ function gameRenderPost() {
     vec2(100, 40),
     16
   );
-  drawTextScreen(`Level: ${mainSystem.level}`, vec2(70, 60), 16);
+  drawTextScreen(`Enemy Level: ${mainSystem.level}`, vec2(70, 60), 16);
+  drawTextScreen(
+    `HP: ${mainSystem.character.health}/${mainSystem.character.maxHealth}`,
+    vec2(70, 80),
+    16
+  );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
