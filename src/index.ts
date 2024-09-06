@@ -42,11 +42,8 @@ function gameUpdate() {
   // called every frame at 60 frames per second
   // handle input and update the game state
   mainSystem.update();
-  if (mainSystem.character.isDead()) {
-    setCameraScale(cameraScale + 0.1);
-    if (cameraScale > 24 && !paused) {
-      setPaused(true);
-    }
+  if (mainSystem.character.isDead() && !paused) {
+    setPaused(true);
   }
 }
 

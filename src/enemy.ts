@@ -1,4 +1,14 @@
-import { rand, rgb, Sound, tile, Timer, vec2, Vector2 } from "littlejsengine";
+import {
+  mod,
+  rand,
+  rgb,
+  Sound,
+  tile,
+  TileInfo,
+  Timer,
+  vec2,
+  Vector2,
+} from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { makeDebris } from "./base/gameEffects";
 import { mainSystem } from "./systems/mainSystem";
@@ -6,12 +16,15 @@ import { XP } from "./xp";
 import { GameObjectType } from "./types";
 
 export class Enemy extends GameObject {
+  spriteAtlas: TileInfo[] = [tile(7, 8, 1), tile(8, 8, 1)];
+  flyingSpriteAtlas: TileInfo[] = [tile(9, 8, 1), tile(10, 8, 1)];
   speed = 0.04;
   health = 10;
   isFlying = false;
   attackTimer = new Timer(1);
   dmg = 5;
   fallingTimer = new Timer();
+  walkCyclePercent = 0;
   dieSound = new Sound([
     ,
     ,
@@ -61,8 +74,9 @@ export class Enemy extends GameObject {
   ]);
 
   constructor(pos: Vector2) {
-    super(GameObjectType.Enemy, pos, vec2(1), tile(1, 8, 1));
+    super(GameObjectType.Enemy, pos, vec2(1), tile(7, 8, 1));
     this.isFlying = rand() > 0.8;
+    this.size = rand() > 0.5 ? vec2(1, 1) : vec2(1.5, 1.5);
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
     this.color = this.isFlying ? rgb(0, 1, 0) : rgb(1, 0, 0);
@@ -76,6 +90,19 @@ export class Enemy extends GameObject {
     }
     const moveDir = mainSystem.character.pos.subtract(this.pos).normalize();
     this.velocity = moveDir.scale(this.speed);
+    const velocityLength = this.velocity.length();
+
+    if (velocityLength > 0) {
+      this.walkCyclePercent += velocityLength * 0.5;
+      this.walkCyclePercent =
+        velocityLength > 0.01 ? mod(this.walkCyclePercent) : 0;
+    }
+
+    if (this.velocity.x >= 0) {
+      this.mirror = false;
+    } else {
+      this.mirror = true;
+    }
 
     if (!this.isFlying) {
       if (
@@ -125,5 +152,15 @@ export class Enemy extends GameObject {
       makeDebris(this.pos, this.color, 5, 0.1);
     }
     return hp;
+  }
+
+  render(): void {
+    const animationFrame = Math.floor(this.walkCyclePercent * 2);
+    if (this.isFlying) {
+      this.tileInfo = this.flyingSpriteAtlas[animationFrame];
+    } else {
+      this.tileInfo = this.spriteAtlas[animationFrame];
+    }
+    super.render();
   }
 }

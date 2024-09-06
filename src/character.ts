@@ -27,7 +27,7 @@ const WEAPONS_POSITIONS = [
 ];
 
 export class Character extends GameObject {
-  spriteAtlas: TileInfo[];
+  spriteAtlas: TileInfo[] = [tile(0, 8, 1), tile(1, 8, 1), tile(2, 8, 1)];
   walkCyclePercent = 0;
   speed = 0.1;
   maxHealth = 100;
@@ -38,7 +38,6 @@ export class Character extends GameObject {
 
   constructor(pos: Vector2) {
     super(GameObjectType.Character, pos, vec2(1), tile(1, 8, 1));
-    this.spriteAtlas = [tile(1, 8, 1), tile(2, 8, 1), tile(3, 8, 1)];
     this.setCollision(true, false);
     this.size = vec2(1, 0.5);
 

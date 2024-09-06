@@ -61,7 +61,7 @@ export class Gun extends Weapon implements IWeapon {
   type = WeaponType.Gun;
   distance = 15;
   constructor() {
-    super(vec2(0, 0), vec2(1), tile(5, 8, 1));
+    super(vec2(0, 0), vec2(1), tile(4, 8, 1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
   }
 

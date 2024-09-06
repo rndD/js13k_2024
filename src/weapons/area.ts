@@ -28,7 +28,7 @@ export class Sword extends Weapon implements IWeapon {
   area?: SwordDmgArea;
 
   constructor() {
-    super(vec2(0, 0), vec2(1, 1), tile(4, 8, 1));
+    super(vec2(0, 0), vec2(1, 1), tile(3, 8, 1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
   }
 
@@ -69,7 +69,7 @@ export class SwordDmgArea extends GameObject {
   }
 
   render(): void {
-    const t = tile(4, 8, 1);
+    const t = tile(3, 8, 1);
     const globalPercent = this.liveTimer.getPercent();
     // debug
     // drawRect(this.pos, this.size, rgb(1, 0, 0, 0.5));
@@ -108,7 +108,7 @@ export class Mortar extends Weapon implements IWeapon {
   donNotAttackFlying = true;
 
   constructor() {
-    super(vec2(0, 0), vec2(1), tile(6, 8, 1));
+    super(vec2(0, 0), vec2(1), tile(5, 8, 1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
   }
 
@@ -381,7 +381,7 @@ class SpikesArea extends EngineObject {
   liveTimer = new Timer(0.8);
   dmgedFirst = false;
   constructor(pos: Vector2, size: Vector2, dmg: number) {
-    super(pos, size, tile(7, 8, 1));
+    super(pos, size, tile(6, 8, 1));
     this.color = rgb(1, 0, 0, 0.5);
     this.renderOrder = 0;
     this.dmg = dmg;
