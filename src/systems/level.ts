@@ -21,6 +21,8 @@ export interface Room {
   height: number;
 }
 
+export type LevelMap = number[][];
+
 function createRoom(): Room {
   const width = randInt(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
   const height = randInt(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
@@ -99,9 +101,7 @@ function createVerticalCorridor(
   }
 }
 
-export function generateDungeon(
-  roomCount = DEFAULT_ROOMS
-): [number[][], Room[]] {
+export function generateDungeon(roomCount = DEFAULT_ROOMS): [LevelMap, Room[]] {
   const rooms: Room[] = [];
   // Dungeon grid (0 = empty, 1 = room, 2 = corridor)
   let grid: number[][] = Array.from({ length: GRID_HEIGHT }, () =>
@@ -123,6 +123,7 @@ export function generateDungeon(
 
     rooms.push(newRoom);
   }
+  // debug
   // console.log(grid.map((row) => row.join("")).join("\n"));
 
   return [grid, rooms];
@@ -143,9 +144,11 @@ export const hasNeighbor = (map: number[][], x: number, y: number) =>
     return map[x + dx] && map[x + dx][y + dy] > 0;
   });
 
-export function generateLevel(doCollisions = true) {
-  const [map, rooms] = generateDungeon();
-
+export function generateLevelLayer(
+  map: LevelMap,
+  rooms: Room[],
+  doCollisions = true
+) {
   const floorTile = new TileLayer(
     vec2(0),
     vec2(map.length, map[0].length),
@@ -170,5 +173,5 @@ export function generateLevel(doCollisions = true) {
       }
     }
   }
-  return [map, rooms, floorTile] as const;
+  return floorTile;
 }

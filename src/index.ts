@@ -5,7 +5,6 @@ import {
   setTouchGamepadEnable,
   drawTextScreen,
   setTileSizeDefault,
-  initTileCollision,
   setTileFixBleedScale,
   paused,
   setPaused,
@@ -13,8 +12,9 @@ import {
   mouseWheel,
   cameraScale,
   mousePos,
+  setCameraPos,
+  cameraPos,
 } from "littlejsengine";
-import { NextLevel, Sky } from "./background";
 import { CharacterMenu } from "./ui";
 import { LEVELS_XP, mainSystem } from "./systems/mainSystem";
 
@@ -29,12 +29,8 @@ function gameInit() {
   // setup the game
 
   setCameraScale(22);
-  initTileCollision(vec2(200, 200));
 
   mainSystem.init();
-
-  new NextLevel();
-  new Sky();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,16 +38,18 @@ function gameUpdate() {
   // called every frame at 60 frames per second
   // handle input and update the game state
   mainSystem.update();
-  if (mainSystem.character.isDead() && !paused) {
-    setPaused(true);
-  }
+  // if (mainSystem.character.isDead() && !paused) {
+  //   setPaused(true);
+  // }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost() {
   // called after physics and objects are updated
   // setup camera and prepare for render
-  mainSystem.gameUpdatePost();
+  // set camera
+  setCameraPos(cameraPos.lerp(mainSystem.character.pos, 0.3));
+
   if (keyWasReleased("Space")) {
     setPaused(!paused);
   }
@@ -94,7 +92,7 @@ function gameRenderPost() {
     vec2(100, 40),
     16
   );
-  drawTextScreen(`Enemy Level: ${mainSystem.level}`, vec2(70, 60), 16);
+  drawTextScreen(`Enemy Level: ${mainSystem.enemyLevel}`, vec2(70, 60), 16);
   drawTextScreen(
     `HP: ${mainSystem.character.health}/${mainSystem.character.maxHealth}`,
     vec2(70, 80),

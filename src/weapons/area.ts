@@ -393,7 +393,7 @@ class SpikesArea extends EngineObject {
     if (this.liveTimer.elapsed()) {
       this.destroy();
     }
-    if (!this.dmgedFirst && percent > 0.5) {
+    if (!this.dmgedFirst && percent > 0.3) {
       this.dmgedFirst = true;
       // find all enemies in area
 

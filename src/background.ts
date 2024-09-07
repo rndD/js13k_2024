@@ -13,19 +13,17 @@ import {
   time,
   vec2,
 } from "littlejsengine";
-import { generateLevel } from "./systems/level";
 
 export class NextLevel extends EngineObject {
   tileLayer: TileLayer;
   color: Color;
 
-  constructor() {
+  constructor(tileLayer: TileLayer) {
     super();
-    const [, , nextLevel] = generateLevel(false);
 
     // character = new Character(vec2(0));
 
-    this.tileLayer = nextLevel;
+    this.tileLayer = tileLayer;
     this.renderOrder = -1e4;
     this.color = randColor(hsl(0, 0, 0.5), hsl(0, 0, 0.9));
     this.tileLayer.redraw();

@@ -1,7 +1,16 @@
-import { cameraPos, setCameraPos, Timer, vec2, Vector2 } from "littlejsengine";
+import {
+  engineObjectsDestroy,
+  initTileCollision,
+  TileLayer,
+  Timer,
+  vec2,
+  Vector2,
+} from "littlejsengine";
 import { Enemy } from "../enemy";
 import { Character } from "../character";
-import { generateLevel, Room } from "./level";
+import { generateDungeon, generateLevelLayer, LevelMap, Room } from "./level";
+import { NextLevel, Sky } from "../background";
+import { LevelExit } from "../levelObjects/levelObjects";
 
 const MAX_ENEMIES = 500;
 export const LEVELS_XP = [
@@ -22,30 +31,73 @@ export const LEVELS_XP = [
 
 export class MainSystem {
   spawnTimer = new Timer();
-  level = 1;
+  enemyLevel = 1;
   enemies: Enemy[] = [];
-  character!: Character;
-  map!: number[][];
-  rooms!: Room[];
-  xp!: number;
-  characterLevel = 0;
-
   deadEnemiesCount: number = 0;
 
+  level: number = 0;
+  map!: LevelMap;
+  levels: { map: LevelMap; rooms: Room[]; floorTile?: TileLayer }[] = [];
+  rooms!: Room[];
+
+  xp!: number;
+  character!: Character;
+  characterLevel = 0;
+
   init() {
-    const [map, rooms, floorTile] = generateLevel();
-    floorTile.redraw();
+    for (let i = 0; i < 5; i++) {
+      const [map, rooms] = generateDungeon();
+      this.levels.push({ map, rooms });
+    }
+
+    this.xp = 0;
+
+    this.startLevel();
+  }
+
+  startLevel() {
+    initTileCollision(vec2(200, 200));
+    const { map, rooms } = this.levels[this.level];
     this.map = map;
     this.rooms = rooms;
-    const room = rooms[0];
-    this.character = new Character(vec2(room.y + 1, room.x + 1));
+
+    const floorTile = generateLevelLayer(map, rooms, true);
+    floorTile.redraw();
+    this.setBackground();
+
+    this.character = new Character(
+      vec2(this.rooms[0].y + 1, this.rooms[0].x + 1)
+    );
+
+    this.setLevelObjects();
+
     this.spawnTimer.set(this.getTimeForTimer());
-    this.xp = 0;
+  }
+  startNextLevel() {
+    engineObjectsDestroy();
+
+    this.level++;
+    this.startLevel();
+  }
+
+  setLevelObjects() {
+    if (this.levels[this.level + 1]) {
+      new LevelExit(this.character.pos.add(vec2(2)));
+    }
+  }
+
+  setBackground() {
+    if (this.levels[this.level + 1]) {
+      const { map, rooms } = this.levels[this.level + 1];
+      const floorTile = generateLevelLayer(map, rooms, false);
+      new NextLevel(floorTile);
+    }
+    new Sky();
   }
 
   enemyLevelUp() {
-    if (this.level >= 5) return;
-    this.level++;
+    if (this.enemyLevel >= 5) return;
+    this.enemyLevel++;
   }
   addXP(xp: number) {
     this.xp += xp;
@@ -55,7 +107,7 @@ export class MainSystem {
   }
 
   getTimeForTimer() {
-    return 1 / this.level;
+    return 1 / this.enemyLevel;
   }
 
   isItFloor(pos: Vector2) {
@@ -69,43 +121,34 @@ export class MainSystem {
     this.enemies = this.enemies.filter((e) => !e.isDead());
     const isLive = this.enemies.length;
     this.setDeadEnemiesCount(wasLive - isLive);
+
+    // spawn
     if (this.spawnTimer.elapsed()) {
       this.spawnTimer.set(this.getTimeForTimer());
 
-      // count deda
-      // remove dead enemies
-
       if (this.enemies.length > MAX_ENEMIES) return;
-      for (let i = 0; i < this.level; i++) {
+      for (let i = 0; i < this.enemyLevel; i++) {
         this.enemies.push(new Enemy(this.calcEnemyPosition()));
       }
     }
   }
 
-  gameUpdatePost() {
-    setCameraPos(cameraPos.lerp(this.character.pos, 0.3));
-  }
-
   setDeadEnemiesCount(plus: number) {
-    if (plus + this.deadEnemiesCount > this.level * 25) {
+    if (plus + this.deadEnemiesCount > this.enemyLevel * 25) {
       this.enemyLevelUp();
     }
     this.deadEnemiesCount += plus;
   }
 
   calcEnemyPosition(): Vector2 {
-    // draw a circle around the character and find a random spot
-
     const radius = 20;
     while (true) {
       const angle = Math.random() * Math.PI * 2;
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
       const pos = this.character.pos.add(vec2(x, y));
-      const tile = this.map[Math.floor(pos.x)]
-        ? this.map[Math.floor(pos.x)][Math.floor(pos.y)]
-        : 0;
-      if (tile && tile > 0) return pos;
+
+      if (this.isItFloor(pos)) return pos;
     }
   }
 }

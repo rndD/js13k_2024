@@ -8,6 +8,7 @@ export const enum GameObjectType {
   AreaDmg,
   EnemyBullet,
   Weapon,
+  LevelExit,
 }
 
 export const enum WeaponType {

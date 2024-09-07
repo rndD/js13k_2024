@@ -8,6 +8,7 @@ import {
   Timer,
   Vector2,
 } from "littlejsengine";
+import { GameObjectType } from "../types";
 
 export class GameObject extends EngineObject {
   health: number = 1;
