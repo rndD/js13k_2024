@@ -324,7 +324,7 @@ export class Spikes extends Weapon implements IWeapon {
   distance = 15;
   donNotAttackFlying = true;
 
-  dmg = 10;
+  dmg = 5;
 
   liveTimer = new Timer(0.01);
   liveTime = 0.2;
@@ -403,6 +403,7 @@ class SpikesArea extends EngineObject {
           isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
         ) {
           enemy.damage(this.dmg);
+          enemy.applyForce(vec2(0, 0.5));
         }
       });
     }
