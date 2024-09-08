@@ -14,6 +14,8 @@ import {
   mousePos,
   setCameraPos,
   cameraPos,
+  drawLine,
+  rgb,
 } from "littlejsengine";
 import { CharacterMenu } from "./ui";
 import { LEVELS_XP, mainSystem } from "./systems/mainSystem";
@@ -103,6 +105,25 @@ function gameRenderPost() {
     vec2(70, 100),
     16
   );
+
+  // arrow to exit
+  if (
+    mainSystem.levelExit &&
+    mainSystem.levelExit.pos.distance(mainSystem.character.pos) > 20
+  ) {
+    const angle = mainSystem.levelExit.pos
+      .subtract(mainSystem.character.pos)
+      .angle();
+    const posStart = mainSystem.character.pos.add(
+      mainSystem.character.pos.copy().setAngle(angle, 18)
+    );
+    const posEnd = mainSystem.character.pos.add(
+      mainSystem.character.pos.copy().setAngle(angle, 18.5)
+    );
+    // console.log(posStart, posEnd, mainSystem.character.pos);
+
+    drawLine(posStart, posEnd, 0.3, rgb(1, 0, 0, 0.5));
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////

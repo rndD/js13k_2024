@@ -2,7 +2,6 @@ import {
   mod,
   rand,
   rgb,
-  Sound,
   tile,
   TileInfo,
   Timer,
@@ -14,6 +13,7 @@ import { makeDebris } from "./base/gameEffects";
 import { mainSystem } from "./systems/mainSystem";
 import { XP } from "./xp";
 import { GameObjectType } from "./types";
+import { Sounds, soundSystem } from "./systems/soundSystem";
 
 export class Enemy extends GameObject {
   spriteAtlas: TileInfo[] = [tile(7, 8, 1), tile(8, 8, 1)];
@@ -25,53 +25,6 @@ export class Enemy extends GameObject {
   dmg = 5;
   fallingTimer = new Timer();
   walkCyclePercent = 0;
-  dieSound = new Sound([
-    ,
-    ,
-    136,
-    0.22,
-    ,
-    0.08,
-    1,
-    2.5,
-    1,
-    ,
-    66,
-    0.03,
-    0.05,
-    ,
-    ,
-    ,
-    ,
-    0.93,
-    ,
-    ,
-    -1068,
-  ]);
-
-  hitSound = new Sound([
-    ,
-    0.1,
-    368,
-    0.02,
-    0.04,
-    0.04,
-    2,
-    4.3,
-    -1,
-    ,
-    -344,
-    0.01,
-    ,
-    ,
-    282,
-    ,
-    ,
-    0.53,
-    0.02,
-    ,
-    130,
-  ]);
 
   constructor(pos: Vector2) {
     super(GameObjectType.Enemy, pos, vec2(1), tile(7, 8, 1));
@@ -140,7 +93,7 @@ export class Enemy extends GameObject {
 
     new XP(this.pos);
     makeDebris(this.pos, this.color, 50, 0.1);
-    this.dieSound.play();
+    soundSystem.play(Sounds.enemyDie);
     this.destroy();
   }
 

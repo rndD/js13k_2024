@@ -324,7 +324,7 @@ export class Spikes extends Weapon implements IWeapon {
   distance = 15;
   donNotAttackFlying = true;
 
-  dmg = 5;
+  dmg = 10;
 
   liveTimer = new Timer(0.01);
   liveTime = 0.2;

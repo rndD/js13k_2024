@@ -39,6 +39,7 @@ export class MainSystem {
   map!: LevelMap;
   levels: { map: LevelMap; rooms: Room[]; floorTile?: TileLayer }[] = [];
   rooms!: Room[];
+  levelExit?: LevelExit;
 
   xp!: number;
   character!: Character;
@@ -56,7 +57,7 @@ export class MainSystem {
   }
 
   startLevel() {
-    initTileCollision(vec2(200, 200));
+    initTileCollision(vec2(250, 250));
     const { map, rooms } = this.levels[this.level];
     this.map = map;
     this.rooms = rooms;
@@ -82,7 +83,11 @@ export class MainSystem {
 
   setLevelObjects() {
     if (this.levels[this.level + 1]) {
-      new LevelExit(this.character.pos.add(vec2(2)));
+      const pos = vec2(
+        this.rooms[this.rooms.length - 1].y + 1,
+        this.rooms[this.rooms.length - 1].x + 1
+      );
+      this.levelExit = new LevelExit(pos);
     }
   }
 
@@ -123,14 +128,14 @@ export class MainSystem {
     this.setDeadEnemiesCount(wasLive - isLive);
 
     // spawn
-    if (this.spawnTimer.elapsed()) {
-      this.spawnTimer.set(this.getTimeForTimer());
+    // if (this.spawnTimer.elapsed()) {
+    //   this.spawnTimer.set(this.getTimeForTimer());
 
-      if (this.enemies.length > MAX_ENEMIES) return;
-      for (let i = 0; i < this.enemyLevel; i++) {
-        this.enemies.push(new Enemy(this.calcEnemyPosition()));
-      }
-    }
+    //   if (this.enemies.length > MAX_ENEMIES) return;
+    //   for (let i = 0; i < this.enemyLevel; i++) {
+    //     this.enemies.push(new Enemy(this.calcEnemyPosition()));
+    //   }
+    // }
   }
 
   setDeadEnemiesCount(plus: number) {
