@@ -10,6 +10,7 @@ import {
 import { IWeapon, Weapon } from "../base/gameWeapon";
 import { GameObject } from "../base/gameObject";
 import { GameObjectType, WeaponType } from "../types";
+import { Stats } from "../stats";
 
 class Bullet extends GameObject {
   initialPos: Vector2;
@@ -57,16 +58,19 @@ class Bullet extends GameObject {
 }
 
 export class Gun extends Weapon implements IWeapon {
-  fireRate = 0.15;
   type = WeaponType.Gun;
-  distance = 15;
-  constructor() {
+  constructor(stats: Stats) {
     super(vec2(0, 0), vec2(1), tile(4, 8, 1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    const [, distance, dmg, fireRate] = stats;
+    this.distance = distance;
+    this.dmg = dmg;
+    this.fireRate = fireRate;
+
+    this.fireTimer.set(rand(-0.02, 0.02));
   }
 
   fire(): void {
     super.fire();
-    new Bullet(this.pos, this.angle, 1.3);
+    new Bullet(this.pos, this.angle, this.dmg);
   }
 }

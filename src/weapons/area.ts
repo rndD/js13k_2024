@@ -20,24 +20,35 @@ import { GameObject } from "../base/gameObject";
 import { mainSystem } from "../systems/mainSystem";
 import { isAABBInRadius } from "../utils";
 import { GameObjectType, WeaponType } from "../types";
+import { Stats } from "../stats";
 
 export class Sword extends Weapon implements IWeapon {
   type = WeaponType.Sword;
-  distance = 3.5;
-  fireRate = 0.3;
   area?: SwordDmgArea;
+  areaSize: number;
 
-  constructor() {
-    super(vec2(0, 0), vec2(1, 1), tile(3, 8, 1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+  constructor(stats: Stats) {
+    super(vec2(0), vec2(1), tile(3, 8, 1));
+    this.fireTimer.set(rand(-0.02, 0.02));
+    const [, distance, dmg, fireRate, , , size] = stats;
+    this.distance = distance;
+    this.dmg = dmg;
+    this.fireRate = fireRate;
+    this.areaSize = size!;
   }
 
   fire(): void {
     super.fire();
-    this.area = new SwordDmgArea(this.pos, vec2(3.5), this.target!.pos, 12);
+    this.area = new SwordDmgArea(
+      this.pos,
+      vec2(this.areaSize),
+      this.target!.pos,
+      this.dmg
+    );
   }
 
   render() {
+    // hide sword if area is active
     if (this.area && this.area.liveTimer.active()) {
       this.color = rgb(1, 1, 1, 0);
     } else {
@@ -102,19 +113,28 @@ export class SwordDmgArea extends GameObject {
 
 export class Mortar extends Weapon implements IWeapon {
   type = WeaponType.Mortar;
-  fireRate = 2.5;
-  distance = 15;
   minDistance = 2;
   donNotAttackFlying = true;
 
-  constructor() {
-    super(vec2(0, 0), vec2(1), tile(5, 8, 1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+  fireTime!: number;
+  dmgOverTime!: number;
+  areaSize!: number;
+
+  constructor(stats: Stats) {
+    super(vec2(0), vec2(1), tile(5, 8, 1));
+    this.fireTimer.set(rand(-0.02, 0.02));
+    const [, distance, dmg, fireRate, lifeTime, dmgOverTime, size] = stats;
+    this.distance = distance;
+    this.fireRate = fireRate;
+    this.dmg = dmg;
+    this.fireTime = lifeTime!;
+    this.dmgOverTime = dmgOverTime!;
+    this.areaSize = size!;
   }
 
   fire(): void {
     super.fire();
-    new MortarShell(this.pos, this.target!.pos);
+    new MortarShell(this, this.target!.pos);
   }
 }
 
@@ -124,12 +144,21 @@ class MortarShell extends GameObject {
   target: Vector2;
   start: Vector2;
   maxY = 8;
-  constructor(pos: Vector2, target: Vector2) {
-    super(GameObjectType.Effect, pos, vec2(0.3, 0.5));
+
+  dmg: number;
+  fireTime: number;
+  dmgOverTime: number;
+  areaSize: number;
+  constructor(mortar: Mortar, target: Vector2) {
+    super(GameObjectType.Effect, mortar.pos, vec2(0.3, 0.5));
     // red
     this.color = rgb(1, 0, 0);
     this.target = target.copy();
-    this.start = pos.copy();
+    this.start = mortar.pos.copy();
+    this.dmg = mortar.dmg;
+    this.fireTime = mortar.fireTime;
+    this.dmgOverTime = mortar.dmgOverTime;
+    this.areaSize = mortar.areaSize;
   }
 
   update() {
@@ -170,16 +199,16 @@ class MortarShell extends GameObject {
     super.update();
     if (this.shellTimer.elapsed()) {
       this.destroy();
-      new AreaDmg(this.pos, vec2(4.5), 10, 1);
+      new AreaDmg(this.pos, vec2(this.areaSize), this.dmg, this.dmgOverTime);
     }
   }
 }
 
 class AreaDmg extends GameObject {
-  liveTimer = new Timer(1);
+  liveTimer = new Timer();
   dmgTimer = new Timer(0.1);
-  dmg: number = 0;
-  dmgFire: number = 0;
+  dmg: number;
+  dmgFire: number;
 
   dmgedFirst = false;
   constructor(pos: Vector2, size: Vector2, dmg: number, dmgFire: number) {
@@ -250,24 +279,25 @@ class AreaDmg extends GameObject {
 }
 
 export class ForceField extends Weapon implements IWeapon {
-  fireRate = 5;
   type = WeaponType.Field;
-  distance = 4;
-
-  dmg = 2;
 
   dmgTimer = new Timer(0.01);
   dmgEvery = 0.2;
 
   liveTimer = new Timer(0.01);
-  liveTime = 2;
+  liveTime: number;
 
-  constructor() {
+  constructor(stats: Stats) {
     super(vec2(0, 0), vec2(1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    this.fireTimer.set(rand(-0.02, 0.02));
+    const [, distance, dmg, fireRate, liveTime, , size] = stats;
+    this.distance = distance;
+    this.dmg = dmg;
+    this.fireRate = fireRate;
+    this.liveTime = liveTime!;
     //debug
     // this.color = rgb(0, 1, 1, 0.05);
-    this.size = vec2(this.distance);
+    this.size = vec2(size);
   }
 
   fire(): void {
@@ -319,23 +349,27 @@ export class ForceField extends Weapon implements IWeapon {
 }
 
 export class Spikes extends Weapon implements IWeapon {
-  fireRate = 4;
   type = WeaponType.Spikes;
-  distance = 15;
   donNotAttackFlying = true;
-
-  dmg = 10;
 
   liveTimer = new Timer(0.01);
   liveTime = 0.2;
   step = 1;
-  maxStep = 5;
+  maxStep = 4;
   stepSize = 2.5;
   firePos!: Vector2;
 
-  constructor() {
+  constructor(stats: Stats) {
     super(vec2(0, 0), vec2(1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    const [kb, distance, dmg, fireRate, , , size] = stats;
+    this.distance = distance;
+    this.dmg = dmg;
+    this.fireRate = fireRate;
+    this.stepSize = size!;
+    if (kb > 5) {
+      this.maxStep = 5;
+    }
+    this.fireTimer.set(rand(-0.02, 0.02));
   }
 
   fire(): void {
@@ -355,6 +389,7 @@ export class Spikes extends Weapon implements IWeapon {
       }
     }
   }
+
   createSpikes() {
     const pos1 = this.firePos.add(vec2(this.stepSize * this.step, 0));
     const pos2 = this.firePos.add(vec2(-this.stepSize * this.step, 0));
@@ -396,14 +431,13 @@ class SpikesArea extends EngineObject {
     if (!this.dmgedFirst && percent > 0.3) {
       this.dmgedFirst = true;
       // find all enemies in area
-
       mainSystem.enemies.forEach((enemy) => {
         if (
           !enemy.isFlying &&
           isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
         ) {
           enemy.damage(this.dmg);
-          enemy.applyForce(vec2(0, 0.5));
+          enemy.applyForce(vec2(0, this.dmg / 20));
         }
       });
     }

@@ -9,24 +9,29 @@ import {
 import { IWeapon, Weapon } from "../base/gameWeapon";
 import { mainSystem } from "../systems/mainSystem";
 import { WeaponType } from "../types";
+import { Stats } from "../stats";
 
 export class CrossLaser extends Weapon implements IWeapon {
-  fireRate = 3;
   type = WeaponType.CrossLaser;
-  distance = 35;
 
-  dmg = 0.4;
+  dmg!: number;
   dmgTimer = new Timer(0.01);
   dmgEvery = 0.05;
 
   liveTimer = new Timer(0.01);
-  liveTime = 2;
+  liveTime!: number;
 
   lineSize = 0.5;
 
-  constructor() {
+  constructor(stats: Stats) {
     super(vec2(0), vec2(1));
     this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    const [, distance, dmg, fireRate, liveTime, , size] = stats;
+    this.distance = distance;
+    this.dmg = dmg;
+    this.fireRate = fireRate;
+    this.liveTime = liveTime!;
+    this.lineSize = size!;
   }
 
   fire() {

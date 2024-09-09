@@ -12,6 +12,7 @@ export interface IWeapon extends GameObject {
   fire: () => void;
   target?: GameObject;
   donNotAttackFlying?: boolean;
+  dmg: number;
 }
 
 export class Weapon extends GameObject {
@@ -20,6 +21,7 @@ export class Weapon extends GameObject {
   distance = 1000;
   minDistance = 0;
   target?: GameObject;
+  dmg!: number;
 
   constructor(pos: Vector2, size: Vector2, tileInfo?: TileInfo) {
     super(GameObjectType.Weapon, pos, size, tileInfo);
