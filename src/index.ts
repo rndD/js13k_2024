@@ -2,7 +2,6 @@ import {
   engineInit,
   vec2,
   setCameraScale,
-  setTouchGamepadEnable,
   drawTextScreen,
   setTileSizeDefault,
   setTileFixBleedScale,
@@ -16,16 +15,17 @@ import {
   cameraPos,
   drawLine,
   rgb,
+  setFontDefault,
 } from "littlejsengine";
 import { CharacterMenu } from "./ui";
 import { LEVELS_XP, mainSystem } from "./systems/mainSystem";
 
-let characterMenu: CharacterMenu;
+let characterMenu: CharacterMenu | undefined;
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
   setTileSizeDefault(vec2(8));
   setTileFixBleedScale(0.05);
-  setTouchGamepadEnable(true);
+  // setTouchGamepadEnable(true);
 
   // called once after the engine starts up
   // setup the game
@@ -33,6 +33,7 @@ function gameInit() {
   setCameraScale(22);
 
   mainSystem.init();
+  setFontDefault("monospace");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,10 +56,12 @@ function gameUpdatePost() {
   if (keyWasReleased("Space")) {
     setPaused(!paused);
   }
-  if (paused) {
+  if (paused && !characterMenu) {
     characterMenu = new CharacterMenu();
-  } else {
+  }
+  if (!paused && characterMenu) {
     characterMenu && characterMenu.destroy();
+    characterMenu = undefined;
   }
 
   // todo remove
@@ -66,7 +69,7 @@ function gameUpdatePost() {
     setCameraScale(cameraScale + mouseWheel * 0.2);
   }
 
-  if (paused) {
+  if (paused && characterMenu) {
     keyWasReleased("ArrowRight") && characterMenu.select(1);
     keyWasReleased("ArrowLeft") && characterMenu.select(-1);
     mousePos && characterMenu.mouseSelect(mousePos);

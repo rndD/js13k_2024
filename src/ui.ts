@@ -1,28 +1,56 @@
 import {
   drawRect,
   drawText,
-  drawTile,
   EngineObject,
   hsl,
   isOverlapping,
   mainCanvas,
+  mouseWasReleased,
   rgb,
   screenToWorld,
-  tile,
-  TileInfo,
+  setPaused,
   vec2,
   Vector2,
 } from "littlejsengine";
+import { MemoryType, WeaponType } from "./types";
+import { WEAPONS } from "./stats";
+import { mainSystem } from "./systems/mainSystem";
+
+class ConfirmButton extends EngineObject {
+  selected = false;
+  constructor(pos: Vector2) {
+    super(pos, vec2(8, 2));
+    // white
+    this.color = hsl(0, 0, 1);
+    this.renderOrder = 101;
+  }
+  render(): void {
+    drawRect(
+      this.pos,
+      this.size,
+      // white
+      rgb(1, 1, 1)
+    );
+    drawText(
+      "Confirm (press space)",
+      this.pos.add(vec2(0, 0)),
+      0.6,
+      hsl(0, 0, 0)
+    );
+  }
+}
 
 class Button extends EngineObject {
-  text: string;
+  text: string[];
   selected = false;
-  constructor(pos: Vector2, icon: TileInfo, text: string = "") {
-    super(pos, vec2(8, 8), icon);
+  icon: string;
+  constructor(pos: Vector2, icon: string, text: string[]) {
+    super(pos, vec2(8, 5));
     // white
     this.color = hsl(0, 0, 1);
     this.text = text;
     this.renderOrder = 101;
+    this.icon = icon;
   }
   render(): void {
     if (this.selected) {
@@ -39,51 +67,59 @@ class Button extends EngineObject {
       // white
       rgb(1, 1, 1)
     );
-    drawTile(this.pos.add(vec2(0, 1)), this.size.scale(0.5), this.tileInfo);
-
-    drawText(this.text, this.pos.add(vec2(0, -2)), 0.8, hsl(0, 0, 0));
+    drawText(this.icon, this.pos.add(vec2(0, 1)), 0.8, hsl(0, 0, 0));
+    for (let i = 0; i < this.text.length; i++) {
+      drawText(
+        `${i > 0 ? "* " : ""}${this.text[i]}`,
+        this.pos.add(vec2(0, i * -0.6)),
+        0.6,
+        hsl(0, 0, 0)
+      );
+    }
   }
 }
 
 export class CharacterMenu extends EngineObject {
   selected = 0;
   buttons: Button[] = [];
+  confirmButton: ConfirmButton;
 
   constructor() {
     const pos = screenToWorld(
       vec2(mainCanvas.width / 2, mainCanvas.height / 2)
     );
-    super(pos, vec2(40));
+    super(pos, vec2(29, 27));
     this.renderOrder = 100;
     this.color = hsl(0, 0, 0, 0.8);
 
-    const buttonPos = pos.add(vec2(-10, 10));
-    const b = new Button(buttonPos, tile(4, 8, 1), "sword.js 40 dmg");
-    b.selected = true;
-    this.buttons.push(b);
-    this.addChild(b);
-    const buttonPos2 = pos.add(vec2(0, 10));
-    const b2 = new Button(buttonPos2, tile(5, 8, 1), "machineGun.js 3 dmg");
-    this.buttons.push(b2);
-    this.addChild(b2);
-    const buttonPos3 = pos.add(vec2(10, 10));
-    const b3 = new Button(
-      buttonPos3,
-      tile(6, 8, 1),
-      "Radiation.js 10dmg \n poison are dmg"
-    );
-    this.buttons.push(b3);
-    this.addChild(b3);
+    this.addButton(0, WeaponType.Sword);
+    this.addButton(1, WeaponType.Gun);
+    this.addButton(2, WeaponType.Spikes);
+
+    this.confirmButton = new ConfirmButton(pos.add(vec2(0, 6)));
+    this.addChild(this.confirmButton);
 
     const c = new CharacterStats(
-      pos.subtract(this.size.scale(0.5).add(vec2(-1, -21)))
+      pos.subtract(this.size.scale(0.5).add(vec2(-0.5, -11.5)))
     );
     this.addChild(c);
 
     const m = new CharacterMemory(
-      pos.subtract(this.size.scale(0.5).add(vec2(-13, -21)))
+      pos.subtract(this.size.scale(0.5).add(vec2(-13, -11.5)))
     );
     this.addChild(m);
+  }
+
+  addButton(place: number, w: WeaponType) {
+    // if 0 then -10, if 1 then 0, if 2 then 10
+    const x = place * 10 - 10;
+    const buttonPos = this.pos.add(vec2(x, 2));
+    const b = new Button(buttonPos, WEAPONS[w].i, WEAPONS[w].d);
+    this.buttons.push(b);
+    this.addChild(b);
+    if (place === 0) {
+      b.selected = true;
+    }
   }
 
   select(n: number) {
@@ -104,6 +140,24 @@ export class CharacterMenu extends EngineObject {
         b.selected = true;
       }
     });
+
+    if (
+      isOverlapping(this.confirmButton.pos, this.confirmButton.size, mouse) &&
+      mouseWasReleased(0)
+    ) {
+      this.addItem();
+      setPaused(false);
+    }
+  }
+
+  addItem() {
+    //todo
+  }
+
+  render() {
+    super.render();
+    drawText("Level UP!", this.pos.add(vec2(-10, 6)), 0.9, hsl(0, 0, 1));
+    drawText("Select upgrade", this.pos.add(vec2(10, 6)), 0.9, hsl(0, 0, 1));
   }
 }
 
@@ -116,17 +170,6 @@ const stats = {
   armor: 0,
   regen: 0,
 };
-
-const memory = [
-  // gray
-  ["🗡️", 2, hsl(0, 0, 0.5)],
-  ["🔫", 1, hsl(0, 1, 0.5)],
-  ["☢️", 3, hsl(60, 1, 20)],
-  // orange
-  ["🔥", 4, rgb(255, 165, 0)],
-  // red
-  ["💣", 6, rgb(255, 0, 0)],
-] as const;
 
 class CharacterStats extends EngineObject {
   constructor(pos: Vector2) {
@@ -152,16 +195,24 @@ class CharacterStats extends EngineObject {
 }
 
 class CharacterMemory extends EngineObject {
+  currentMemory = 0;
+  maxMemory = 13;
   constructor(pos: Vector2) {
     super(pos, vec2(40));
     this.color = hsl(0, 0, 0, 0.8);
     this.renderOrder = 101;
+
+    // calculate current memory
+    mainSystem.memory.forEach((m) => {
+      if (m[0] === MemoryType.Weapon) {
+        this.currentMemory += WEAPONS[m[1]][m[2]][0];
+      }
+    });
   }
 
   render() {
-    const mem = memory.reduce((acc, m) => acc + m[1], 0);
     drawText(
-      `MEMORY ${mem}kb / 13kb`,
+      `MEMORY ${this.currentMemory}kb / ${this.maxMemory}kb`,
       this.pos.add(vec2(0.5, 0)),
       1,
       hsl(0, 0, 1),
@@ -173,8 +224,10 @@ class CharacterMemory extends EngineObject {
     // drawRect(this.pos, this.size, this.color);
     let p = 0;
     let y = 0;
-    memory.forEach((m, i) => {
-      const [name, kb, color] = m;
+    mainSystem.memory.forEach((m, i) => {
+      const [upgradeType, _type, level] = m;
+      if (upgradeType !== MemoryType.Weapon) return;
+      const [kb] = WEAPONS[_type][level];
 
       for (let j = 1; j <= kb; j++) {
         if (p % kbInLine === 0) {
@@ -182,10 +235,10 @@ class CharacterMemory extends EngineObject {
           p = 0;
         }
         p++;
-        drawRect(this.pos.add(vec2(p, 0 + y)), vec2(1), color);
+        drawRect(this.pos.add(vec2(p, 0 + y)), vec2(1), WEAPONS[_type].c);
       }
       const iconPos = this.pos.add(vec2(p, y));
-      drawText(`${name}`, iconPos, 0.7);
+      drawText(WEAPONS[_type].i, iconPos, 0.7);
     });
   }
 }

@@ -5,6 +5,8 @@ import {
   isUsingGamepad,
   keyIsDown,
   mod,
+  mouseIsDown,
+  mousePos,
   tile,
   TileInfo,
   vec2,
@@ -13,8 +15,8 @@ import {
 import { GameObject } from "./base/gameObject";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { GameObjectType, WeaponType } from "./types";
-import { Spikes } from "./weapons/area";
+import { GameObjectType, MemoryType, WeaponType } from "./types";
+import { WEAPONS } from "./stats";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -51,8 +53,13 @@ export class Character extends GameObject {
     // this.addWeapon(new Sword());
     // this.addWeapon(new CrossLaser());
     // this.addWeapon(new Mortar());
-    // this.addWeapon(new Gun());
-    this.addWeapon(new Spikes());
+    mainSystem.memory.forEach((m) => {
+      if (m[0] === MemoryType.Weapon) {
+        const w = WEAPONS[m[1]].w;
+        const stats = WEAPONS[m[1]][m[2]];
+        this.addWeapon(new w(stats));
+      }
+    });
     // this.addWeapon(new ForceField());
   }
 
@@ -93,7 +100,7 @@ export class Character extends GameObject {
     // call parent and update physics
     super.update();
     // movement control
-    const moveInput = isUsingGamepad
+    let moveInput = isUsingGamepad
       ? gamepadStick(0)
       : vec2(
           // @ts-ignore
@@ -101,6 +108,13 @@ export class Character extends GameObject {
           // @ts-ignore
           keyIsDown("ArrowUp") - keyIsDown("ArrowDown")
         );
+
+    if (mouseIsDown(0)) {
+      moveInput = mousePos.subtract(this.pos);
+    }
+    if (moveInput.length() > 0) {
+      moveInput = moveInput.normalize(1);
+    }
 
     // apply movement acceleration and clamp
     const maxCharacterSpeed = 0.2;

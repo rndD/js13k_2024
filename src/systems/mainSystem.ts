@@ -1,6 +1,7 @@
 import {
   engineObjectsDestroy,
   initTileCollision,
+  setPaused,
   TileLayer,
   Timer,
   vec2,
@@ -11,13 +12,14 @@ import { Character } from "../character";
 import { generateDungeon, generateLevelLayer, LevelMap, Room } from "./level";
 import { NextLevel, Sky } from "../background";
 import { LevelExit } from "../levelObjects/levelObjects";
+import { Memory, MemoryType, WeaponType } from "../types";
 
 const MAX_ENEMIES = 500;
 export const LEVELS_XP = [
   0,
-  10,
-  25,
-  56,
+  1,
+  2,
+  3,
   120,
   200,
   350,
@@ -44,6 +46,13 @@ export class MainSystem {
   xp!: number;
   character!: Character;
   characterLevel = 0;
+
+  memory: Memory = [
+    [MemoryType.Weapon, WeaponType.Gun, 2],
+    [MemoryType.Weapon, WeaponType.CrossLaser, 1],
+    [MemoryType.Weapon, WeaponType.Sword, 1],
+    [MemoryType.Weapon, WeaponType.Field, 3],
+  ];
 
   init() {
     for (let i = 0; i < 5; i++) {
@@ -74,8 +83,10 @@ export class MainSystem {
 
     this.spawnTimer.set(this.getTimeForTimer());
   }
+
   startNextLevel() {
     engineObjectsDestroy();
+    this.enemies = [];
 
     this.level++;
     this.startLevel();
@@ -104,10 +115,12 @@ export class MainSystem {
     if (this.enemyLevel >= 5) return;
     this.enemyLevel++;
   }
+
   addXP(xp: number) {
     this.xp += xp;
     if (this.xp >= LEVELS_XP[this.characterLevel + 1]) {
       this.characterLevel++;
+      setPaused(true);
     }
   }
 
@@ -128,14 +141,14 @@ export class MainSystem {
     this.setDeadEnemiesCount(wasLive - isLive);
 
     // spawn
-    // if (this.spawnTimer.elapsed()) {
-    //   this.spawnTimer.set(this.getTimeForTimer());
+    if (this.spawnTimer.elapsed()) {
+      this.spawnTimer.set(this.getTimeForTimer());
 
-    //   if (this.enemies.length > MAX_ENEMIES) return;
-    //   for (let i = 0; i < this.enemyLevel; i++) {
-    //     this.enemies.push(new Enemy(this.calcEnemyPosition()));
-    //   }
-    // }
+      if (this.enemies.length > MAX_ENEMIES) return;
+      for (let i = 0; i < this.enemyLevel; i++) {
+        this.enemies.push(new Enemy(this.calcEnemyPosition()));
+      }
+    }
   }
 
   setDeadEnemiesCount(plus: number) {
