@@ -18,17 +18,16 @@ import { GameObjectType, MemoryType, UpgradeType, WeaponType } from "./types";
 import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./constants";
 
-const WEAPONS_POSITIONS = [
-  vec2(-0.7, 0), // left
-  vec2(0.7, 0), // right
-  vec2(-0.7, 0.5), // left-top2
-  vec2(0.7, 0.5), // right-top2
-  vec2(0, 1), // top
-  vec2(0, -0.5), // bottom
-  vec2(0, 0), // center
-];
-
 export class Character extends GameObject {
+  WEAPONS_POSITIONS = [
+    vec2(-0.7, 0), // left
+    vec2(0.7, 0), // right
+    vec2(-0.7, 0.5), // left-top2
+    vec2(0.7, 0.5), // right-top2
+    vec2(0, 1), // top
+    vec2(0, -0.5), // bottom
+    vec2(0, 0), // center
+  ];
   spd = 0.1;
   hpRegenTimer = new Timer(3);
 
@@ -94,8 +93,9 @@ export class Character extends GameObject {
   }
 
   buildWeaponsSlots() {
-    for (let i = 0; i < WEAPONS_POSITIONS.length; i++) {
-      this.weapons[WEAPONS_POSITIONS[i].toString()] = [];
+    for (let i = 0; i < this.WEAPONS_POSITIONS.length; i++) {
+      const p = this.WEAPONS_POSITIONS[i].x + "," + this.WEAPONS_POSITIONS[i].y;
+      this.weapons[p] = [];
     }
   }
 
@@ -105,19 +105,21 @@ export class Character extends GameObject {
       // w.type === WeaponType.CrossLaser ||
       w.type === WeaponType.Spikes
     ) {
-      const center = WEAPONS_POSITIONS[WEAPONS_POSITIONS.length - 1];
-      this.weapons[center.toString()].push(w);
+      const center = this.WEAPONS_POSITIONS[this.WEAPONS_POSITIONS.length - 1];
+      const p = center.x + "," + center.y;
+      this.weapons[p].push(w);
       this.addChild(w, center);
       return;
     }
     let added = false;
     let turns = 0;
     while (!added) {
-      for (let i = 0; i < WEAPONS_POSITIONS.length; i++) {
-        const pos = WEAPONS_POSITIONS[i];
-        if (this.weapons[pos.toString()].length <= turns) {
-          this.weapons[pos.toString()].push(w);
-          this.addChild(w, pos);
+      for (let i = 0; i < this.WEAPONS_POSITIONS.length; i++) {
+        const p =
+          this.WEAPONS_POSITIONS[i].x + "," + this.WEAPONS_POSITIONS[i].y;
+        if (this.weapons[p].length <= turns) {
+          this.weapons[p].push(w);
+          this.addChild(w, this.WEAPONS_POSITIONS[i]);
           added = true;
           break;
         }
