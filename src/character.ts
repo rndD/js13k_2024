@@ -1,12 +1,12 @@
 import {
   clamp,
   drawTile,
+  hsl,
   keyIsDown,
   mod,
   mouseIsDown,
   mousePos,
   tile,
-  TileInfo,
   Timer,
   vec2,
   Vector2,
@@ -29,8 +29,6 @@ const WEAPONS_POSITIONS = [
 ];
 
 export class Character extends GameObject {
-  spriteAtlas: TileInfo[] = [tile(0, 8), tile(1, 8), tile(2, 8)];
-  walkCyclePercent = 0;
   spd = 0.1;
   hpRegenTimer = new Timer(3);
 
@@ -43,13 +41,19 @@ export class Character extends GameObject {
     [UpgradeType.Health]: 50,
     [UpgradeType.Speed]: 1,
     [UpgradeType.Damage]: 1,
-    [UpgradeType.Armor]: 0,
     [UpgradeType.AttackSpeed]: 1,
     [UpgradeType.HpRegen]: 0,
   };
 
   constructor(pos: Vector2) {
-    super(GameObjectType.Character, pos, vec2(1, 0.5), tile(1, 8));
+    super(
+      GameObjectType.Character,
+      pos,
+      vec2(1, 0.5),
+      tile(0),
+      undefined,
+      hsl(29, 71, 176)
+    );
     this.setCollision(true, false);
 
     this.drawSize = vec2(2);
@@ -71,7 +75,6 @@ export class Character extends GameObject {
       UpgradeType.Health,
       UpgradeType.Speed,
       UpgradeType.Damage,
-      UpgradeType.Armor,
       UpgradeType.AttackSpeed,
       UpgradeType.HpRegen,
     ].forEach((key) => {
@@ -154,11 +157,16 @@ export class Character extends GameObject {
       -maxCharacterSpeed,
       maxCharacterSpeed
     );
-    this.spd = this.velocity.length();
-    if (this.spd > 0) {
-      this.walkCyclePercent += this.spd * 0.5;
-      this.walkCyclePercent = this.spd > 0.01 ? mod(this.walkCyclePercent) : 0;
+    // change angle back and forth while moving for animation
+    const velocityLength = this.velocity.length();
+    this.angle = 0;
+    if (velocityLength > 0) {
+      this.walkCyclePercent += velocityLength * 0.2;
+      this.walkCyclePercent =
+        velocityLength > 0.01 ? mod(this.walkCyclePercent) : 0;
+      this.angle = this.walkCyclePercent < 0.5 ? 0.05 : -0;
     }
+
     // mirror sprite if moving left
     if (moveInput.x) {
       this.d = moveInput.x > 0 ? 1 : -1;
@@ -218,13 +226,6 @@ export class Character extends GameObject {
   }
 
   render(): void {
-    // animation
-    if (this.spd > 0.02) {
-      const animationFrame = Math.floor(this.walkCyclePercent * 2) + 1;
-      this.tileInfo = this.spriteAtlas[animationFrame];
-    } else {
-      this.tileInfo = this.spriteAtlas[0];
-    }
     drawTile(
       this.pos.subtract(vec2(0, -0.4)),
       this.drawSize || this.size,

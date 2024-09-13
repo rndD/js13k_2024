@@ -85,7 +85,7 @@ class Button extends EngineObject {
       // white
       WHITE
     );
-    drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8);
+    drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8, BLACK);
     for (let i = 0; i < this.text.length; i++) {
       let text = "* " + this.text[i];
       if (i === 0) {
@@ -275,7 +275,7 @@ export type ISTATS = {
   [UpgradeType.Damage]: number;
   [UpgradeType.Speed]: number;
   [UpgradeType.AttackSpeed]: number;
-  [UpgradeType.Armor]: number;
+  // [UpgradeType.Armor]: number;
   [UpgradeType.HpRegen]: number;
 };
 
@@ -286,7 +286,7 @@ class CharacterStats extends EngineObject {
   }
 
   render() {
-    drawText("Stats:", this.pos.add(vec2(1.5, 0)), 1, hsl(0, 0, 1));
+    // drawText("Stats:", this.pos.add(vec2(1.5, 0)), 1, hsl(0, 0, 1));
     Object.entries(mainSystem.character.stats).forEach(([key, value], i) => {
       let text = `${UPGRADES[key].i}: ${value}`;
       if (UPGRADES_WITH_PERCENT.includes(Number(key))) {
@@ -300,9 +300,9 @@ class CharacterStats extends EngineObject {
       if (Number(key) === UpgradeType.HpRegen) {
         text = text + "hp / 3sec";
       }
-      if (Number(key) === UpgradeType.Armor) {
-        text = `${UPGRADES[key].i}: -${value} dmg`;
-      }
+      // if (Number(key) === UpgradeType.Armor) {
+      //   text = `${UPGRADES[key].i}: -${value} dmg`;
+      // }
       drawText(
         text,
         this.pos.add(vec2(0, -i - 1)),

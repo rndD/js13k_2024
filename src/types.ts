@@ -26,7 +26,7 @@ export const enum UpgradeType {
   Damage,
   AttackSpeed,
   HpRegen,
-  Armor,
+  // Armor,
 }
 
 export const enum MemoryType {

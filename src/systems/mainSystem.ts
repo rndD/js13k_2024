@@ -105,7 +105,7 @@ export class MainSystem {
     this.map = map;
     this.rooms = rooms;
 
-    const floorTile = generateLevelLayer(map, rooms, true);
+    const floorTile = generateLevelLayer(map, true);
     floorTile.redraw();
     this.setBackground();
 
@@ -154,11 +154,11 @@ export class MainSystem {
   }
 
   setBackground() {
-    if (this.levels[this.l + 1]) {
-      const { map, rooms } = this.levels[this.l + 1];
-      const floorTile = generateLevelLayer(map, rooms, false);
-      // new NextLevel(floorTile);
-    }
+    // if (this.levels[this.l + 1]) {
+    //   const { map, rooms } = this.levels[this.l + 1];
+    //   const floorTile = generateLevelLayer(map, rooms, false);
+    //   // new NextLevel(floorTile);
+    // }
     new Sky();
   }
 
@@ -178,6 +178,8 @@ export class MainSystem {
       return acc;
     }, 13);
   }
+
+  is;
 
   addXP(xp: number) {
     this.xp += xp;
@@ -286,7 +288,7 @@ export class MainSystem {
     // drawTextScreen(`Dead enemies: ${this.deadEnemiesCount}`, vec2(100, 40), 16);
     // drawTextScreen(`Enemy Level: ${this.enemyLevel}`, vec2(70, 60), 16);
     drawTextScreen(
-      `💔: ${this.character.hp}/${this.character.mHp}`,
+      `HP: ${this.character.hp}/${this.character.mHp}`,
       vec2(70, 80),
       16
     );

@@ -2,7 +2,6 @@ import {
   Color,
   drawText,
   ParticleEmitter,
-  tile,
   Timer,
   vec2,
   Vector2,
@@ -10,11 +9,12 @@ import {
 import { GameObject } from "../base/gameObject";
 import { GameObjectType } from "../types";
 import { mainSystem } from "../systems/mainSystem";
+import { BLACK } from "../constants";
 
 export class LevelExit extends GameObject {
   animationTimer = new Timer(0.5);
   constructor(pos: Vector2) {
-    super(GameObjectType.LevelExit, pos, vec2(2), tile(11, 8));
+    super(GameObjectType.LevelExit, pos, vec2(2), undefined, undefined, BLACK);
     this.setCollision(true);
     this.mass = 0;
     new ParticleEmitter(

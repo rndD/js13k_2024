@@ -6,6 +6,7 @@ import {
   paused,
   setPaused,
   setFontDefault,
+  keyWasReleased,
 } from "littlejsengine";
 import { CharacterMenu } from "./levelUpUI";
 import { mainSystem } from "./systems/mainSystem";
@@ -49,16 +50,16 @@ function gameUpdatePost() {
     setPaused(true);
     characterMenu = new CharacterMenu(false, true);
   }
-  if (mainSystem.gameEnded && !characterMenu) {
-    setPaused(true);
-    characterMenu = new CharacterMenu(true);
-  }
+  // if (mainSystem.gameEnded && !characterMenu) {
+  //   setPaused(true);
+  //   characterMenu = new CharacterMenu(true);
+  // }
   mainSystem.gameUpdatePost();
 
   // TODO remove , debug
-  // if (keyWasReleased("Enter") && !paused) {
-  //   setPaused(!paused);
-  // }
+  if (keyWasReleased("Enter") && !paused) {
+    setPaused(!paused);
+  }
 
   if (paused && !characterMenu) {
     characterMenu = new CharacterMenu();

@@ -65,7 +65,7 @@ class Bullet extends GameObject {
 export class Gun extends Weapon implements IWeapon {
   type = WeaponType.Gun;
   constructor(stats: Stats) {
-    super(vec2(0, 0), vec2(1), tile(4, 8));
+    super(vec2(0, 0), vec2(1), tile(2));
     const [, distance, dmg, fireRate] = stats;
     this.dist = distance;
     this.dmg = dmg;
@@ -73,7 +73,6 @@ export class Gun extends Weapon implements IWeapon {
 
     this.fireTimer.set(rand(-0.02, 0.02));
   }
-  dis: number;
   donNotAttackFlying?: boolean | undefined;
 
   fire(): void {

@@ -1,4 +1,4 @@
-import { mod, rgb, tile, TileInfo, Timer, vec2, Vector2 } from "littlejsengine";
+import { rgb, tile, Timer, vec2, Vector2 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { makeDebris } from "./base/gameEffects";
 import { mainSystem } from "./systems/mainSystem";
@@ -7,73 +7,67 @@ import { GameObjectType, UpgradeType } from "./types";
 import { Sounds, soundSystem } from "./systems/soundSystem";
 
 export class Enemy extends GameObject {
-  spriteAtlas: TileInfo[] = [tile(7, 8), tile(8, 8)];
-  flyingSpriteAtlas: TileInfo[] = [tile(9, 8), tile(10, 8)];
-
   isFlying = false;
   attackTimer = new Timer(1);
   dmg!: number;
   fallingTimer = new Timer();
-  walkCyclePercent = 0;
   s: number = 0.04;
   l: number = 1;
 
   constructor(pos: Vector2, level: number, isFlying: boolean) {
-    super(GameObjectType.Enemy, pos, vec2(1), tile(7, 8));
+    super(GameObjectType.Enemy, pos, vec2(1));
     this.isFlying = isFlying;
     // pink and green
     let color = isFlying ? rgb(1, 0, 1) : rgb(0, 1, 0);
     this.l = level;
-    switch (level) {
-      case 1: {
-        this.size = vec2(1);
-        this.dmg = isFlying ? 2 : 5;
-        this.hp = isFlying ? 5 : 10;
-        this.s = isFlying ? 0.05 : 0.04;
-        break;
-      }
-      case 2: {
-        this.size = vec2(1.5);
-        this.dmg = isFlying ? 5 : 10;
-        this.hp = isFlying ? 10 : 20;
-        this.s = isFlying ? 0.06 : 0.04;
-        break;
-      }
-      case 3: {
-        this.size = vec2(2);
-        this.dmg = isFlying ? 4 : 9;
-        this.hp = isFlying ? 15 : 30;
-        this.s = isFlying ? 0.07 : 0.05;
-        // orange
-        color = rgb(1, 0.5, 0);
-        break;
-      }
-      case 4: {
-        this.size = vec2(2.5);
-        this.dmg = isFlying ? 7 : 15;
-        this.hp = isFlying ? 20 : 40;
-        this.s = isFlying ? 0.08 : 0.06;
-        // gray
-        color = rgb(0.5);
-        break;
-      }
-      case 5: {
-        this.size = vec2(4);
-        this.isFlying = true;
-        this.dmg = 30;
 
-        this.hp = 500;
-        this.s = 0.11;
-        // black
-        color = rgb(0);
-        break;
-      }
+    this.size = vec2(1);
+    this.dmg = isFlying ? 2 : 5;
+    this.hp = isFlying ? 5 : 10;
+    this.s = isFlying ? 0.05 : 0.04;
+    if (level === 2) {
+      this.size = vec2(1.5);
+      this.dmg = isFlying ? 5 : 10;
+      this.hp = isFlying ? 10 : 20;
+      this.s = isFlying ? 0.06 : 0.04;
     }
+    if (level === 3) {
+      this.size = vec2(2);
+      this.dmg = isFlying ? 4 : 9;
+      this.hp = isFlying ? 15 : 30;
+      this.s = isFlying ? 0.07 : 0.05;
+      // orange
+      color = rgb(1, 0.5, 0);
+    }
+    if (level === 4) {
+      this.size = vec2(2.5);
+      this.dmg = isFlying ? 7 : 15;
+      this.hp = isFlying ? 20 : 40;
+      this.s = isFlying ? 0.08 : 0.06;
+      // gray
+      color = rgb(0.5);
+    }
+    if (level === 5) {
+      this.size = vec2(4);
+      this.isFlying = true;
+      this.dmg = 30;
+
+      this.hp = 500;
+      this.s = 0.11;
+      // black
+      color = rgb(0);
+    }
+
     this.color = color;
 
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
     this.renderOrder = 1;
+    if (this.isFlying) {
+      this.tileInfo = tile(6);
+    } else {
+      this.tileInfo = tile(5);
+    }
   }
 
   update() {
@@ -83,13 +77,6 @@ export class Enemy extends GameObject {
     }
     const moveDir = mainSystem.character.pos.subtract(this.pos).normalize();
     this.velocity = moveDir.scale(this.s);
-    const velocityLength = this.velocity.length();
-
-    if (velocityLength > 0) {
-      this.walkCyclePercent += velocityLength * 0.5;
-      this.walkCyclePercent =
-        velocityLength > 0.01 ? mod(this.walkCyclePercent) : 0;
-    }
 
     if (this.velocity.x >= 0) {
       this.mirror = false;
@@ -121,8 +108,8 @@ export class Enemy extends GameObject {
     if (object.gameObjectType === GameObjectType.Character) {
       if (this.attackTimer.elapsed() && !mainSystem.character.isDead()) {
         this.attackTimer.set(1);
-        const armor = mainSystem.character.stats[UpgradeType.Armor];
-        object.damage(this.dmg - armor > 0 ? this.dmg - armor : 1);
+        // const armor = mainSystem.character.stats[UpgradeType.Armor];
+        object.damage(this.dmg);
       }
       return false;
     }
@@ -158,15 +145,5 @@ export class Enemy extends GameObject {
     }
     soundSystem.play(Sounds.enemyHit);
     return hp;
-  }
-
-  render(): void {
-    const animationFrame = Math.floor(this.walkCyclePercent * 2);
-    if (this.isFlying) {
-      this.tileInfo = this.flyingSpriteAtlas[animationFrame];
-    } else {
-      this.tileInfo = this.spriteAtlas[animationFrame];
-    }
-    super.render();
   }
 }

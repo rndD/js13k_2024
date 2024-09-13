@@ -1,5 +1,4 @@
 import {
-  ASSERT,
   Color,
   EngineObject,
   hsl,
@@ -15,6 +14,7 @@ export class GameObject extends EngineObject {
   hp: number = 1;
   gameObjectType: GameObjectType;
   damageTimer: Timer;
+  walkCyclePercent = 0;
 
   constructor(
     t: GameObjectType,
@@ -42,7 +42,6 @@ export class GameObject extends EngineObject {
   }
 
   damage(damage: number) {
-    ASSERT(damage >= 0);
     if (this.isDead()) return 0;
 
     // set damage timer
