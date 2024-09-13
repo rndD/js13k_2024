@@ -1,78 +1,82 @@
 import {
   engineInit,
   vec2,
-  setCameraScale,
-  drawTextScreen,
   setTileSizeDefault,
   setTileFixBleedScale,
   paused,
   setPaused,
-  keyWasReleased,
-  mouseWheel,
-  cameraScale,
-  mousePos,
-  setCameraPos,
-  cameraPos,
-  drawLine,
-  rgb,
   setFontDefault,
+  keyWasReleased,
 } from "littlejsengine";
-import { CharacterMenu } from "./ui";
-import { LEVELS_XP, mainSystem } from "./systems/mainSystem";
+import { CharacterMenu } from "./levelUpUI";
+import { mainSystem } from "./systems/mainSystem";
+import { MainMenu } from "./menuUI";
 
 let characterMenu: CharacterMenu | undefined;
+let mainMenu: MainMenu | undefined;
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
   setTileSizeDefault(vec2(8));
   setTileFixBleedScale(0.05);
-  // setTouchGamepadEnable(true);
+  setFontDefault("monospace");
 
   // called once after the engine starts up
   // setup the game
-
-  setCameraScale(22);
-
-  mainSystem.init();
-  setFontDefault("monospace");
+  mainMenu = new MainMenu();
+  // mainMenu.startGame();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate() {
   // called every frame at 60 frames per second
   // handle input and update the game state
+  if (mainMenu?.showMenu) {
+    return;
+  }
+
   mainSystem.update();
-  // if (mainSystem.character.isDead() && !paused) {
-  //   setPaused(true);
-  // }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost() {
   // called after physics and objects are updated
   // setup camera and prepare for render
-  // set camera
-  setCameraPos(cameraPos.lerp(mainSystem.character.pos, 0.3));
 
-  if (keyWasReleased("Space")) {
+  if (mainMenu?.showMenu) {
+    return;
+  }
+  if (mainSystem.win && !characterMenu) {
+    setPaused(true);
+    characterMenu = new CharacterMenu(false, true);
+  }
+  if (mainSystem.gameEnded && !characterMenu) {
+    setPaused(true);
+    characterMenu = new CharacterMenu(true);
+  }
+  mainSystem.gameUpdatePost();
+
+  // TODO remove , debug
+  if (keyWasReleased("Enter") && !paused) {
     setPaused(!paused);
   }
+
   if (paused && !characterMenu) {
     characterMenu = new CharacterMenu();
   }
+
   if (!paused && characterMenu) {
-    characterMenu && characterMenu.destroy();
+    characterMenu.destroy();
     characterMenu = undefined;
   }
 
-  // todo remove
-  if (mouseWheel) {
-    setCameraScale(cameraScale + mouseWheel * 0.2);
-  }
+  // TODO remove
+  // if (mouseWheel) {
+  //   setCameraScale(cameraScale + mouseWheel * 0.2);
+  // }
 
   if (paused && characterMenu) {
-    keyWasReleased("ArrowRight") && characterMenu.select(1);
-    keyWasReleased("ArrowLeft") && characterMenu.select(-1);
-    mousePos && characterMenu.mouseSelect(mousePos);
+    characterMenu.gameUpdatePost();
   }
 }
 
@@ -87,51 +91,14 @@ function gameRenderPost() {
   // called after objects are rendered
   // draw effects or hud that appear above all objects
   // todo hud
-  drawTextScreen(
-    `Live enemies: ${mainSystem.enemies.length}`,
-    vec2(95, 20),
-    16
-  );
-  drawTextScreen(
-    `Dead enemies: ${mainSystem.deadEnemiesCount}`,
-    vec2(100, 40),
-    16
-  );
-  drawTextScreen(`Enemy Level: ${mainSystem.enemyLevel}`, vec2(70, 60), 16);
-  drawTextScreen(
-    `HP: ${mainSystem.character.health}/${mainSystem.character.maxHealth}`,
-    vec2(70, 80),
-    16
-  );
-  drawTextScreen(
-    `XP: ${mainSystem.xp}/${LEVELS_XP[mainSystem.characterLevel + 1]}`,
-    vec2(70, 100),
-    16
-  );
 
-  // arrow to exit
-  if (
-    mainSystem.levelExit &&
-    mainSystem.levelExit.pos.distance(mainSystem.character.pos) > 20
-  ) {
-    const angle = mainSystem.levelExit.pos
-      .subtract(mainSystem.character.pos)
-      .angle();
-    const posStart = mainSystem.character.pos.add(
-      mainSystem.character.pos.copy().setAngle(angle, 18)
-    );
-    const posEnd = mainSystem.character.pos.add(
-      mainSystem.character.pos.copy().setAngle(angle, 18.5)
-    );
-    // console.log(posStart, posEnd, mainSystem.character.pos);
-
-    drawLine(posStart, posEnd, 0.3, rgb(1, 0, 0, 0.5));
+  if (mainMenu?.showMenu) {
+    return;
   }
+
+  mainSystem.gameRenderPost();
 }
 
-///////////////////////////////////////////////////////////////////////////////
-// Startup LittleJS Engine
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [
-  "/tileset.png", // first
-  "/_walk.png", // second
+  "/_walk.png",
 ]);

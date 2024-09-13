@@ -14,7 +14,7 @@ import { mainSystem } from "../systems/mainSystem";
 export class LevelExit extends GameObject {
   animationTimer = new Timer(0.5);
   constructor(pos: Vector2) {
-    super(GameObjectType.LevelExit, pos, vec2(2), tile(59, 8, 0));
+    super(GameObjectType.LevelExit, pos, vec2(2), tile(11, 8));
     this.setCollision(true);
     this.mass = 0;
     new ParticleEmitter(

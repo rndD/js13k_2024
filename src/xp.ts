@@ -4,12 +4,14 @@ import { mainSystem } from "./systems/mainSystem";
 export class XP extends EngineObject {
   timer = new Timer(0.1);
   following = false;
+  xp: number;
 
-  constructor(pos: Vector2) {
+  constructor(pos: Vector2, xp: number) {
     super(pos, new Vector2(0.4, 0.4));
-    // Set the color to green
-    this.color = rgb(0, 255, 0, 0.5);
+    // Set the color to green and blue
+    this.color = xp === 1 ? rgb(0, 255, 0, 0.5) : rgb(0, 0, 255, 0.5);
     this.renderOrder = 0;
+    this.xp = xp;
   }
   update(): void {
     super.update();
@@ -30,7 +32,7 @@ export class XP extends EngineObject {
       // destroy when close to player
       this.destroy();
       // add xp to player
-      mainSystem.addXP(1);
+      mainSystem.addXP(this.xp);
     }
   }
 }

@@ -25,7 +25,7 @@ export class CrossLaser extends Weapon implements IWeapon {
 
   constructor(stats: Stats) {
     super(vec2(0), vec2(1));
-    this.fireTimer.set(this.fireRate + rand(-0.02, 0.02));
+    this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, liveTime, , size] = stats;
     this.distance = distance;
     this.dmg = dmg;

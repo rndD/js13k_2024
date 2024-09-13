@@ -6,7 +6,6 @@ export const enum GameObjectType {
   Bullet,
   Effect,
   AreaDmg,
-  EnemyBullet,
   Weapon,
   LevelExit,
 }
@@ -28,11 +27,14 @@ export const enum UpgradeType {
   AttackSpeed,
   HpRegen,
   Armor,
+  Dodge,
 }
 
 export const enum MemoryType {
   Weapon,
   Upgrade,
+  MemoryUpgrade,
+  XPUpgade,
 }
 
 export const enum MemoryUpgrade {
@@ -42,8 +44,23 @@ export const enum MemoryUpgrade {
   Roadroller = 5, // 27
   XemGolfing = 6, // 33
 }
+export const MEMORY_UPGRADES = [
+  MemoryUpgrade.Uglify,
+  MemoryUpgrade.Gzip,
+  MemoryUpgrade.ClosureCompiler,
+  MemoryUpgrade.Roadroller,
+  MemoryUpgrade.XemGolfing,
+];
 
-export type Memory = Array<
+export const AUTOUPGADEBLE_WEAPONS = [
+  WeaponType.Spikes,
+  WeaponType.Field,
+  WeaponType.CrossLaser,
+];
+
+export type MemoryItem =
   | [MemoryType.Weapon, WeaponType, number]
-  | [MemoryType.Upgrade, UpgradeType, number]
->;
+  | [MemoryType.Upgrade, UpgradeType]
+  | [MemoryType.MemoryUpgrade, MemoryUpgrade]
+  | [MemoryType.XPUpgade, number];
+export type Memory = Array<MemoryItem>;

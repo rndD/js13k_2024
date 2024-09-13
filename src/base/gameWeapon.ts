@@ -1,6 +1,7 @@
 import { TileInfo, Timer, Vector2 } from "littlejsengine";
 import { GameObject } from "./gameObject";
-import { GameObjectType, WeaponType } from "../types";
+import { GameObjectType, UpgradeType, WeaponType } from "../types";
+import { mainSystem } from "../systems/mainSystem";
 
 export interface IWeapon extends GameObject {
   fireRate: number;
@@ -36,7 +37,9 @@ export class Weapon extends GameObject {
   }
 
   fire() {
-    this.fireTimer.set(this.fireRate);
+    this.fireTimer.set(
+      this.fireRate / mainSystem.character.stats[UpgradeType.AttackSpeed]
+    );
   }
 
   aimAt(pos: Vector2) {

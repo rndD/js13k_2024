@@ -1,27 +1,24 @@
-import { setTileCollisionData, TileLayer, TileLayerData } from "littlejsengine";
-import { tile, vec2, randInt } from "littlejsengine";
+import { randInt } from "littlejsengine";
 
 // dungeon generation
 const GRID_WIDTH = 150;
 const GRID_HEIGHT = 150;
 
 const MIN_ROOM_SIZE = 5;
-const MAX_ROOM_SIZE = 25;
+const MAX_ROOM_SIZE = 22;
 
 const MIN_CORRIDOR_LENGTH = 4;
-const MAX_CORRIDOR_LENGTH = 10;
+const MAX_CORRIDOR_LENGTH = 8;
 
 const DEFAULT_ROOMS = 20;
 
 // Room structure
-export interface Room {
+interface Room {
   x: number;
   y: number;
   width: number;
   height: number;
 }
-
-export type LevelMap = number[][];
 
 function createRoom(): Room {
   const width = randInt(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
@@ -101,11 +98,13 @@ function createVerticalCorridor(
   }
 }
 
-export function generateDungeon(roomCount = DEFAULT_ROOMS): [LevelMap, Room[]] {
+export function generateDungeon(
+  roomCount = DEFAULT_ROOMS
+): [number[][], Room[]] {
   const rooms: Room[] = [];
   // Dungeon grid (0 = empty, 1 = room, 2 = corridor)
-  let grid: number[][] = Array.from({ length: GRID_HEIGHT + 1 }, () =>
-    Array(GRID_WIDTH + 1).fill(0)
+  let grid: number[][] = Array.from({ length: GRID_HEIGHT }, () =>
+    Array(GRID_WIDTH).fill(0)
   );
 
   for (let i = 0; i < roomCount; i++) {
@@ -123,7 +122,6 @@ export function generateDungeon(roomCount = DEFAULT_ROOMS): [LevelMap, Room[]] {
 
     rooms.push(newRoom);
   }
-  // debug
   // console.log(grid.map((row) => row.join("")).join("\n"));
 
   return [grid, rooms];
@@ -143,35 +141,3 @@ export const hasNeighbor = (map: number[][], x: number, y: number) =>
   directions.some(([dx, dy]) => {
     return map[x + dx] && map[x + dx][y + dy] > 0;
   });
-
-export function generateLevelLayer(
-  map: LevelMap,
-  rooms: Room[],
-  doCollisions = true
-) {
-  const floorTile = new TileLayer(
-    vec2(0),
-    vec2(map.length, map[0].length),
-    tile(12, 8)
-  );
-
-  for (let x = 0; x < map.length; x++) {
-    for (let y = 0; y < map[x].length; y++) {
-      if (map[x][y] === 0 && doCollisions) {
-        if (hasNeighbor(map, x, y)) {
-          setTileCollisionData(vec2(x, y), 1);
-
-          continue;
-        }
-      }
-      if (map[x][y] > 0) {
-        if (rooms.find((r) => r.x === y && r.y === x)) {
-          floorTile.setData(vec2(x, y), new TileLayerData(11));
-        } else {
-          floorTile.setData(vec2(x, y), new TileLayerData(12));
-        }
-      }
-    }
-  }
-  return floorTile;
-}

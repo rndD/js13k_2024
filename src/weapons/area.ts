@@ -28,7 +28,7 @@ export class Sword extends Weapon implements IWeapon {
   areaSize: number;
 
   constructor(stats: Stats) {
-    super(vec2(0), vec2(1), tile(3, 8, 1));
+    super(vec2(0), vec2(1), tile(3, 8));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, , , size] = stats;
     this.distance = distance;
@@ -80,7 +80,7 @@ export class SwordDmgArea extends GameObject {
   }
 
   render(): void {
-    const t = tile(3, 8, 1);
+    const t = tile(3, 8);
     const globalPercent = this.liveTimer.getPercent();
     // debug
     // drawRect(this.pos, this.size, rgb(1, 0, 0, 0.5));
@@ -121,7 +121,7 @@ export class Mortar extends Weapon implements IWeapon {
   areaSize!: number;
 
   constructor(stats: Stats) {
-    super(vec2(0), vec2(1), tile(5, 8, 1));
+    super(vec2(0), vec2(1), tile(5, 8));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, lifeTime, dmgOverTime, size] = stats;
     this.distance = distance;
@@ -199,7 +199,13 @@ class MortarShell extends GameObject {
     super.update();
     if (this.shellTimer.elapsed()) {
       this.destroy();
-      new AreaDmg(this.pos, vec2(this.areaSize), this.dmg, this.dmgOverTime);
+      new AreaDmg(
+        this.pos,
+        vec2(this.areaSize),
+        this.dmg,
+        this.dmgOverTime,
+        this.fireTime
+      );
     }
   }
 }
@@ -211,11 +217,18 @@ class AreaDmg extends GameObject {
   dmgFire: number;
 
   dmgedFirst = false;
-  constructor(pos: Vector2, size: Vector2, dmg: number, dmgFire: number) {
+  constructor(
+    pos: Vector2,
+    size: Vector2,
+    dmg: number,
+    dmgFire: number,
+    lifeTime: number
+  ) {
     super(GameObjectType.AreaDmg, pos, size);
     this.color = rgb(1, 0, 0, 0.03);
     this.dmg = dmg;
     this.dmgFire = dmgFire;
+    this.liveTimer.set(lifeTime);
   }
 
   update() {
@@ -265,7 +278,10 @@ class AreaDmg extends GameObject {
     if (this.dmgTimer.elapsed()) {
       // find all enemies in area
       mainSystem.enemies.forEach((enemy) => {
-        if (isOverlapping(this.pos, this.size, enemy.pos, enemy.size)) {
+        if (
+          !enemy.isFlying &&
+          isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
+        ) {
           enemy.damage(this.dmgFire);
         }
       });
@@ -416,7 +432,7 @@ class SpikesArea extends EngineObject {
   liveTimer = new Timer(0.8);
   dmgedFirst = false;
   constructor(pos: Vector2, size: Vector2, dmg: number) {
-    super(pos, size, tile(6, 8, 1));
+    super(pos, size, tile(6, 8));
     this.color = rgb(1, 0, 0, 0.5);
     this.renderOrder = 0;
     this.dmg = dmg;

@@ -9,14 +9,16 @@ import {
   mousePos,
   tile,
   TileInfo,
+  Timer,
   vec2,
   Vector2,
 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
-import { GameObjectType, MemoryType, WeaponType } from "./types";
-import { WEAPONS } from "./stats";
+import { GameObjectType, MemoryType, UpgradeType, WeaponType } from "./types";
+import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
+import { Marker } from "./enemy";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -29,30 +31,36 @@ const WEAPONS_POSITIONS = [
 ];
 
 export class Character extends GameObject {
-  spriteAtlas: TileInfo[] = [tile(0, 8, 1), tile(1, 8, 1), tile(2, 8, 1)];
+  spriteAtlas: TileInfo[] = [tile(0, 8), tile(1, 8), tile(2, 8)];
   walkCyclePercent = 0;
   speed = 0.1;
-  maxHealth = 100;
+  hpRegenTimer = new Timer(3);
 
   direction: -1 | 1 = 1;
   weapons: { [key: string]: IWeapon[] } = {};
-  // upgrades: IWeapon[] = [];
+
+  // stats
+  maxHealth: number = 100;
+  stats: ISTATS = {
+    [UpgradeType.Health]: 50,
+    [UpgradeType.Speed]: 1,
+    [UpgradeType.Damage]: 1,
+    [UpgradeType.Armor]: 0,
+    [UpgradeType.AttackSpeed]: 1,
+    [UpgradeType.Dodge]: 0,
+    [UpgradeType.HpRegen]: 0,
+  };
 
   constructor(pos: Vector2) {
-    super(GameObjectType.Character, pos, vec2(1), tile(1, 8, 1));
+    super(GameObjectType.Character, pos, vec2(1), tile(1, 8));
     this.setCollision(true, false);
     this.size = vec2(1, 0.5);
 
     this.drawSize = vec2(2, 2);
 
-    this.health = this.maxHealth;
-
+    this.calcStats();
     // add weapons
     this.buildWeaponsSlots();
-    // this.addWeapon(new Sword());
-    // this.addWeapon(new Sword());
-    // this.addWeapon(new CrossLaser());
-    // this.addWeapon(new Mortar());
     mainSystem.memory.forEach((m) => {
       if (m[0] === MemoryType.Weapon) {
         const w = WEAPONS[m[1]].w;
@@ -60,7 +68,81 @@ export class Character extends GameObject {
         this.addWeapon(new w(stats));
       }
     });
-    // this.addWeapon(new ForceField());
+  }
+
+  calcStats() {
+    [
+      UpgradeType.Health,
+      UpgradeType.Speed,
+      UpgradeType.Damage,
+      UpgradeType.Armor,
+      UpgradeType.AttackSpeed,
+      UpgradeType.Dodge,
+      UpgradeType.HpRegen,
+    ].forEach((key) => {
+      this.stats[key] = mainSystem.memory.reduce(
+        (acc, m) =>
+          m[0] === MemoryType.Upgrade && m[1] === key
+            ? UPGRADES_WITH_PERCENT.includes(key)
+              ? acc + UPGRADES[m[1]].s / 100
+              : acc + UPGRADES[m[1]].s
+            : acc,
+        this.stats[key]
+      );
+    });
+    console.log(this.stats);
+    // this.stats[UpgradeType.Health] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Health
+    //       ? acc + UPGRADES[m[1]].s
+    //       : acc,
+    //   this.stats[UpgradeType.Health]
+    // );
+    // this.stats[UpgradeType.Speed] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Speed
+    //       ? acc + UPGRADES[m[1]].s / 100
+    //       : acc,
+    //   this.stats[UpgradeType.Speed]
+    // );
+    // this.stats[UpgradeType.Damage] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Damage
+    //       ? acc + UPGRADES[m[1]].s / 100
+    //       : acc,
+    //   this.stats[UpgradeType.Damage]
+    // );
+    // this.stats[UpgradeType.Armor] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Armor
+    //       ? acc + UPGRADES[m[1]].s
+    //       : acc,
+    //   this.stats[UpgradeType.Armor]
+    // );
+    // this.stats[UpgradeType.AttackSpeed] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.AttackSpeed
+    //       ? acc + UPGRADES[m[1]].s / 100
+    //       : acc,
+    //   this.stats[UpgradeType.AttackSpeed]
+    // );
+    // this.stats[UpgradeType.Ddodge] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Dodge
+    //       ? acc + UPGRADES[m[1]].s / 100
+    //       : acc,
+    //   this.stats[UpgradeType.Dodge]
+    // );
+    // this.stats[UpgradeType.HpRegen] = mainSystem.memory.reduce(
+    //   (acc, m) =>
+    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.HpRegen
+    //       ? acc + UPGRADES[m[1]].s
+    //       : acc,
+    //   this.stats[UpgradeType.HpRegen]
+    // );
+
+    this.maxHealth = this.stats[UpgradeType.Health];
+    this.health = this.stats[UpgradeType.Health];
   }
 
   buildWeaponsSlots() {
@@ -117,7 +199,8 @@ export class Character extends GameObject {
     }
 
     // apply movement acceleration and clamp
-    const maxCharacterSpeed = 0.2;
+    const maxCharacterSpeed = 0.2 + (this.stats[UpgradeType.Speed] - 1);
+    // console.log(maxCharacterSpeed);
     this.velocity.x = clamp(
       moveInput.x * 0.42,
       -maxCharacterSpeed,
@@ -141,6 +224,18 @@ export class Character extends GameObject {
 
     // weapons
     this.updateWeapons();
+
+    if (this.hpRegenTimer.elapsed()) {
+      const newHealth = Math.min(
+        this.maxHealth,
+        this.health + this.stats[UpgradeType.HpRegen]
+      );
+      if (newHealth !== this.health) {
+        this.health = newHealth;
+        new Marker(this.pos, UPGRADES[UpgradeType.HpRegen].i);
+      }
+      this.hpRegenTimer.set(3);
+    }
   }
 
   updateWeapons() {

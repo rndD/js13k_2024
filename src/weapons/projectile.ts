@@ -60,7 +60,7 @@ class Bullet extends GameObject {
 export class Gun extends Weapon implements IWeapon {
   type = WeaponType.Gun;
   constructor(stats: Stats) {
-    super(vec2(0, 0), vec2(1), tile(4, 8, 1));
+    super(vec2(0, 0), vec2(1), tile(4, 8));
     const [, distance, dmg, fireRate] = stats;
     this.distance = distance;
     this.dmg = dmg;

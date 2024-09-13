@@ -57,13 +57,15 @@ export class Sky extends EngineObject {
   skyColor: Color;
   horizonColor: Color;
   seed: number;
-  constructor() {
+  speedMod: number;
+  constructor(speedMod: number = 1) {
     super();
 
     this.renderOrder = -1e4 + 1;
     this.skyColor = randColor(hsl(0, 0, 0.5, 0.1), hsl(0, 0, 0.1, 0.9));
     this.horizonColor = this.skyColor.subtract(hsl(0, 0, 0.05, 0)).mutate(0.3);
     this.seed = randInt(10);
+    this.speedMod = speedMod;
   }
 
   render() {
@@ -81,9 +83,12 @@ export class Sky extends EngineObject {
     mainContext.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
     const random = new RandomGenerator(this.seed);
-    for (let i = 15; i--; ) {
+    for (let i = 25; i--; ) {
       const size = random.float(3, 5) ** 2;
-      const speed = random.float() < 0.9 ? random.float(5) : random.float(2, 7);
+      const speed =
+        random.float() < 0.9
+          ? random.float(5 * this.speedMod)
+          : random.float(2 * this.speedMod, 7 * this.speedMod);
       const color = hsl(192, 0, 100, 0.8);
       const extraSpace = 50;
       const w = mainCanvas.width + 2 * extraSpace,

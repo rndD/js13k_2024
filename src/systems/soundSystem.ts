@@ -3,6 +3,7 @@ import { Sound, Timer } from "littlejsengine";
 export const enum Sounds {
   enemyDie,
   enemyHit,
+  levelUp,
 }
 
 export class SoundSystem {
@@ -55,6 +56,29 @@ export class SoundSystem {
       0.02,
       ,
       130,
+    ]),
+    [Sounds.levelUp]: new Sound([
+      2,
+      ,
+      690,
+      0.09,
+      0.28,
+      0.4,
+      1,
+      3.3,
+      ,
+      5,
+      423,
+      0.06,
+      0.04,
+      ,
+      ,
+      0.1,
+      ,
+      0.98,
+      0.14,
+      ,
+      -1425,
     ]),
   };
 
