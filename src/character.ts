@@ -36,7 +36,7 @@ export class Character extends GameObject {
   weapons: { [key: string]: IWeapon[] } = {};
 
   // stats
-  mHp: number = 100;
+  mHp!: number;
   stats: ISTATS = {
     [UpgradeType.Health]: 50,
     [UpgradeType.Speed]: 1,
