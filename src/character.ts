@@ -49,11 +49,10 @@ export class Character extends GameObject {
   };
 
   constructor(pos: Vector2) {
-    super(GameObjectType.Character, pos, vec2(1), tile(1, 8));
+    super(GameObjectType.Character, pos, vec2(1, 0.5), tile(1, 8));
     this.setCollision(true, false);
-    this.size = vec2(1, 0.5);
 
-    this.drawSize = vec2(2, 2);
+    this.drawSize = vec2(2);
 
     this.calcStats();
     // add weapons

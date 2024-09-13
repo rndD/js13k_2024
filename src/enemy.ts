@@ -15,46 +15,46 @@ export class Enemy extends GameObject {
   dmg!: number;
   fallingTimer = new Timer();
   walkCyclePercent = 0;
-  speed: number = 0.04;
-  level: number = 1;
+  s: number = 0.04;
+  l: number = 1;
 
   constructor(pos: Vector2, level: number, isFlying: boolean) {
     super(GameObjectType.Enemy, pos, vec2(1), tile(7, 8));
     this.isFlying = isFlying;
     // pink and green
-    this.color = isFlying ? rgb(1, 0, 1) : rgb(0, 1, 0);
-    this.level = level;
+    let color = isFlying ? rgb(1, 0, 1) : rgb(0, 1, 0);
+    this.l = level;
     switch (level) {
       case 1: {
         this.size = vec2(1);
         this.dmg = isFlying ? 2 : 5;
         this.hp = isFlying ? 5 : 10;
-        this.speed = isFlying ? 0.05 : 0.04;
+        this.s = isFlying ? 0.05 : 0.04;
         break;
       }
       case 2: {
         this.size = vec2(1.5);
         this.dmg = isFlying ? 5 : 10;
         this.hp = isFlying ? 10 : 20;
-        this.speed = isFlying ? 0.06 : 0.04;
+        this.s = isFlying ? 0.06 : 0.04;
         break;
       }
       case 3: {
         this.size = vec2(2);
         this.dmg = isFlying ? 4 : 9;
         this.hp = isFlying ? 15 : 30;
-        this.speed = isFlying ? 0.07 : 0.05;
+        this.s = isFlying ? 0.07 : 0.05;
         // orange
-        this.color = rgb(1, 0.5, 0);
+        color = rgb(1, 0.5, 0);
         break;
       }
       case 4: {
         this.size = vec2(2.5);
         this.dmg = isFlying ? 7 : 15;
         this.hp = isFlying ? 20 : 40;
-        this.speed = isFlying ? 0.08 : 0.06;
+        this.s = isFlying ? 0.08 : 0.06;
         // gray
-        this.color = rgb(0.5);
+        color = rgb(0.5);
         break;
       }
       case 5: {
@@ -63,12 +63,13 @@ export class Enemy extends GameObject {
         this.dmg = 30;
 
         this.hp = 500;
-        this.speed = 0.11;
+        this.s = 0.11;
         // black
-        this.color = rgb(0);
+        color = rgb(0);
         break;
       }
     }
+    this.color = color;
 
     this.setCollision(true, true, !this.isFlying);
     this.mass = 1;
@@ -81,7 +82,7 @@ export class Enemy extends GameObject {
       return;
     }
     const moveDir = mainSystem.character.pos.subtract(this.pos).normalize();
-    this.velocity = moveDir.scale(this.speed);
+    this.velocity = moveDir.scale(this.s);
     const velocityLength = this.velocity.length();
 
     if (velocityLength > 0) {
@@ -131,13 +132,13 @@ export class Enemy extends GameObject {
   kill() {
     if (this.destroyed) return;
     let xp = 1;
-    if (this.level === 2) {
+    if (this.l === 2) {
       xp = 3;
     }
-    if (this.level === 3) {
+    if (this.l === 3) {
       xp = 6;
     }
-    if (this.level === 4) {
+    if (this.l === 4) {
       xp = 10;
     }
 

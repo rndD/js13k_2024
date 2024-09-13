@@ -24,7 +24,7 @@ import { ArrowLeft, ArrowRight, PRESS_SPACE, SPACE } from "./constants";
 class ConfirmButton extends EngineObject {
   selected = false;
   constructor(pos: Vector2) {
-    super(pos, vec2(8, 2), undefined, undefined, hsl(0, 0, 1), 101);
+    super(pos, vec2(8, 2), undefined, undefined, undefined, 101);
     // white
   }
   render(): void {
@@ -36,9 +36,9 @@ class ConfirmButton extends EngineObject {
     );
     drawText(
       `Confirm${isTouchDevice ? "" : PRESS_SPACE}`,
-      this.pos.add(vec2(0, 0)),
+      this.pos.add(vec2(0)),
       0.6,
-      hsl(0)
+      hsl(0, 0, 0)
     );
   }
 }
@@ -78,12 +78,17 @@ class Button extends EngineObject {
       // white
       rgb(1)
     );
-    drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8, hsl(0, 0, 0));
+    drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8);
     for (let i = 0; i < this.text.length; i++) {
       let text = "* " + this.text[i];
       if (i === 0) {
         text = this.l ? `${this.l}  lvl ${this.text[i]}` : this.text[i];
-        drawText(text, this.pos.add(vec2(0, 0.6 + i * -0.6)), 0.6, hsl(0));
+        drawText(
+          text,
+          this.pos.add(vec2(0, 0.6 + i * -0.6)),
+          0.6,
+          hsl(0, 0, 0)
+        );
       } else {
         // dark grey
         drawText(
@@ -95,7 +100,12 @@ class Button extends EngineObject {
       }
     }
     if (this.kb) {
-      drawText(`(+${this.kb}kb)`, this.pos.add(vec2(1.5, 1.5)), 0.5, hsl(0));
+      drawText(
+        `(+${this.kb}kb)`,
+        this.pos.add(vec2(1.5, 1.5)),
+        0.5,
+        hsl(0, 0, 0)
+      );
     }
   }
 }

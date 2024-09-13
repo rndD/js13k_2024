@@ -1,5 +1,6 @@
 import {
   ASSERT,
+  Color,
   EngineObject,
   hsl,
   max,
@@ -20,9 +21,11 @@ export class GameObject extends EngineObject {
     pos: Vector2,
     size: Vector2,
     tileInfo?: TileInfo,
-    angle: number = 0
+    angle?: number,
+    color?: Color,
+    z?: number
   ) {
-    super(pos, size, tileInfo, angle);
+    super(pos, size, tileInfo, angle, color, z);
     this.gameObjectType = t;
 
     this.damageTimer = new Timer();

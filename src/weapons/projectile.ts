@@ -19,9 +19,15 @@ class Bullet extends GameObject {
   lifeTimer = new Timer(this.lifeTime);
   dmg!: number;
   constructor(pos: Vector2, angle: number, dmg: number) {
-    super(GameObjectType.Bullet, pos, vec2(0.2, 0.2), undefined, angle);
+    super(
+      GameObjectType.Bullet,
+      pos,
+      vec2(0.2, 0.2),
+      undefined,
+      angle,
+      rgb(1, 0.5, 0)
+    );
     // organge
-    this.color = rgb(1, 0.5, 0);
     this.initialPos = pos;
     this.setCollision(true, false, false);
     this.velocity = vec2(0, this.speed).rotate(-angle);

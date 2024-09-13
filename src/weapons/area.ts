@@ -74,7 +74,7 @@ export class SwordDmgArea extends GameObject {
     this.size = size;
     this.initialPos = pos.copy();
 
-    dmgEnemyInArea(this.pos, this.size, this.dmg);
+    dmgEnemyInArea(this.pos, this.size, this.dmg, true);
   }
 
   render(): void {
@@ -149,9 +149,14 @@ class MortarShell extends GameObject {
   dmgOverTime: number;
   areaSize: number;
   constructor(mortar: Mortar, target: Vector2) {
-    super(GameObjectType.Effect, mortar.pos, vec2(0.3, 0.5));
-    // red
-    this.color = rgb(1, 0, 0);
+    super(
+      GameObjectType.Effect,
+      mortar.pos,
+      vec2(0.3, 0.5),
+      undefined,
+      undefined,
+      rgb(1, 0, 0)
+    );
     this.target = target.copy();
     this.start = mortar.pos.copy();
     this.dmg = mortar.dmg;
@@ -352,8 +357,14 @@ class AreaDmg extends GameObject {
     dmgFire: number,
     lifeTime: number
   ) {
-    super(GameObjectType.AreaDmg, pos, size);
-    this.color = rgb(1, 0, 0, 0.04);
+    super(
+      GameObjectType.AreaDmg,
+      pos,
+      size,
+      undefined,
+      undefined,
+      rgb(1, 0, 0, 0.04)
+    );
     this.dmg = dmg;
     this.dmgFire = dmgFire;
     this.liveTimer.set(lifeTime);
@@ -445,9 +456,17 @@ class SpikesArea extends EngineObject {
   }
 }
 
-const dmgEnemyInArea = (pos: Vector2, size: Vector2, dmg: number) => {
+const dmgEnemyInArea = (
+  pos: Vector2,
+  size: Vector2,
+  dmg: number,
+  flying = false
+) => {
   mainSystem.enemies.forEach((enemy) => {
-    if (!enemy.isFlying && isOverlapping(pos, size, enemy.pos, enemy.size)) {
+    if (
+      (flying || !enemy.isFlying) &&
+      isOverlapping(pos, size, enemy.pos, enemy.size)
+    ) {
       enemy.damage(dmg);
       enemy.applyForce(vec2(0, dmg / 20));
     }

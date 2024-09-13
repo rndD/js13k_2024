@@ -1,4 +1,4 @@
-import { TileInfo, Timer, Vector2 } from "littlejsengine";
+import { Color, TileInfo, Timer, Vector2 } from "littlejsengine";
 import { GameObject } from "./gameObject";
 import { GameObjectType, UpgradeType, WeaponType } from "../types";
 import { mainSystem } from "../systems/mainSystem";
@@ -24,8 +24,15 @@ export class Weapon extends GameObject {
   target?: GameObject;
   dmg!: number;
 
-  constructor(pos: Vector2, size: Vector2, tileInfo?: TileInfo) {
-    super(GameObjectType.Weapon, pos, size, tileInfo);
+  constructor(
+    pos: Vector2,
+    size: Vector2,
+    tileInfo?: TileInfo,
+    angle?: number,
+    color?: Color,
+    z?: number
+  ) {
+    super(GameObjectType.Weapon, pos, size, tileInfo, angle, color, z);
   }
 
   canFire(pos: Vector2): boolean {

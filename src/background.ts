@@ -9,49 +9,48 @@ import {
   randColor,
   randInt,
   RandomGenerator,
-  TileLayer,
   time,
   vec2,
 } from "littlejsengine";
 
-export class NextLevel extends EngineObject {
-  tileLayer: TileLayer;
-  color: Color;
+// export class NextLevel extends EngineObject {
+//   tileLayer: TileLayer;
+//   color: Color;
 
-  constructor(tileLayer: TileLayer) {
-    super();
+//   constructor(tileLayer: TileLayer) {
+//     super();
 
-    // character = new Character(vec2(0));
+//     // character = new Character(vec2(0));
 
-    this.tileLayer = tileLayer;
-    this.renderOrder = -1e4;
-    this.color = randColor(hsl(0, 0, 0.5), hsl(0, 0, 0.9));
-    this.tileLayer.redraw();
-    this.tileLayer.renderOrder = -1e4 - 1;
-    this.tileLayer.scale = vec2(0.5);
-  }
+//     this.tileLayer = tileLayer;
+//     this.renderOrder = -1e4;
+//     this.color = randColor(hsl(0, 0, 0.5), hsl(0, 0, 0.9));
+//     this.tileLayer.redraw();
+//     this.tileLayer.renderOrder = -1e4 - 1;
+//     this.tileLayer.scale = vec2(0.5);
+//   }
 
-  render() {
-    // create canvas and draw tile layer
-    // draw black background
-    mainContext.fillStyle = "black";
-    mainContext.fillRect(0, 0, mainCanvasSize.x, mainCanvasSize.y);
-    const scale = this.tileLayer.size;
-    let parallax = vec2(1e3, -100).scale(1 ** 2);
-    let cameraDeltaFromCenter = cameraPos
-      .subtract(scale)
-      .divide(scale.divide(parallax));
-    const pos = mainCanvasSize
-      .scale(0.1) // centerscreen
-      .add(cameraDeltaFromCenter.scale(-0.4)); // apply parallax
-    //   .add(vec2(-scale.x / 2, -scale.y / 2));
-    // mainContext.fillStyle = "red";d
-    // mainContext.fillRect(pos.x, pos.y, 300, 300);
-    // mainContext.globalCompositeOperation = "lighter";
+//   render() {
+//     // create canvas and draw tile layer
+//     // draw black background
+//     mainContext.fillStyle = "black";
+//     mainContext.fillRect(0, 0, mainCanvasSize.x, mainCanvasSize.y);
+//     const scale = this.tileLayer.size;
+//     let parallax = vec2(1e3, -100).scale(1 ** 2);
+//     let cameraDeltaFromCenter = cameraPos
+//       .subtract(scale)
+//       .divide(scale.divide(parallax));
+//     const pos = mainCanvasSize
+//       .scale(0.1) // centerscreen
+//       .add(cameraDeltaFromCenter.scale(-0.4)); // apply parallax
+//     //   .add(vec2(-scale.x / 2, -scale.y / 2));
+//     // mainContext.fillStyle = "red";d
+//     // mainContext.fillRect(pos.x, pos.y, 300, 300);
+//     // mainContext.globalCompositeOperation = "lighter";
 
-    mainContext.drawImage(this.tileLayer.canvas, pos.x, pos.y);
-  }
-}
+//     mainContext.drawImage(this.tileLayer.canvas, pos.x, pos.y);
+//   }
+// }
 
 export class Sky extends EngineObject {
   skyColor: Color;

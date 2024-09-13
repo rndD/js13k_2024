@@ -19,7 +19,7 @@ import {
 import { Enemy } from "../enemy";
 import { Character } from "../character";
 import { generateDungeon, generateLevelLayer, LevelMap, Room } from "./level";
-import { NextLevel, Sky } from "../background";
+import { Sky } from "../background";
 import { LevelExit } from "../levelObjects/levelObjects";
 import { Memory, MemoryType, WeaponType } from "../types";
 import { Sounds, soundSystem } from "./soundSystem";
@@ -100,7 +100,7 @@ export class MainSystem {
   }
 
   startLevel() {
-    initTileCollision(vec2(250, 250));
+    initTileCollision(vec2(250));
     const { map, rooms } = this.levels[this.l];
     this.map = map;
     this.rooms = rooms;
@@ -157,7 +157,7 @@ export class MainSystem {
     if (this.levels[this.l + 1]) {
       const { map, rooms } = this.levels[this.l + 1];
       const floorTile = generateLevelLayer(map, rooms, false);
-      new NextLevel(floorTile);
+      // new NextLevel(floorTile);
     }
     new Sky();
   }
