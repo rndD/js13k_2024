@@ -1,8 +1,7 @@
 import { randInt } from "littlejsengine";
 
 // dungeon generation
-const GRID_WIDTH = 150;
-const GRID_HEIGHT = 150;
+const GRID = 150;
 
 const MIN_ROOM_SIZE = 5;
 const MAX_ROOM_SIZE = 22;
@@ -23,8 +22,8 @@ interface Room {
 function createRoom(): Room {
   const width = randInt(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
   const height = randInt(MIN_ROOM_SIZE, MAX_ROOM_SIZE);
-  const x = randInt(1, GRID_WIDTH - width - 1);
-  const y = randInt(1, GRID_HEIGHT - height - 1);
+  const x = randInt(1, GRID - width - 1);
+  const y = randInt(1, GRID - height - 1);
 
   return { x, y, width, height };
 }
@@ -103,8 +102,8 @@ export function generateDungeon(
 ): [number[][], Room[]] {
   const rooms: Room[] = [];
   // Dungeon grid (0 = empty, 1 = room, 2 = corridor)
-  let grid: number[][] = Array.from({ length: GRID_HEIGHT }, () =>
-    Array(GRID_WIDTH).fill(0)
+  let grid: number[][] = Array.from({ length: GRID }, () =>
+    Array(GRID).fill(0)
   );
 
   for (let i = 0; i < roomCount; i++) {

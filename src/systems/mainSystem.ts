@@ -32,6 +32,7 @@ export const LEVELS_XP = [
   50,
   100,
   150,
+  200,
   300,
   450,
   700,
@@ -43,6 +44,8 @@ export const LEVELS_XP = [
   3000,
   4000,
   5000,
+  6500,
+  8000,
   10000,
   Infinity,
 ];
@@ -55,7 +58,7 @@ export class MainSystem {
   enemies!: Enemy[];
   deadEnemiesCount!: number;
 
-  level!: number;
+  l!: number;
   map!: LevelMap;
   levels!: { map: LevelMap; rooms: Room[]; floorTile?: TileLayer }[];
   rooms!: Room[];
@@ -66,7 +69,7 @@ export class MainSystem {
   characterLevel!: number;
   gameEnded = false;
 
-  memory: Memory = [];
+  m: Memory = [];
   superBoss: Enemy | undefined;
   win = false;
 
@@ -82,9 +85,9 @@ export class MainSystem {
     this.characterLevel = 0;
     this.enemyLevel = 1;
     this.deadEnemiesCount = 0;
-    this.level = 1;
+    this.l = 1;
     this.enemies = [];
-    this.memory = [
+    this.m = [
       [
         MemoryType.Weapon,
         [WeaponType.Gun, WeaponType.Sword][Math.random() > 0.5 ? 0 : 1],
@@ -98,7 +101,7 @@ export class MainSystem {
 
   startLevel() {
     initTileCollision(vec2(250, 250));
-    const { map, rooms } = this.levels[this.level];
+    const { map, rooms } = this.levels[this.l];
     this.map = map;
     this.rooms = rooms;
 
@@ -124,12 +127,12 @@ export class MainSystem {
   startNextLevel() {
     this.clearLevel();
 
-    this.level++;
+    this.l++;
     this.startLevel();
   }
 
   setLevelObjects() {
-    if (this.levels[this.level + 1]) {
+    if (this.levels[this.l + 1]) {
       const pos = vec2(
         this.rooms[this.rooms.length - 1].y + 1,
         this.rooms[this.rooms.length - 1].x + 1
@@ -146,13 +149,13 @@ export class MainSystem {
     }
     for (let i = 1; i < this.rooms.length - 1; i++) {
       const pos = vec2(this.rooms[i].y + 1, this.rooms[i].x + 1);
-      new XP(pos.subtract(vec2(0.5)), (this.level + 1) * 3);
+      new XP(pos.subtract(vec2(0.5)), (this.l + 1) * 4);
     }
   }
 
   setBackground() {
-    if (this.levels[this.level + 1]) {
-      const { map, rooms } = this.levels[this.level + 1];
+    if (this.levels[this.l + 1]) {
+      const { map, rooms } = this.levels[this.l + 1];
       const floorTile = generateLevelLayer(map, rooms, false);
       new NextLevel(floorTile);
     }
@@ -167,7 +170,7 @@ export class MainSystem {
   //character
   getMaxMemory() {
     // console.log(this.memory);
-    return this.memory.reduce((acc, mt) => {
+    return this.m.reduce((acc, mt) => {
       if (mt[0] === MemoryType.MemoryUpgrade) {
         // console.log(mt);
         return acc + mt[1];
@@ -219,16 +222,16 @@ export class MainSystem {
       this.spawnTimer.set(this.getTimeForTimer());
 
       let maxEnemies = 30;
-      if (this.level === 1) {
+      if (this.l === 1) {
         maxEnemies = 60;
       }
-      if (this.level === 2) {
+      if (this.l === 2) {
         maxEnemies = 100;
       }
-      if (this.level === 3) {
+      if (this.l === 3) {
         maxEnemies = 300;
       }
-      if (this.level === 4) {
+      if (this.l === 4) {
         maxEnemies = 500;
       }
 
@@ -237,7 +240,7 @@ export class MainSystem {
           this.chillTime = true;
           return;
         }
-        const enemyLevelLocal = randInt(0, Math.min(this.level + 1, 4));
+        const enemyLevelLocal = randInt(0, Math.min(this.l + 1, 4));
         // higher chance for higher level enemies
         const isFlying = rand() <= 0.15;
         this.enemies.push(
@@ -252,7 +255,7 @@ export class MainSystem {
       this.chillTime = false;
       return 5;
     }
-    return 3 + randInt(0, 2) + this.level;
+    return 3 + randInt(0, 2) + this.l;
   }
 
   setDeadEnemiesCount(plus: number) {
@@ -283,7 +286,7 @@ export class MainSystem {
     // drawTextScreen(`Dead enemies: ${this.deadEnemiesCount}`, vec2(100, 40), 16);
     // drawTextScreen(`Enemy Level: ${this.enemyLevel}`, vec2(70, 60), 16);
     drawTextScreen(
-      `💔: ${this.character.health}/${this.character.maxHealth}`,
+      `💔: ${this.character.hp}/${this.character.mHp}`,
       vec2(70, 80),
       16
     );

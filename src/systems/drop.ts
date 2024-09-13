@@ -10,7 +10,7 @@ import { rand, randInt } from "littlejsengine";
 
 export const calcCurrentKb = () => {
   let currentKb = 0;
-  mainSystem.memory.forEach((m) => {
+  mainSystem.m.forEach((m) => {
     if (m[0] === MemoryType.Weapon) {
       currentKb += WEAPONS[m[1]][m[2]][0];
     }
@@ -24,7 +24,7 @@ export const calcCurrentKb = () => {
 
 export const findNextMemoryUpgrade = (): number => {
   let maxUpgrade = 0;
-  mainSystem.memory.forEach((m) => {
+  mainSystem.m.forEach((m) => {
     if (m[0] === MemoryType.MemoryUpgrade) {
       maxUpgrade = Math.max(maxUpgrade, m[1]);
     }
@@ -42,9 +42,9 @@ export const chooseRandomItem = (position: number): MemoryItem => {
   const lastKb = mainSystem.getMaxMemory() - calcCurrentKb();
   let toChoose: MemoryItem;
 
-  if (mainSystem.memory.length > 0) {
+  if (mainSystem.m.length > 0) {
     // for the first position if there is a memory for last weapon upgrade
-    const lastItem = mainSystem.memory[mainSystem.memory.length - 1];
+    const lastItem = mainSystem.m[mainSystem.m.length - 1];
     const lastWeapon =
       lastItem[0] === MemoryType.Weapon && lastItem[2] < 3 ? lastItem : null;
 
@@ -87,7 +87,7 @@ export const chooseRandomItem = (position: number): MemoryItem => {
 
   if (position === 0 && weaponsAcc.length > 0 && rand() < 0.8) {
     toChoose = weaponsAcc[randInt(0, weaponsAcc.length - 1)];
-    const alreadyExist = mainSystem.memory.find(
+    const alreadyExist = mainSystem.m.find(
       (mt) => mt[0] === toChoose[0] && mt[1] === toChoose[1]
     );
     if (!alreadyExist || !AUTOUPGADEBLE_WEAPONS.includes(toChoose[1])) {
@@ -112,7 +112,7 @@ export const chooseRandomItem = (position: number): MemoryItem => {
     const item = acc[randInt(0, acc.length - 1)];
     if (item[0] === MemoryType.Weapon) {
       toChoose = item;
-      const alreadyExist = mainSystem.memory.find(
+      const alreadyExist = mainSystem.m.find(
         (mt) => mt[0] === toChoose[0] && mt[1] === toChoose[1]
       );
       if (!alreadyExist || !AUTOUPGADEBLE_WEAPONS.includes(toChoose[1])) {

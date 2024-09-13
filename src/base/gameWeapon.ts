@@ -6,7 +6,7 @@ import { mainSystem } from "../systems/mainSystem";
 export interface IWeapon extends GameObject {
   fireRate: number;
   type: WeaponType;
-  distance: number;
+  dist: number;
   fireTimer: Timer;
   canFire: (pos: Vector2) => boolean;
   aimAt: (pos: Vector2) => void;
@@ -19,7 +19,7 @@ export interface IWeapon extends GameObject {
 export class Weapon extends GameObject {
   fireTimer = new Timer();
   fireRate!: number;
-  distance = 1000;
+  dist = 1000;
   minDistance = 0;
   target?: GameObject;
   dmg!: number;
@@ -31,7 +31,7 @@ export class Weapon extends GameObject {
   canFire(pos: Vector2): boolean {
     return (
       this.fireTimer.elapsed() &&
-      this.pos.distance(pos) <= this.distance &&
+      this.pos.distance(pos) <= this.dist &&
       this.pos.distance(pos) >= this.minDistance
     );
   }

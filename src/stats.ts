@@ -132,7 +132,7 @@ export const UPGRADES: IUPGADES = {
   },
   [UpgradeType.Armor]: {
     i: "🛡️",
-    s: 1,
+    s: 3,
   },
   [UpgradeType.HpRegen]: {
     i: "❤️‍🩹",

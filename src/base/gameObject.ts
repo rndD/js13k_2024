@@ -11,7 +11,7 @@ import {
 import { GameObjectType } from "../types";
 
 export class GameObject extends EngineObject {
-  health: number = 1;
+  hp: number = 1;
   gameObjectType: GameObjectType;
   damageTimer: Timer;
 
@@ -48,15 +48,15 @@ export class GameObject extends EngineObject {
       child.damageTimer && child.damageTimer.set();
 
     // apply damage and kill if necessary
-    const newHealth = max(this.health - damage, 0);
+    const newHealth = max(this.hp - damage, 0);
     if (!newHealth) this.kill();
 
     // set new health and return amount damaged
-    return this.health - (this.health = newHealth);
+    return this.hp - (this.hp = newHealth);
   }
 
   isDead() {
-    return !this.health;
+    return !this.hp;
   }
 
   kill() {

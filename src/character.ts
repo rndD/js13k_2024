@@ -19,6 +19,7 @@ import { IWeapon } from "./base/gameWeapon";
 import { GameObjectType, MemoryType, UpgradeType, WeaponType } from "./types";
 import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
 import { Marker } from "./enemy";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./constants";
 
 const WEAPONS_POSITIONS = [
   vec2(-0.7, 0), // left
@@ -33,14 +34,14 @@ const WEAPONS_POSITIONS = [
 export class Character extends GameObject {
   spriteAtlas: TileInfo[] = [tile(0, 8), tile(1, 8), tile(2, 8)];
   walkCyclePercent = 0;
-  speed = 0.1;
+  spd = 0.1;
   hpRegenTimer = new Timer(3);
 
-  direction: -1 | 1 = 1;
+  d: -1 | 1 = 1;
   weapons: { [key: string]: IWeapon[] } = {};
 
   // stats
-  maxHealth: number = 100;
+  mHp: number = 100;
   stats: ISTATS = {
     [UpgradeType.Health]: 50,
     [UpgradeType.Speed]: 1,
@@ -61,7 +62,7 @@ export class Character extends GameObject {
     this.calcStats();
     // add weapons
     this.buildWeaponsSlots();
-    mainSystem.memory.forEach((m) => {
+    mainSystem.m.forEach((m) => {
       if (m[0] === MemoryType.Weapon) {
         const w = WEAPONS[m[1]].w;
         const stats = WEAPONS[m[1]][m[2]];
@@ -80,7 +81,7 @@ export class Character extends GameObject {
       UpgradeType.Dodge,
       UpgradeType.HpRegen,
     ].forEach((key) => {
-      this.stats[key] = mainSystem.memory.reduce(
+      this.stats[key] = mainSystem.m.reduce(
         (acc, m) =>
           m[0] === MemoryType.Upgrade && m[1] === key
             ? UPGRADES_WITH_PERCENT.includes(key)
@@ -90,59 +91,9 @@ export class Character extends GameObject {
         this.stats[key]
       );
     });
-    console.log(this.stats);
-    // this.stats[UpgradeType.Health] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Health
-    //       ? acc + UPGRADES[m[1]].s
-    //       : acc,
-    //   this.stats[UpgradeType.Health]
-    // );
-    // this.stats[UpgradeType.Speed] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Speed
-    //       ? acc + UPGRADES[m[1]].s / 100
-    //       : acc,
-    //   this.stats[UpgradeType.Speed]
-    // );
-    // this.stats[UpgradeType.Damage] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Damage
-    //       ? acc + UPGRADES[m[1]].s / 100
-    //       : acc,
-    //   this.stats[UpgradeType.Damage]
-    // );
-    // this.stats[UpgradeType.Armor] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Armor
-    //       ? acc + UPGRADES[m[1]].s
-    //       : acc,
-    //   this.stats[UpgradeType.Armor]
-    // );
-    // this.stats[UpgradeType.AttackSpeed] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.AttackSpeed
-    //       ? acc + UPGRADES[m[1]].s / 100
-    //       : acc,
-    //   this.stats[UpgradeType.AttackSpeed]
-    // );
-    // this.stats[UpgradeType.Ddodge] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.Dodge
-    //       ? acc + UPGRADES[m[1]].s / 100
-    //       : acc,
-    //   this.stats[UpgradeType.Dodge]
-    // );
-    // this.stats[UpgradeType.HpRegen] = mainSystem.memory.reduce(
-    //   (acc, m) =>
-    //     m[0] === MemoryType.Upgrade && m[1] === UpgradeType.HpRegen
-    //       ? acc + UPGRADES[m[1]].s
-    //       : acc,
-    //   this.stats[UpgradeType.HpRegen]
-    // );
 
-    this.maxHealth = this.stats[UpgradeType.Health];
-    this.health = this.stats[UpgradeType.Health];
+    this.mHp = this.stats[UpgradeType.Health];
+    this.hp = this.stats[UpgradeType.Health];
   }
 
   buildWeaponsSlots() {
@@ -186,9 +137,9 @@ export class Character extends GameObject {
       ? gamepadStick(0)
       : vec2(
           // @ts-ignore
-          keyIsDown("ArrowRight") - keyIsDown("ArrowLeft"),
+          keyIsDown(ArrowRight) - keyIsDown(ArrowLeft),
           // @ts-ignore
-          keyIsDown("ArrowUp") - keyIsDown("ArrowDown")
+          keyIsDown(ArrowUp) - keyIsDown(ArrowDown)
         );
 
     if (mouseIsDown(0)) {
@@ -211,15 +162,14 @@ export class Character extends GameObject {
       -maxCharacterSpeed,
       maxCharacterSpeed
     );
-    this.speed = this.velocity.length();
-    if (this.speed > 0) {
-      this.walkCyclePercent += this.speed * 0.5;
-      this.walkCyclePercent =
-        this.speed > 0.01 ? mod(this.walkCyclePercent) : 0;
+    this.spd = this.velocity.length();
+    if (this.spd > 0) {
+      this.walkCyclePercent += this.spd * 0.5;
+      this.walkCyclePercent = this.spd > 0.01 ? mod(this.walkCyclePercent) : 0;
     }
     // mirror sprite if moving left
     if (moveInput.x) {
-      this.direction = moveInput.x > 0 ? 1 : -1;
+      this.d = moveInput.x > 0 ? 1 : -1;
     }
 
     // weapons
@@ -227,11 +177,11 @@ export class Character extends GameObject {
 
     if (this.hpRegenTimer.elapsed()) {
       const newHealth = Math.min(
-        this.maxHealth,
-        this.health + this.stats[UpgradeType.HpRegen]
+        this.mHp,
+        this.hp + this.stats[UpgradeType.HpRegen]
       );
-      if (newHealth !== this.health) {
-        this.health = newHealth;
+      if (newHealth !== this.hp) {
+        this.hp = newHealth;
         new Marker(this.pos, UPGRADES[UpgradeType.HpRegen].i);
       }
       this.hpRegenTimer.set(3);
@@ -278,7 +228,7 @@ export class Character extends GameObject {
 
   render(): void {
     // animation
-    if (this.speed > 0.02) {
+    if (this.spd > 0.02) {
       const animationFrame = Math.floor(this.walkCyclePercent * 2) + 1;
       this.tileInfo = this.spriteAtlas[animationFrame];
     } else {
@@ -290,7 +240,7 @@ export class Character extends GameObject {
       this.tileInfo,
       this.color,
       this.angle,
-      this.direction < 0,
+      this.d < 0,
       this.additiveColor
     );
     // super.render();

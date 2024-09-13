@@ -14,6 +14,7 @@ import {
 } from "littlejsengine";
 import { mainSystem } from "./systems/mainSystem";
 import { Sky } from "./background";
+import { PRESS_SPACE, SPACE } from "./constants";
 
 export class MainMenu extends EngineObject {
   showMenu = true;
@@ -58,7 +59,7 @@ export class MainMenu extends EngineObject {
     );
 
     drawText(
-      `Start${isTouchDevice ? "" : "(press space)"}`,
+      `Start${isTouchDevice ? "" : PRESS_SPACE}`,
       this.pos.add(vec2(0, -0.5)),
       0.6,
       // black
@@ -67,7 +68,7 @@ export class MainMenu extends EngineObject {
   }
 
   update(): void {
-    if (this.showMenu && keyWasPressed("Space")) {
+    if (this.showMenu && keyWasPressed(SPACE)) {
       this.startGame();
     }
     if (mouseWasReleased(0) && isOverlapping(this.pos, this.size, mousePos)) {

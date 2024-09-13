@@ -19,14 +19,13 @@ import { MemoryItem, MemoryType, UpgradeType } from "./types";
 import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
 import { mainSystem } from "./systems/mainSystem";
 import { calcCurrentKb, chooseRandomItem } from "./systems/drop";
+import { ArrowLeft, ArrowRight, PRESS_SPACE, SPACE } from "./constants";
 
 class ConfirmButton extends EngineObject {
   selected = false;
   constructor(pos: Vector2) {
-    super(pos, vec2(8, 2));
+    super(pos, vec2(8, 2), undefined, undefined, hsl(0, 0, 1), 101);
     // white
-    this.color = hsl(0, 0, 1);
-    this.renderOrder = 101;
   }
   render(): void {
     drawRect(
@@ -36,7 +35,7 @@ class ConfirmButton extends EngineObject {
       rgb(1, 1, 1)
     );
     drawText(
-      `Confirm${isTouchDevice ? "" : "(press space)"}`,
+      `Confirm${isTouchDevice ? "" : PRESS_SPACE}`,
       this.pos.add(vec2(0, 0)),
       0.6,
       hsl(0, 0, 0)
@@ -48,7 +47,7 @@ class Button extends EngineObject {
   text: string[];
   selected = false;
   icon: string;
-  level: number | undefined;
+  l: number | undefined;
   kb: number | undefined;
   constructor(
     pos: Vector2,
@@ -57,13 +56,11 @@ class Button extends EngineObject {
     kb?: number,
     level?: number
   ) {
-    super(pos, vec2(8, 5));
+    super(pos, vec2(8, 5), undefined, undefined, hsl(0, 0, 1), 101);
     // white
-    this.color = hsl(0, 0, 1);
     this.text = text;
-    this.renderOrder = 101;
     this.icon = icon;
-    this.level = level;
+    this.l = level;
     this.kb = kb;
   }
   render(): void {
@@ -85,7 +82,7 @@ class Button extends EngineObject {
     for (let i = 0; i < this.text.length; i++) {
       let text = "* " + this.text[i];
       if (i === 0) {
-        text = this.level ? `${this.level}  lvl ${this.text[i]}` : this.text[i];
+        text = this.l ? `${this.l}  lvl ${this.text[i]}` : this.text[i];
         drawText(
           text,
           this.pos.add(vec2(0, 0.6 + i * -0.6)),
@@ -124,9 +121,7 @@ export class CharacterMenu extends EngineObject {
     const pos = screenToWorld(
       vec2(mainCanvas.width / 2, mainCanvas.height / 2)
     );
-    super(pos, vec2(29, 27));
-    this.renderOrder = 100;
-    this.color = hsl(0, 0, 0, 0.8);
+    super(pos, vec2(29, 27), undefined, undefined, hsl(0, 0, 0, 0.8), 100);
     if (gameOver) {
       this.state = -1;
     }
@@ -229,7 +224,7 @@ export class CharacterMenu extends EngineObject {
         mousePos
       ) &&
         mouseWasReleased(0)) ||
-      keyWasReleased("Space")
+      keyWasReleased(SPACE)
     ) {
       if (this.state !== 0) {
         //refresh page
@@ -244,7 +239,7 @@ export class CharacterMenu extends EngineObject {
   addItem(selected: MemoryItem) {
     if (selected[0] === MemoryType.Weapon && selected[2] > 1) {
       // replace last item with the new one
-      mainSystem.memory = mainSystem.memory.map((m) => {
+      mainSystem.m = mainSystem.m.map((m) => {
         if (m[0] === MemoryType.Weapon && m[1] === selected[1]) {
           return selected;
         }
@@ -256,27 +251,27 @@ export class CharacterMenu extends EngineObject {
       mainSystem.addXP(selected[1]);
       return;
     }
-    mainSystem.memory.push(selected);
+    mainSystem.m.push(selected);
   }
 
   render() {
     super.render();
-    let text = "Level UP!";
+    let text = "Level UP";
     if (this.state === -1) {
-      text = "Game Over!";
+      text = "Game over";
     }
     if (this.state === 1) {
-      text = "You win!";
+      text = "You win";
     }
     drawText(text, this.pos.add(vec2(-10, 6)), 0.9, hsl(0, 0, 1));
     if (this.state === 0) {
-      drawText("Select upgrade", this.pos.add(vec2(10, 6)), 0.9, hsl(0, 0, 1));
+      drawText("Select", this.pos.add(vec2(10, 6)), 0.9, hsl(0, 0, 1));
     }
   }
 
   gameUpdatePost() {
-    keyWasReleased("ArrowRight") && this.select(1);
-    keyWasReleased("ArrowLeft") && this.select(-1);
+    keyWasReleased(ArrowRight) && this.select(1);
+    keyWasReleased(ArrowLeft) && this.select(-1);
     this.mouseSelect();
   }
 }
@@ -293,9 +288,7 @@ export type ISTATS = {
 
 class CharacterStats extends EngineObject {
   constructor(pos: Vector2) {
-    super(pos, vec2(40));
-    this.color = hsl(0, 0, 0, 0.8);
-    this.renderOrder = 101;
+    super(pos, vec2(40), undefined, undefined, hsl(0, 0, 0, 0.8), 101);
     // console.log(mainSystem.character.stats);
   }
 
@@ -334,16 +327,14 @@ class CharacterMemory extends EngineObject {
   maxMemory: number;
   currentMemory: number;
   constructor(pos: Vector2) {
-    super(pos, vec2(40));
-    this.color = hsl(0, 0, 0, 0.8);
-    this.renderOrder = 101;
+    super(pos, vec2(40), undefined, undefined, hsl(0, 0, 0, 0.8), 101);
     this.maxMemory = mainSystem.getMaxMemory();
     this.currentMemory = calcCurrentKb();
   }
 
   render() {
     drawText(
-      `MEMORY ${this.currentMemory}kb / ${this.maxMemory}kb`,
+      `MEM ${this.currentMemory}kb / ${this.maxMemory}kb`,
       this.pos.add(vec2(0.5, 0)),
       1,
       hsl(0, 0, 1),
@@ -355,7 +346,7 @@ class CharacterMemory extends EngineObject {
     // drawRect(this.pos, this.size, this.color);
     let p = 0;
     let y = 0;
-    mainSystem.memory.forEach((m) => {
+    mainSystem.m.forEach((m) => {
       const [upgradeType, _type, level] = m;
       if (
         upgradeType !== MemoryType.Weapon &&

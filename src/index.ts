@@ -6,7 +6,6 @@ import {
   paused,
   setPaused,
   setFontDefault,
-  keyWasReleased,
 } from "littlejsengine";
 import { CharacterMenu } from "./levelUpUI";
 import { mainSystem } from "./systems/mainSystem";
@@ -57,9 +56,9 @@ function gameUpdatePost() {
   mainSystem.gameUpdatePost();
 
   // TODO remove , debug
-  if (keyWasReleased("Enter") && !paused) {
-    setPaused(!paused);
-  }
+  // if (keyWasReleased("Enter") && !paused) {
+  //   setPaused(!paused);
+  // }
 
   if (paused && !characterMenu) {
     characterMenu = new CharacterMenu();
@@ -69,11 +68,6 @@ function gameUpdatePost() {
     characterMenu.destroy();
     characterMenu = undefined;
   }
-
-  // TODO remove
-  // if (mouseWheel) {
-  //   setCameraScale(cameraScale + mouseWheel * 0.2);
-  // }
 
   if (paused && characterMenu) {
     characterMenu.gameUpdatePost();
@@ -100,5 +94,5 @@ function gameRenderPost() {
 }
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [
-  "/_walk.png",
+  "/1.png",
 ]);

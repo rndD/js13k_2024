@@ -62,12 +62,14 @@ export class Gun extends Weapon implements IWeapon {
   constructor(stats: Stats) {
     super(vec2(0, 0), vec2(1), tile(4, 8));
     const [, distance, dmg, fireRate] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.dmg = dmg;
     this.fireRate = fireRate;
 
     this.fireTimer.set(rand(-0.02, 0.02));
   }
+  dis: number;
+  donNotAttackFlying?: boolean | undefined;
 
   fire(): void {
     super.fire();

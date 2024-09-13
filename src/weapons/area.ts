@@ -31,11 +31,13 @@ export class Sword extends Weapon implements IWeapon {
     super(vec2(0), vec2(1), tile(3, 8));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, , , size] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.dmg = dmg;
     this.fireRate = fireRate;
     this.areaSize = size!;
   }
+  dis: number;
+  donNotAttackFlying?: boolean | undefined;
 
   fire(): void {
     super.fire();
@@ -49,11 +51,12 @@ export class Sword extends Weapon implements IWeapon {
 
   render() {
     // hide sword if area is active
-    if (this.area && this.area.liveTimer.active()) {
-      this.color = rgb(1, 1, 1, 0);
-    } else {
-      this.color = rgb(1, 1, 1);
-    }
+    this.color = rgb(
+      1,
+      1,
+      1,
+      this.area && this.area.liveTimer.active() ? 0 : 1
+    );
     super.render();
   }
 }
@@ -124,13 +127,14 @@ export class Mortar extends Weapon implements IWeapon {
     super(vec2(0), vec2(1), tile(5, 8));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, lifeTime, dmgOverTime, size] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.fireRate = fireRate;
     this.dmg = dmg;
     this.fireTime = lifeTime!;
     this.dmgOverTime = dmgOverTime!;
     this.areaSize = size!;
   }
+  dis: number;
 
   fire(): void {
     super.fire();
@@ -307,7 +311,7 @@ export class ForceField extends Weapon implements IWeapon {
     super(vec2(0, 0), vec2(1));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, liveTime, , size] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.dmg = dmg;
     this.fireRate = fireRate;
     this.liveTime = liveTime!;
@@ -315,6 +319,8 @@ export class ForceField extends Weapon implements IWeapon {
     // this.color = rgb(0, 1, 1, 0.05);
     this.size = vec2(size);
   }
+  dis: number;
+  donNotAttackFlying?: boolean | undefined;
 
   fire(): void {
     super.fire();
@@ -378,7 +384,7 @@ export class Spikes extends Weapon implements IWeapon {
   constructor(stats: Stats) {
     super(vec2(0, 0), vec2(1));
     const [kb, distance, dmg, fireRate, , , size] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.dmg = dmg;
     this.fireRate = fireRate;
     this.stepSize = size!;
@@ -387,6 +393,7 @@ export class Spikes extends Weapon implements IWeapon {
     }
     this.fireTimer.set(rand(-0.02, 0.02));
   }
+  dis: number;
 
   fire(): void {
     super.fire();
@@ -432,9 +439,7 @@ class SpikesArea extends EngineObject {
   liveTimer = new Timer(0.8);
   dmgedFirst = false;
   constructor(pos: Vector2, size: Vector2, dmg: number) {
-    super(pos, size, tile(6, 8));
-    this.color = rgb(1, 0, 0, 0.5);
-    this.renderOrder = 0;
+    super(pos, size, tile(6, 8), undefined, rgb(1, 0, 0, 0.5), 0);
     this.dmg = dmg;
   }
 

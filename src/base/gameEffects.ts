@@ -16,6 +16,7 @@ const persistentParticleDestroyCallback = (particle: any) => {
       particle.mirror
     );
 };
+
 export function makeBlood(pos: Vector2, amount: number) {
   makeDebris(pos, hsl(0, 1, 0.5), amount, 0.1, 0);
 }

@@ -27,12 +27,14 @@ export class CrossLaser extends Weapon implements IWeapon {
     super(vec2(0), vec2(1));
     this.fireTimer.set(rand(-0.02, 0.02));
     const [, distance, dmg, fireRate, liveTime, , size] = stats;
-    this.distance = distance;
+    this.dist = distance;
     this.dmg = dmg;
     this.fireRate = fireRate;
     this.liveTime = liveTime!;
     this.lineSize = size!;
   }
+  dis: number;
+  donNotAttackFlying?: boolean | undefined;
 
   fire() {
     super.fire();
@@ -48,13 +50,13 @@ export class CrossLaser extends Weapon implements IWeapon {
           // don't know why but radius is smaller than visual radius
           isOverlapping(
             this.pos,
-            vec2(this.distance * 2, this.lineSize),
+            vec2(this.dist * 2, this.lineSize),
             enemy.pos,
             enemy.size
           ) ||
           isOverlapping(
             this.pos,
-            vec2(this.lineSize, this.distance * 2),
+            vec2(this.lineSize, this.dist * 2),
             enemy.pos,
             enemy.size
           )
@@ -115,16 +117,8 @@ export class CrossLaser extends Weapon implements IWeapon {
       //   gradient2.addColorStop(1, "rgba(255, 0, 0, 0.4)");
       //   mainContext.fillStyle = gradient2;
       //   mainContext.fill();
-      drawRect(
-        this.pos,
-        vec2(this.distance * 2, this.lineSize),
-        rgb(1, 0, 0, 0.3)
-      );
-      drawRect(
-        this.pos,
-        vec2(this.lineSize, this.distance * 2),
-        rgb(1, 0, 0, 0.3)
-      );
+      drawRect(this.pos, vec2(this.dist * 2, this.lineSize), rgb(1, 0, 0, 0.3));
+      drawRect(this.pos, vec2(this.lineSize, this.dist * 2), rgb(1, 0, 0, 0.3));
     }
   }
 }

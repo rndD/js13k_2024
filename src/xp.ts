@@ -8,8 +8,13 @@ export class XP extends EngineObject {
 
   constructor(pos: Vector2, xp: number) {
     super(pos, new Vector2(0.4, 0.4));
-    // Set the color to green and blue
-    this.color = xp === 1 ? rgb(0, 255, 0, 0.5) : rgb(0, 0, 255, 0.5);
+    // Set to gree if xp is less than 5, otherwise set to blue and gold for 10
+    this.color =
+      xp < 5
+        ? rgb(0, 1, 0, 0.8)
+        : xp < 10
+          ? rgb(0, 0, 1, 0.8)
+          : rgb(1, 1, 0, 0.8);
     this.renderOrder = 0;
     this.xp = xp;
   }
