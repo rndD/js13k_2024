@@ -1,8 +1,6 @@
 import {
   clamp,
   drawTile,
-  gamepadStick,
-  isUsingGamepad,
   keyIsDown,
   mod,
   mouseIsDown,
@@ -18,7 +16,6 @@ import { mainSystem } from "./systems/mainSystem";
 import { IWeapon } from "./base/gameWeapon";
 import { GameObjectType, MemoryType, UpgradeType, WeaponType } from "./types";
 import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
-import { Marker } from "./enemy";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "./constants";
 
 const WEAPONS_POSITIONS = [
@@ -48,7 +45,6 @@ export class Character extends GameObject {
     [UpgradeType.Damage]: 1,
     [UpgradeType.Armor]: 0,
     [UpgradeType.AttackSpeed]: 1,
-    [UpgradeType.Dodge]: 0,
     [UpgradeType.HpRegen]: 0,
   };
 
@@ -78,7 +74,6 @@ export class Character extends GameObject {
       UpgradeType.Damage,
       UpgradeType.Armor,
       UpgradeType.AttackSpeed,
-      UpgradeType.Dodge,
       UpgradeType.HpRegen,
     ].forEach((key) => {
       this.stats[key] = mainSystem.m.reduce(
@@ -133,14 +128,12 @@ export class Character extends GameObject {
     // call parent and update physics
     super.update();
     // movement control
-    let moveInput = isUsingGamepad
-      ? gamepadStick(0)
-      : vec2(
-          // @ts-ignore
-          keyIsDown(ArrowRight) - keyIsDown(ArrowLeft),
-          // @ts-ignore
-          keyIsDown(ArrowUp) - keyIsDown(ArrowDown)
-        );
+    let moveInput = vec2(
+      // @ts-ignore
+      keyIsDown(ArrowRight) - keyIsDown(ArrowLeft),
+      // @ts-ignore
+      keyIsDown(ArrowUp) - keyIsDown(ArrowDown)
+    );
 
     if (mouseIsDown(0)) {
       moveInput = mousePos.subtract(this.pos);
@@ -182,7 +175,6 @@ export class Character extends GameObject {
       );
       if (newHealth !== this.hp) {
         this.hp = newHealth;
-        new Marker(this.pos, UPGRADES[UpgradeType.HpRegen].i);
       }
       this.hpRegenTimer.set(3);
     }

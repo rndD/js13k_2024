@@ -17,7 +17,7 @@ export const enum WeaponType {
   //   Laser,
   Sword,
   Field,
-  CrossLaser,
+  // CrossLaser,
 }
 
 export const enum UpgradeType {
@@ -27,7 +27,6 @@ export const enum UpgradeType {
   AttackSpeed,
   HpRegen,
   Armor,
-  Dodge,
 }
 
 export const enum MemoryType {

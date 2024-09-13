@@ -2,7 +2,6 @@ import { Color, rgb } from "littlejsengine";
 import { IWeapon } from "./base/gameWeapon";
 import { UpgradeType, WeaponType } from "./types";
 import { ForceField, Mortar, Spikes, Sword } from "./weapons/area";
-import { CrossLaser } from "./weapons/laser";
 import { Gun } from "./weapons/projectile";
 
 type KB = number;
@@ -82,16 +81,16 @@ export const WEAPONS: IWEAPONS = {
     2: [3, 4.5, 18, 0.8, , , 4.8],
     3: [5, 6, 25, 0.5, , , 6],
   },
-  [WeaponType.CrossLaser]: {
-    w: CrossLaser,
-    i: "❌",
-    // yellow
-    c: rgb(1, 1, 0),
-    d: ["CrossLaser.js", "horizontal", "vertical"],
-    1: [2, 30, 0.3, 3.2, 2, , 0.5],
-    2: [3, 30, 0.6, 2.6, 2, , 1],
-    3: [4, 30, 1, 2.3, 2, , 2],
-  },
+  //   [WeaponType.CrossLaser]: {
+  //     w: CrossLaser,
+  //     i: "❌",
+  //     // yellow
+  //     c: rgb(1, 1, 0),
+  //     d: ["CrossLaser.js", "horizontal", "vertical"],
+  //     1: [2, 30, 0.3, 3.2, 2, , 0.5],
+  //     2: [3, 30, 0.6, 2.6, 2, , 1],
+  //     3: [4, 30, 1, 2.3, 2, , 2],
+  //   },
 };
 
 type IUPGADES = Record<
@@ -105,7 +104,6 @@ type IUPGADES = Record<
 export const UPGRADES_WITH_PERCENT = [
   UpgradeType.Damage,
   UpgradeType.Speed,
-  UpgradeType.Dodge,
   UpgradeType.AttackSpeed,
 ];
 
@@ -121,10 +119,6 @@ export const UPGRADES: IUPGADES = {
   [UpgradeType.Health]: {
     i: `💔`,
     s: 5,
-  },
-  [UpgradeType.Dodge]: {
-    i: "🤺",
-    s: 3,
   },
   [UpgradeType.AttackSpeed]: {
     i: "🕒",

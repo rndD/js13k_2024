@@ -50,7 +50,7 @@ export const chooseRandomItem = (position: number): MemoryItem => {
 
     // do we have enough memory for the last weapon upgrade
     if (
-      rand() < 0.5 &&
+      rand() < 0.6 &&
       position === 0 &&
       lastWeapon &&
       // @ts-ignore

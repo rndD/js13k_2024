@@ -165,11 +165,7 @@ export function generateLevelLayer(
         }
       }
       if (map[x][y] > 0) {
-        if (rooms.find((r) => r.x === y && r.y === x)) {
-          floorTile.setData(vec2(x, y), new TileLayerData(11));
-        } else {
-          floorTile.setData(vec2(x, y), new TileLayerData(12));
-        }
+        floorTile.setData(vec2(x, y), new TileLayerData(11));
       }
     }
   }

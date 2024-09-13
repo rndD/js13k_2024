@@ -1,14 +1,4 @@
-import {
-  drawText,
-  mod,
-  rand,
-  rgb,
-  tile,
-  TileInfo,
-  Timer,
-  vec2,
-  Vector2,
-} from "littlejsengine";
+import { mod, rgb, tile, TileInfo, Timer, vec2, Vector2 } from "littlejsengine";
 import { GameObject } from "./base/gameObject";
 import { makeDebris } from "./base/gameEffects";
 import { mainSystem } from "./systems/mainSystem";
@@ -130,11 +120,6 @@ export class Enemy extends GameObject {
     if (object.gameObjectType === GameObjectType.Character) {
       if (this.attackTimer.elapsed() && !mainSystem.character.isDead()) {
         this.attackTimer.set(1);
-        const dodge = mainSystem.character.stats[UpgradeType.Dodge];
-        if (rand() <= dodge) {
-          new Marker(object.pos);
-          return false;
-        }
         const armor = mainSystem.character.stats[UpgradeType.Armor];
         object.damage(this.dmg - armor > 0 ? this.dmg - armor : 1);
       }
@@ -170,6 +155,7 @@ export class Enemy extends GameObject {
     if (!this.isDead()) {
       makeDebris(this.pos, this.color, 5, 0.1);
     }
+    soundSystem.play(Sounds.enemyHit);
     return hp;
   }
 
@@ -181,31 +167,5 @@ export class Enemy extends GameObject {
       this.tileInfo = this.spriteAtlas[animationFrame];
     }
     super.render();
-  }
-}
-
-export class Marker extends GameObject {
-  lifeTimer = new Timer(0.3);
-  text: string;
-  constructor(pos: Vector2, text: string = "dodge") {
-    super(GameObjectType.Effect, pos, vec2(1), tile(0, 8));
-    this.renderOrder = 2;
-    this.velocity = vec2(rand(-0.1, 0.1), rand(-0.1, 0.1));
-    this.text = text;
-  }
-
-  update() {
-    super.update();
-    if (this.lifeTimer.elapsed()) {
-      this.destroy();
-    }
-  }
-  render() {
-    drawText(
-      this.text,
-      this.pos,
-      rgb(1, 1, 1, this.lifeTimer.getPercent()),
-      0.2
-    );
   }
 }

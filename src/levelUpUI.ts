@@ -280,7 +280,6 @@ export type ISTATS = {
   [UpgradeType.Health]: number;
   [UpgradeType.Damage]: number;
   [UpgradeType.Speed]: number;
-  [UpgradeType.Dodge]: number;
   [UpgradeType.AttackSpeed]: number;
   [UpgradeType.Armor]: number;
   [UpgradeType.HpRegen]: number;
