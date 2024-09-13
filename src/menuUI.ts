@@ -14,7 +14,7 @@ import {
 } from "littlejsengine";
 import { mainSystem } from "./systems/mainSystem";
 import { Sky } from "./background";
-import { PRESS_SPACE, SPACE } from "./constants";
+import { BLACK, PRESS_SPACE, SPACE, WHITE } from "./constants";
 
 export class MainMenu extends EngineObject {
   showMenu = true;
@@ -35,17 +35,17 @@ export class MainMenu extends EngineObject {
       this.pos.add(vec2(0, -0.5)),
       this.size,
       // white
-      hsl(0, 0, 1)
+      WHITE
     );
     drawText(
       `Data warrior`,
       this.pos.add(vec2(0, 4)),
       1.5,
       // white
-      hsl(0, 0, 1),
+      WHITE,
       0.2,
       // black
-      hsl(0, 0, 0)
+      BLACK
     );
     drawText(
       `13kb limit`,
@@ -55,7 +55,7 @@ export class MainMenu extends EngineObject {
       hsl(0, 1, 0.5),
       0.2,
       // black
-      hsl(0, 0, 0)
+      BLACK
     );
 
     drawText(
@@ -63,7 +63,7 @@ export class MainMenu extends EngineObject {
       this.pos.add(vec2(0, -0.5)),
       0.6,
       // black
-      hsl(0, 0, 0)
+      BLACK
     );
   }
 

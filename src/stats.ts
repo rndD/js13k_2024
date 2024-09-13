@@ -13,7 +13,6 @@ type dmgOverTime = number | undefined;
 type size = number | undefined;
 export type Stats = [KB, distance, damage, speed, lifeTime, dmgOverTime, size];
 
-const AUTO_AIM = "auto aim";
 const ONLY_GROUND = "only ground enemies";
 
 type IWEAPONS = Record<
@@ -32,7 +31,7 @@ export const WEAPONS: IWEAPONS = {
     i: "🔫",
     // green
     c: rgb(0, 1, 0),
-    d: ["MachineGun.js", AUTO_AIM, "knockback"],
+    d: ["MachineGun.js"],
     1: [2, 15, 1.3, 0.15, , , ,],
     2: [3, 16, 2, 0.12, , , ,],
     3: [5, 17, 3.8, 0.1, , , ,],
@@ -42,7 +41,7 @@ export const WEAPONS: IWEAPONS = {
     i: "📌",
     // blue dark
     c: rgb(0, 0, 1),
-    d: ["Spikes.js", "area dmg", "only horizontal", ONLY_GROUND],
+    d: ["Spikes.js", ONLY_GROUND],
     // [KB, distance, damage, speed, lifeTime, dmgOverTime, size];
     1: [3, 15, 10, 4, , , 2.5],
     2: [5, 15, 18, 3.5, , , 3.5],
@@ -53,7 +52,7 @@ export const WEAPONS: IWEAPONS = {
     i: "💣",
     // red
     c: rgb(1, 0, 0),
-    d: ["Mortar.js", AUTO_AIM, "area dmg", "fire dmg over time", ONLY_GROUND],
+    d: ["Mortar.js", ONLY_GROUND],
     //[KB, distance, damage, speed, lifeTime, dmgOverTime, size];
     1: [3, 15, 7, 2.5, 1, 1, 4.5],
     2: [5, 16, 10, 2, 1.5, 1.1, 5.5],
@@ -64,7 +63,7 @@ export const WEAPONS: IWEAPONS = {
     i: "🌀",
     // purple
     c: rgb(0.5, 0, 0.5),
-    d: ["ForceField.js", "area dmg around you"],
+    d: ["ForceField.js"],
     // [KB, distance, damage, speed, lifeTime, dmgOverTime, size];
     1: [3, 4, 2, 5, 2, , 4],
     2: [5, 4, 2.5, 4.5, 3, , 4.5],
@@ -75,7 +74,7 @@ export const WEAPONS: IWEAPONS = {
     i: "🔪",
     // grey
     c: rgb(0.5, 0.5, 0.5),
-    d: ["Katana.js", AUTO_AIM, "area dmg"],
+    d: ["Katana.js"],
     // [KB, distance, damage, speed, lifeTime, dmgOverTime, size];
     1: [2, 3.3, 10, 1, , , 3.5],
     2: [3, 4.5, 18, 0.8, , , 4.8],

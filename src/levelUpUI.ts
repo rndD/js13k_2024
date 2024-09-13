@@ -19,7 +19,14 @@ import { MemoryItem, MemoryType, UpgradeType } from "./types";
 import { UPGRADES, UPGRADES_WITH_PERCENT, WEAPONS } from "./stats";
 import { mainSystem } from "./systems/mainSystem";
 import { calcCurrentKb, chooseRandomItem } from "./systems/drop";
-import { ArrowLeft, ArrowRight, PRESS_SPACE, SPACE } from "./constants";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BLACK,
+  PRESS_SPACE,
+  SPACE,
+  WHITE,
+} from "./constants";
 
 class ConfirmButton extends EngineObject {
   selected = false;
@@ -38,7 +45,7 @@ class ConfirmButton extends EngineObject {
       `Confirm${isTouchDevice ? "" : PRESS_SPACE}`,
       this.pos.add(vec2(0)),
       0.6,
-      hsl(0, 0, 0)
+      BLACK
     );
   }
 }
@@ -76,19 +83,14 @@ class Button extends EngineObject {
       this.pos,
       this.size,
       // white
-      rgb(1)
+      WHITE
     );
     drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8);
     for (let i = 0; i < this.text.length; i++) {
       let text = "* " + this.text[i];
       if (i === 0) {
         text = this.l ? `${this.l}  lvl ${this.text[i]}` : this.text[i];
-        drawText(
-          text,
-          this.pos.add(vec2(0, 0.6 + i * -0.6)),
-          0.6,
-          hsl(0, 0, 0)
-        );
+        drawText(text, this.pos.add(vec2(0, 0.6 + i * -0.6)), 0.6, BLACK);
       } else {
         // dark grey
         drawText(
@@ -100,12 +102,7 @@ class Button extends EngineObject {
       }
     }
     if (this.kb) {
-      drawText(
-        `(+${this.kb}kb)`,
-        this.pos.add(vec2(1.5, 1.5)),
-        0.5,
-        hsl(0, 0, 0)
-      );
+      drawText(`(+${this.kb}kb)`, this.pos.add(vec2(1.5, 1.5)), 0.5, BLACK);
     }
   }
 }
@@ -121,7 +118,7 @@ export class CharacterMenu extends EngineObject {
     const pos = screenToWorld(
       vec2(mainCanvas.width / 2, mainCanvas.height / 2)
     );
-    super(pos, vec2(29, 27), undefined, undefined, hsl(0, 0, 0, 0.8), 100);
+    super(pos, vec2(29, 27), undefined, undefined, BLACK, 100);
     if (gameOver) {
       this.state = -1;
     }
@@ -182,11 +179,11 @@ export class CharacterMenu extends EngineObject {
       d = [text + suffix];
     }
     if (mt[0] === MemoryType.MemoryUpgrade) {
-      i = "💾";
+      i = "Mem";
       d = [`+${mt[1]}kb`];
     }
     if (mt[0] === MemoryType.XPUpgade) {
-      i = "🌟";
+      i = "";
       d = [`+${mt[1]}xp`];
     }
     // @ts-ignore
@@ -256,7 +253,7 @@ export class CharacterMenu extends EngineObject {
 
   render() {
     super.render();
-    let text = "Level UP";
+    let text = "Lvl up";
     if (this.state === -1) {
       text = "Game over";
     }
@@ -264,9 +261,6 @@ export class CharacterMenu extends EngineObject {
       text = "You win";
     }
     drawText(text, this.pos.add(vec2(-10, 6)), 0.9, hsl(0, 0, 1));
-    if (this.state === 0) {
-      drawText("Select", this.pos.add(vec2(10, 6)), 0.9, hsl(0, 0, 1));
-    }
   }
 
   gameUpdatePost() {
@@ -287,7 +281,7 @@ export type ISTATS = {
 
 class CharacterStats extends EngineObject {
   constructor(pos: Vector2) {
-    super(pos, vec2(40), undefined, undefined, hsl(0, 0, 0, 0.8), 101);
+    super(pos, vec2(40), undefined, undefined, undefined, 101);
     // console.log(mainSystem.character.stats);
   }
 
@@ -326,7 +320,7 @@ class CharacterMemory extends EngineObject {
   maxMemory: number;
   currentMemory: number;
   constructor(pos: Vector2) {
-    super(pos, vec2(40), undefined, undefined, hsl(0, 0, 0, 0.8), 101);
+    super(pos, vec2(40), undefined, undefined, undefined, 101);
     this.maxMemory = mainSystem.getMaxMemory();
     this.currentMemory = calcCurrentKb();
   }
@@ -382,7 +376,7 @@ class CharacterMemory extends EngineObject {
       }
       p++;
       drawRect(this.pos.add(vec2(p, 0 + y)), vec2(1), hsl(0, 0, 0.5));
-      drawRect(this.pos.add(vec2(p, 0 + y)), vec2(0.9), hsl(0, 0, 1));
+      drawRect(this.pos.add(vec2(p, 0 + y)), vec2(0.9), WHITE);
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "allowFreeVars": true,
   "dynamicModels": 0,
-  "recipLearningRate": 2286,
+  "recipLearningRate": 2737,
   "modelMaxCount": 3,
   "modelRecipBaseCount": 76,
   "precision": 16,
@@ -13,10 +13,10 @@
     6,
     7,
     13,
-    21,
+    25,
     42,
-    57,
-    163,
-    204
+    102,
+    113,
+    149
   ]
 }
