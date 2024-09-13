@@ -19,8 +19,7 @@ class Bullet extends GameObject {
   lifeTimer = new Timer(this.lifeTime);
   dmg!: number;
   constructor(pos: Vector2, angle: number, dmg: number) {
-    super(GameObjectType.Bullet, pos, vec2(0.2, 0.2));
-    this.angle = angle;
+    super(GameObjectType.Bullet, pos, vec2(0.2, 0.2), undefined, angle);
     // organge
     this.color = rgb(1, 0.5, 0);
     this.initialPos = pos;

@@ -32,13 +32,13 @@ class ConfirmButton extends EngineObject {
       this.pos,
       this.size,
       // white
-      rgb(1, 1, 1)
+      rgb(1)
     );
     drawText(
       `Confirm${isTouchDevice ? "" : PRESS_SPACE}`,
       this.pos.add(vec2(0, 0)),
       0.6,
-      hsl(0, 0, 0)
+      hsl(0)
     );
   }
 }
@@ -76,19 +76,14 @@ class Button extends EngineObject {
       this.pos,
       this.size,
       // white
-      rgb(1, 1, 1)
+      rgb(1)
     );
     drawText(this.icon, this.pos.add(vec2(0, 1.5)), 0.8, hsl(0, 0, 0));
     for (let i = 0; i < this.text.length; i++) {
       let text = "* " + this.text[i];
       if (i === 0) {
         text = this.l ? `${this.l}  lvl ${this.text[i]}` : this.text[i];
-        drawText(
-          text,
-          this.pos.add(vec2(0, 0.6 + i * -0.6)),
-          0.6,
-          hsl(0, 0, 0)
-        );
+        drawText(text, this.pos.add(vec2(0, 0.6 + i * -0.6)), 0.6, hsl(0));
       } else {
         // dark grey
         drawText(
@@ -100,12 +95,7 @@ class Button extends EngineObject {
       }
     }
     if (this.kb) {
-      drawText(
-        `(+${this.kb}kb)`,
-        this.pos.add(vec2(1.5, 1.5)),
-        0.5,
-        hsl(0, 0, 0)
-      );
+      drawText(`(+${this.kb}kb)`, this.pos.add(vec2(1.5, 1.5)), 0.5, hsl(0));
     }
   }
 }

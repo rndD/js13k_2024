@@ -54,7 +54,7 @@ export const MEMORY_UPGRADES = [
 export const AUTOUPGADEBLE_WEAPONS = [
   WeaponType.Spikes,
   WeaponType.Field,
-  WeaponType.CrossLaser,
+  // WeaponType.CrossLaser,
 ];
 
 export type MemoryItem =

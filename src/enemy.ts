@@ -12,7 +12,7 @@ export class Enemy extends GameObject {
 
   isFlying = false;
   attackTimer = new Timer(1);
-  dmg = 5;
+  dmg!: number;
   fallingTimer = new Timer();
   walkCyclePercent = 0;
   speed: number = 0.04;
@@ -26,21 +26,21 @@ export class Enemy extends GameObject {
     this.level = level;
     switch (level) {
       case 1: {
-        this.size = vec2(1, 1);
+        this.size = vec2(1);
         this.dmg = isFlying ? 2 : 5;
         this.hp = isFlying ? 5 : 10;
         this.speed = isFlying ? 0.05 : 0.04;
         break;
       }
       case 2: {
-        this.size = vec2(1.5, 1.5);
+        this.size = vec2(1.5);
         this.dmg = isFlying ? 5 : 10;
         this.hp = isFlying ? 10 : 20;
         this.speed = isFlying ? 0.06 : 0.04;
         break;
       }
       case 3: {
-        this.size = vec2(2, 2);
+        this.size = vec2(2);
         this.dmg = isFlying ? 4 : 9;
         this.hp = isFlying ? 15 : 30;
         this.speed = isFlying ? 0.07 : 0.05;
@@ -49,23 +49,23 @@ export class Enemy extends GameObject {
         break;
       }
       case 4: {
-        this.size = vec2(2.5, 2.5);
+        this.size = vec2(2.5);
         this.dmg = isFlying ? 7 : 15;
         this.hp = isFlying ? 20 : 40;
         this.speed = isFlying ? 0.08 : 0.06;
         // gray
-        this.color = rgb(0.5, 0.5, 0.5);
+        this.color = rgb(0.5);
         break;
       }
       case 5: {
-        this.size = vec2(4, 4);
+        this.size = vec2(4);
         this.isFlying = true;
         this.dmg = 30;
 
         this.hp = 500;
         this.speed = 0.11;
         // black
-        this.color = rgb(0, 0, 0);
+        this.color = rgb(0);
         break;
       }
     }

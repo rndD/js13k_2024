@@ -100,7 +100,7 @@ export class Character extends GameObject {
   addWeapon(w: IWeapon) {
     if (
       w.type === WeaponType.Field ||
-      w.type === WeaponType.CrossLaser ||
+      // w.type === WeaponType.CrossLaser ||
       w.type === WeaponType.Spikes
     ) {
       const center = WEAPONS_POSITIONS[WEAPONS_POSITIONS.length - 1];

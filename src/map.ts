@@ -126,17 +126,16 @@ export function generateDungeon(
   return [grid, rooms];
 }
 
-const directions = [
-  [0, -1], // left
-  [0, 1], // right
-  [-1, 0], // up
-  [1, 0], // down
-  [-1, -1], // up-left
-  [1, 1], // down-right
-  [-1, 1], // up-right
-  [1, -1], // down-left
-];
 export const hasNeighbor = (map: number[][], x: number, y: number) =>
-  directions.some(([dx, dy]) => {
+  [
+    [0, -1], // left
+    [0, 1], // right
+    [-1, 0], // up
+    [1, 0], // down
+    [-1, -1], // up-left
+    [1, 1], // down-right
+    [-1, 1], // up-right
+    [1, -1], // down-left
+  ].some(([dx, dy]) => {
     return map[x + dx] && map[x + dx][y + dy] > 0;
   });

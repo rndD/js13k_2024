@@ -18,7 +18,6 @@ import {
 import { IWeapon, Weapon } from "../base/gameWeapon";
 import { GameObject } from "../base/gameObject";
 import { mainSystem } from "../systems/mainSystem";
-import { isAABBInRadius } from "../utils";
 import { GameObjectType, WeaponType } from "../types";
 import { Stats } from "../stats";
 
@@ -75,11 +74,7 @@ export class SwordDmgArea extends GameObject {
     this.size = size;
     this.initialPos = pos.copy();
 
-    mainSystem.enemies.forEach((enemy) => {
-      if (isOverlapping(this.pos, this.size, enemy.pos, enemy.size)) {
-        enemy.damage(this.dmg);
-      }
-    });
+    dmgEnemyInArea(this.pos, this.size, this.dmg);
   }
 
   render(): void {
@@ -214,90 +209,6 @@ class MortarShell extends GameObject {
   }
 }
 
-class AreaDmg extends GameObject {
-  liveTimer = new Timer();
-  dmgTimer = new Timer(0.1);
-  dmg: number;
-  dmgFire: number;
-
-  dmgedFirst = false;
-  constructor(
-    pos: Vector2,
-    size: Vector2,
-    dmg: number,
-    dmgFire: number,
-    lifeTime: number
-  ) {
-    super(GameObjectType.AreaDmg, pos, size);
-    this.color = rgb(1, 0, 0, 0.03);
-    this.dmg = dmg;
-    this.dmgFire = dmgFire;
-    this.liveTimer.set(lifeTime);
-  }
-
-  update() {
-    super.update();
-    // particle fire 5 random particles
-    for (let i = 0; i < 5; i++) {
-      new ParticleEmitter(
-        this.pos.add(randInCircle(this.size.x / 2)),
-        0, // pos, angle
-        0.1,
-        0.1,
-        10,
-        PI, // emitSize, emitTime, emitRate, emiteCone
-        0, // tileInfo
-        //red
-        rgb(1, 0, 0),
-        rgb(1, 0, 0),
-        // colorStartA, colorStartB
-        rgb(1, 0.5, 0, 0.8),
-        rgb(1, 0.5, 0, 0.5), // colorEndA, colorEndB
-        0.1,
-        0.1,
-        0.2,
-        0.05,
-        0.05, // time, sizeStart, sizeEnd, speed, angleSpeed
-        0.9,
-        1,
-        -0.3,
-        PI,
-        0.1, // damp, angleDamp, gravity, particleCone, fade
-        0.5,
-        0,
-        0,
-        0,
-        1e8 // randomness, collide, additive, colorLinear, render
-      );
-    }
-    if (!this.dmgedFirst) {
-      this.dmgedFirst = true;
-      // find all enemies in area
-      mainSystem.enemies.forEach((enemy) => {
-        if (isOverlapping(this.pos, this.size, enemy.pos, enemy.size)) {
-          enemy.damage(this.dmg);
-        }
-      });
-    }
-    if (this.dmgTimer.elapsed()) {
-      // find all enemies in area
-      mainSystem.enemies.forEach((enemy) => {
-        if (
-          !enemy.isFlying &&
-          isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
-        ) {
-          enemy.damage(this.dmgFire);
-        }
-      });
-      this.dmgTimer.set(0.1);
-    }
-
-    if (this.liveTimer.elapsed()) {
-      this.destroy();
-    }
-  }
-}
-
 export class ForceField extends Weapon implements IWeapon {
   type = WeaponType.Field;
 
@@ -330,15 +241,8 @@ export class ForceField extends Weapon implements IWeapon {
   update(): void {
     super.update();
     if (this.liveTimer.active() && this.dmgTimer.elapsed()) {
-      // find all enemies in area
-      mainSystem.enemies.forEach((enemy) => {
-        if (
-          // don't know why but radius is smaller than visual radius
-          isAABBInRadius(this.pos, this.size.x / 2 + 0.5, enemy.pos, enemy.size)
-        ) {
-          enemy.damage(this.dmg);
-        }
-      });
+      dmgEnemyInArea(this.pos, this.size, this.dmg);
+
       this.dmgTimer.set(this.dmgEvery);
     }
   }
@@ -434,6 +338,84 @@ export class Spikes extends Weapon implements IWeapon {
   render(): void {}
 }
 
+class AreaDmg extends GameObject {
+  liveTimer = new Timer();
+  dmgTimer = new Timer(0.1);
+  dmg: number;
+  dmgFire: number;
+
+  dmgedFirst = false;
+  constructor(
+    pos: Vector2,
+    size: Vector2,
+    dmg: number,
+    dmgFire: number,
+    lifeTime: number
+  ) {
+    super(GameObjectType.AreaDmg, pos, size);
+    this.color = rgb(1, 0, 0, 0.04);
+    this.dmg = dmg;
+    this.dmgFire = dmgFire;
+    this.liveTimer.set(lifeTime);
+  }
+
+  update() {
+    super.update();
+    // particle fire 5 random particles
+    for (let i = 0; i < 5; i++) {
+      // makeDebris(this.pos, rgb(1, 0, 0), 1, 0.1, 0.3);
+      new ParticleEmitter(
+        this.pos.add(randInCircle(this.size.x / 2)),
+        0, // pos, angle
+        0.1,
+        0.1,
+        10,
+        PI, // emitSize, emitTime, emitRate, emiteCone
+        0, // tileInfo
+        //red
+        rgb(1, 0, 0),
+        rgb(1, 0, 0),
+        // colorStartA, colorStartB
+        rgb(1, 0.5, 0, 0.8),
+        rgb(1, 0.5, 0, 0.5), // colorEndA, colorEndB
+        0.1,
+        0.1,
+        0.2,
+        0.05,
+        0.05, // time, sizeStart, sizeEnd, speed, angleSpeed
+        0.9,
+        1,
+        -0.3,
+        PI,
+        0.1, // damp, angleDamp, gravity, particleCone, fade
+        0.5,
+        0,
+        0,
+        0,
+        1e8 // randomness, collide, additive, colorLinear, render
+      );
+    }
+    if (!this.dmgedFirst) {
+      this.dmgedFirst = true;
+      // find all enemies in area
+      mainSystem.enemies.forEach((enemy) => {
+        if (isOverlapping(this.pos, this.size, enemy.pos, enemy.size)) {
+          enemy.damage(this.dmg);
+        }
+      });
+    }
+    if (this.dmgTimer.elapsed()) {
+      // find all enemies in area
+      dmgEnemyInArea(this.pos, this.size, this.dmgFire);
+      this.dmgTimer.set(0.1);
+    }
+
+    if (this.liveTimer.elapsed()) {
+      this.destroy();
+    }
+  }
+}
+
 class SpikesArea extends EngineObject {
   dmg: number;
   liveTimer = new Timer(0.8);
@@ -452,15 +434,7 @@ class SpikesArea extends EngineObject {
     if (!this.dmgedFirst && percent > 0.3) {
       this.dmgedFirst = true;
       // find all enemies in area
-      mainSystem.enemies.forEach((enemy) => {
-        if (
-          !enemy.isFlying &&
-          isOverlapping(this.pos, this.size, enemy.pos, enemy.size)
-        ) {
-          enemy.damage(this.dmg);
-          enemy.applyForce(vec2(0, this.dmg / 20));
-        }
-      });
+      dmgEnemyInArea(this.pos, this.size, this.dmg);
     }
 
     if (percent < 0.5) {
@@ -470,3 +444,12 @@ class SpikesArea extends EngineObject {
     }
   }
 }
+
+const dmgEnemyInArea = (pos: Vector2, size: Vector2, dmg: number) => {
+  mainSystem.enemies.forEach((enemy) => {
+    if (!enemy.isFlying && isOverlapping(pos, size, enemy.pos, enemy.size)) {
+      enemy.damage(dmg);
+      enemy.applyForce(vec2(0, dmg / 20));
+    }
+  });
+};
