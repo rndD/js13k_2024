@@ -94,5 +94,5 @@ function gameRenderPost() {
 }
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [
-  "/1.png",
+  "./1.png",
 ]);
