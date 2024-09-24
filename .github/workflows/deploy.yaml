@@ -1,0 +1,33 @@
+
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - post-jam
+   
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: node:22
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v3
+
+
+      - run: npm install
+      - run: npm build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
