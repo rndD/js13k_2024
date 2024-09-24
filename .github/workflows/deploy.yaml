@@ -10,20 +10,21 @@ on:
 
 jobs:
   deploy:
-    runs-on: node:22
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: website
     steps:
       - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
 
 
       - run: npm install
-      - run: npm build
+      - run: npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
