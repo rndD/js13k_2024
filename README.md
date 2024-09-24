@@ -1,7 +1,7 @@
-# JS13K games 2024 entry by @rndD
+# This is postjam version of JS13K games 2024 entry by @rndD
 
-js13kgames 2024 gamejam entry.
-Theme: Triskaidekaphobia.
+Check out the original entry [here](https://js13kgames.com/2024/games/data-warrior-13kb-limit)
+This jam theme was : Triskaidekaphobia.
 
 ## Build with
 
