@@ -4487,7 +4487,7 @@ class Character extends GameObject {
         super.update();
         // movement control
         let moveInput = isUsingGamepad
-            ? gamepadStick(0)
+            ? gamepadStick(1)
             : vec2(
             // @ts-ignore
             keyIsDown(ArrowRight) - keyIsDown(ArrowLeft), 
