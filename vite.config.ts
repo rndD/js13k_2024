@@ -49,9 +49,9 @@ export default defineConfig(({ command, mode }) => {
     // @ts-ignore
     config.plugins = [
       typescriptPlugin(),
-      closurePlugin(),
-      roadrollerPlugin(),
-      ectPlugin(),
+      // closurePlugin(),
+      // roadrollerPlugin(),
+      // ectPlugin(),
     ];
   }
 
