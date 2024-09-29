@@ -1,4 +1,11 @@
-import { ASSERT, hsl, ParticleEmitter, PI, Vector2 } from "littlejsengine";
+import {
+  ASSERT,
+  hsl,
+  ParticleEmitter,
+  PI,
+  rand,
+  Vector2,
+} from "littlejsengine";
 import { mainSystem } from "../systems/mainSystem";
 const persistentParticleDestroyCallback = (particle: any) => {
   // copy particle to tile layer on death
@@ -6,7 +13,7 @@ const persistentParticleDestroyCallback = (particle: any) => {
     !particle.tileInfo,
     "quick draw to tile layer uses canvas 2d so must be untextured"
   );
-  if (particle.groundObject)
+  if (rand() < 0.05 && mainSystem.isItFloor(particle.pos))
     // @ts-ignore
     mainSystem.floorTile.drawTile(
       particle.pos,

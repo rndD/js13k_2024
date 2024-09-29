@@ -30,6 +30,7 @@ export const LEVELS_XP = [
   10,
   25,
   50,
+  75,
   100,
   150,
   200,
