@@ -22,7 +22,7 @@ function gameInit() {
   setFontDefault("monospace");
   setTimeout(() => {
     playAudioFile("./DataWarrior13.mp3", 0.4, true);
-  }, 5000);
+  }, 3500);
 
   // called once after the engine starts up
   // setup the game
