@@ -20,8 +20,9 @@ function gameInit() {
   setTileSizeDefault(vec2(8));
   setTileFixBleedScale(0.05);
   setFontDefault("monospace");
-
-  playAudioFile("./DataWarrior13.mp3", 0.4, true);
+  setTimeout(() => {
+    playAudioFile("./DataWarrior13.mp3", 0.4, true);
+  }, 5000);
 
   // called once after the engine starts up
   // setup the game
