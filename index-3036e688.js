@@ -4078,7 +4078,7 @@ class GameObject extends EngineObject {
 const persistentParticleDestroyCallback = (particle) => {
     // copy particle to tile layer on death
     ASSERT(!particle.tileInfo, "quick draw to tile layer uses canvas 2d so must be untextured");
-    if (particle.groundObject)
+    if (rand() < 0.05 && mainSystem.isItFloor(particle.pos))
         // @ts-ignore
         mainSystem.floorTile.drawTile(particle.pos, particle.size, particle.tileInfo, particle.color, particle.angle, particle.mirror);
 };
@@ -4835,6 +4835,7 @@ const LEVELS_XP = [
     10,
     25,
     50,
+    75,
     100,
     150,
     200,
@@ -4855,6 +4856,7 @@ const LEVELS_XP = [
     7500,
     9000,
     11000,
+    13000,
     15000,
     Infinity,
 ];
@@ -4869,7 +4871,7 @@ class MainSystem {
     init() {
         this.levels = [];
         setCameraScale(22);
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 6; i++) {
             const [map, rooms] = generateDungeon();
             this.levels.push({ map, rooms });
         }
@@ -5000,6 +5002,9 @@ class MainSystem {
             }
             if (this.l === 4) {
                 maxEnemies = 500;
+            }
+            if (this.l === 5) {
+                maxEnemies = 100;
             }
             for (let i = 0; i < this.enemyLevel + Math.round(maxEnemies / 6); i++) {
                 if (this.enemies.length > maxEnemies) {
