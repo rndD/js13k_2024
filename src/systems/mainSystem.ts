@@ -51,6 +51,7 @@ export const LEVELS_XP = [
   7500,
   9000,
   11000,
+  13000,
   15000,
   Infinity,
 ];
@@ -82,7 +83,7 @@ export class MainSystem {
   init() {
     this.levels = [];
     setCameraScale(22);
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       const [map, rooms] = generateDungeon();
       this.levels.push({ map, rooms });
     }
@@ -240,6 +241,9 @@ export class MainSystem {
       }
       if (this.l === 4) {
         maxEnemies = 500;
+      }
+      if (this.l === 5) {
+        maxEnemies = 100;
       }
 
       for (let i = 0; i < this.enemyLevel + Math.round(maxEnemies / 6); i++) {
