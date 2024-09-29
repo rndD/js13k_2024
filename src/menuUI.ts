@@ -9,6 +9,7 @@ import {
   mainCanvas,
   mousePos,
   mouseWasReleased,
+  playAudioFile,
   screenToWorld,
   vec2,
 } from "littlejsengine";

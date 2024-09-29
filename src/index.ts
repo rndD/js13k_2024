@@ -6,6 +6,7 @@ import {
   paused,
   setPaused,
   setFontDefault,
+  playAudioFile,
 } from "littlejsengine";
 import { CharacterMenu } from "./levelUpUI";
 import { mainSystem } from "./systems/mainSystem";
@@ -19,6 +20,8 @@ function gameInit() {
   setTileSizeDefault(vec2(8));
   setTileFixBleedScale(0.05);
   setFontDefault("monospace");
+
+  playAudioFile("./DataWarrior13.mp3", 0.4, true);
 
   // called once after the engine starts up
   // setup the game
