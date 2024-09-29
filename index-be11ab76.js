@@ -4080,7 +4080,7 @@ const persistentParticleDestroyCallback = (particle) => {
     ASSERT(!particle.tileInfo, "quick draw to tile layer uses canvas 2d so must be untextured");
     if (particle.groundObject)
         // @ts-ignore
-        tileLayers[foregroundLayerIndex].drawTile(particle.pos, particle.size, particle.tileInfo, particle.color, particle.angle, particle.mirror);
+        mainSystem.floorTile.drawTile(particle.pos, particle.size, particle.tileInfo, particle.color, particle.angle, particle.mirror);
 };
 function makeDebris(pos, color = hsl(), amount = 50, size = 0.2, elasticity = 0.3) {
     const color2 = color.lerp(hsl(), 0.5);
@@ -4839,19 +4839,23 @@ const LEVELS_XP = [
     150,
     200,
     300,
-    450,
+    415,
+    550,
     700,
-    1000,
-    1300,
-    1700,
-    2100,
+    900,
+    1200,
+    1500,
+    2000,
     2500,
     3000,
+    3500,
     4000,
     5000,
-    6500,
-    8000,
-    10000,
+    6000,
+    7500,
+    9000,
+    11000,
+    15000,
     Infinity,
 ];
 class MainSystem {
@@ -4892,6 +4896,7 @@ class MainSystem {
         this.rooms = rooms;
         const floorTile = generateLevelLayer(map, rooms, true);
         floorTile.redraw();
+        this.floorTile = floorTile;
         this.setBackground();
         this.character = new Character(vec2(this.rooms[0].y + 1, this.rooms[0].x + 1));
         this.setLevelObjects();
