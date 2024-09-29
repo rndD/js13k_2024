@@ -34,19 +34,23 @@ export const LEVELS_XP = [
   150,
   200,
   300,
-  450,
-  700,
-  1000,
-  1300,
-  1700,
-  2100,
-  2500,
+  415,
+  550,
+  700, // 10
+  900,
+  1200,
+  1500,
+  2000,
+  2500, // 15
   3000,
+  3500,
   4000,
   5000,
-  6500,
-  8000,
-  10000,
+  6000, // 20
+  7500,
+  9000,
+  11000,
+  15000,
   Infinity,
 ];
 
@@ -61,6 +65,7 @@ export class MainSystem {
   l!: number;
   map!: LevelMap;
   levels!: { map: LevelMap; rooms: Room[]; floorTile?: TileLayer }[];
+  floorTile!: TileLayer;
   rooms!: Room[];
   levelExit?: LevelExit;
 
@@ -107,6 +112,7 @@ export class MainSystem {
 
     const floorTile = generateLevelLayer(map, rooms, true);
     floorTile.redraw();
+    this.floorTile = floorTile;
     this.setBackground();
 
     this.character = new Character(

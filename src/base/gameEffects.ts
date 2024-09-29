@@ -1,4 +1,5 @@
 import { ASSERT, hsl, ParticleEmitter, PI, Vector2 } from "littlejsengine";
+import { mainSystem } from "../systems/mainSystem";
 const persistentParticleDestroyCallback = (particle: any) => {
   // copy particle to tile layer on death
   ASSERT(
@@ -7,7 +8,7 @@ const persistentParticleDestroyCallback = (particle: any) => {
   );
   if (particle.groundObject)
     // @ts-ignore
-    tileLayers[foregroundLayerIndex].drawTile(
+    mainSystem.floorTile.drawTile(
       particle.pos,
       particle.size,
       particle.tileInfo,
