@@ -6063,6 +6063,11 @@ class MainMenu extends EngineObject {
         hsl(0, 1, 0.5), 0.2, 
         // black
         hsl(0, 0, 0));
+        drawText(`post-jam version`, this.pos.add(vec2(0, -4)), 1, 
+        //
+        hsl(0, 1, 0.5), 0.2, 
+        // black
+        hsl(0, 0, 0));
         drawText(`Start${isTouchDevice ? "" : PRESS_SPACE}`, this.pos.add(vec2(0, -0.5)), 0.6, 
         // black
         hsl(0, 0, 0));
